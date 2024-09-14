@@ -15,4 +15,21 @@ def create_tables():
     db.create_all()
     print("Created tables: complete")
 
+@cli_bp.cli.command("seed")
+def seed_tables():
 
+    user = [Player(
+
+    )
+    Player(
+
+    )
+    ]
+
+
+
+
+@cli_bp.cli.command("drop")
+def drop_tables():
+    db.drop_all()
+    print("Dropped tables: complete")

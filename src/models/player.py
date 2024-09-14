@@ -1,5 +1,5 @@
 from init import db, ma, bcrypt
-from flask import fields
+from marshmallow import fields
 
 class Player(db.Model):
     __tablename__ = "players"

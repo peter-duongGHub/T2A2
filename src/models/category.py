@@ -1,6 +1,4 @@
 from init import db, ma
-from marshmallow.validate import Regexp 
-
 
 DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
 

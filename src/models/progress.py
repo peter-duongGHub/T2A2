@@ -1,5 +1,5 @@
 from init import db, ma
-from marshmallow.validate import fields
+from marshmallow import fields
 
 class Progress(db.Model):
     __tablename__ = "progress"
