@@ -1,8 +1,8 @@
 from init import db, jwt
-from jwt_extended import jwt_required
+# from jwt_extended import jwt_required
 
-from models.comments import Comments, comments_schema, comment_schema
-from models.events import Event, event_schema,events_schema
+# from models.comments import Comments, comments_schema, comment_schema
+# from models.events import Event, event_schema,events_schema
 
 from flask import Blueprint, request
 
@@ -28,10 +28,10 @@ def get_all():
     event = db.session.scalar(stmt)
     return events_schema.dump(event), 201
 
-# User Create Event
-@event_bp.route("/", method=["POST"])
-@jwt_required
-def create_event():
-    request_data = request.get_json()
+# # User Create Event
+# @event_bp.route("/", method=["POST"])
+# @jwt_required
+# def create_event():
+#     request_data = request.get_json()
 
 

@@ -1,10 +1,11 @@
 from init import db, ma, bcrypt, jwt
-from flask import Flask, request
+from flask import Flask
 import os
-from controllers.event_controller import event_bp
-from controllers.cli_controllers import cli_bp
+# from controllers.event_controller import event_bp
+from controllers.cli_controllers import db_commands
 
 def create_app():
+
     app = Flask(__name__)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
@@ -15,7 +16,7 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    app.register_blueprint(event_bp)
-    app.register_blueprint(cli_bp)
-    app.register_blueprint()
+    # app.register_blueprint(event_bp)
+    app.register_blueprint(db_commands)
 
+    return app

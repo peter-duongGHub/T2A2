@@ -1,5 +1,5 @@
-from init import db, ma, bcrypt
-from marshmallow import fields
+from init import db, ma
+# from marshmallow import fields
 
 class Player(db.Model):
     __tablename__ = "players"
@@ -9,13 +9,13 @@ class Player(db.Model):
     password = db.Column(db.String(40), nullable=False)
     email = db.Column(db.String(40), unique=True)
 
-    comments = db.Relationship("Comments", back_populates="player")
-    progresses = db.Relationship("Progress", back_populates="player")
+    # comments = db.Relationship("Comments", back_populates="player")
+    # progresses = db.Relationship("Progress", back_populates="player")
 
 class PlayerSchema(ma.Schema):
 
-    comments = fields.Nested("CommentSchema", only=["id", "message"])
-    progresses = fields.Nested("ProgressSchema", only=["progress, date"])
+    # comments = fields.Nested("CommentSchema", only=["id", "message"])
+    # progresses = fields.Nested("ProgressSchema", only=["progress, date"])
 
 
     class Meta:
