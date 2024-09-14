@@ -2,6 +2,7 @@ from init import db, jwt
 from models.comments import Comments, comments_schema, comment_schema
 from models.events import Event, event_schema,events_schema
 from flask import Blueprint, request
+from jwt_extended import jwt_required
 
 
 event_bp = Blueprint("event", __name__, url_prefix="/events")
