@@ -5,10 +5,10 @@
 # class Category(db.Model):
 #     __tablename__ = "category"
 #     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(40), nullable=True)
-#     description = db.Column(db.String(40), nullable=False)
+#     name = db.Column(db.String, nullable=False)
+#     description = db.Column(db.String, nullable=False)
 
-#     events = db.Relationship("Event", back_populates="category")
+#     # events = db.Relationship("Event", back_populates="category")
 
 # class CategorySchema(ma.Schema):
 #     class Meta:

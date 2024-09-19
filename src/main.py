@@ -3,6 +3,9 @@ from flask import Flask
 import os
 # from controllers.event_controller import event_bp
 from controllers.cli_controllers import db_commands
+# from controllers.player_controller import player_db
+from controllers.game_controller import game_bp
+from controllers.user_controller import user_bp
 
 def create_app():
 
@@ -18,5 +21,8 @@ def create_app():
 
     # app.register_blueprint(event_bp)
     app.register_blueprint(db_commands)
-
+    # app.register_blueprint(player_db)
+    app.register_blueprint(game_bp)
+    app.register_blueprint(user_bp)
     return app
+

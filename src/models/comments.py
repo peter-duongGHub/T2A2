@@ -5,17 +5,17 @@
 # class Comments(db.Model):
 #     __tablename__ = "comments"
 #     id = db.Column(db.Integer, primary_key=True)
-#     message = db.Column(db.String(40), nullable=False)
+#     message = db.Column(db.String, nullable=False)
 
-#     player = db.Relationship("Player", back_populates="comments")
-#     event = db.Relationship("Event", back_populates="comments")
+#     # player = db.Relationship("Player", back_populates="comments")
+#     # event = db.Relationship("Event", back_populates="comments")
 
 
 # class CommentSchema(ma.Schema):
 #     class Meta:
-#         fields = ("id", "message", "player", "")
+#         fields = ("id", "message")
 
-#     message = fields.String(required=True, validate=Regexp(""), error="Invalid message format.")
+#     # message = fields.String(required=True, validate=Regexp(""), error="Invalid message format.")
 
 # comments_schema = CommentSchema(many=True)
 # comment_schema = CommentSchema()

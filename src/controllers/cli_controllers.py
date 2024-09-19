@@ -1,8 +1,9 @@
-from models.player import Player
+# from models.player import Player
+from models.user import User
 # from models.comments import Comments
 # from models.category import Category
 # from models.events import Event
-# from models.game import Game
+from models.game import Game
 # from models.progress import Progress
 
 from flask import Blueprint
