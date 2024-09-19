@@ -10,7 +10,7 @@ class Games(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    user = db.Relationship("User", back_populates="games")
+    user = db.Relationship("Users", back_populates="games")
     players = db.Relationship("Players", back_populates="game")
 
 class GameSchema(ma.Schema):

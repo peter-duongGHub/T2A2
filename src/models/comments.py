@@ -10,8 +10,8 @@ class Comments(db.Model):
     player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
 
-    player = db.Relationship("Player", back_populates="comments")
-    event = db.Relationship("Event", back_populates="comments")
+    player = db.Relationship("Players", back_populates="comments")
+    event = db.Relationship("Events", back_populates="comments")
 
 
 class CommentSchema(ma.Schema):

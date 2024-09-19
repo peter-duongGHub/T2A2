@@ -4,7 +4,7 @@ from models.comments import Comments
 from models.category import Category
 from models.events import Events
 from models.game import Games
-from models.progress import Progress
+from models.record import Records
 
 from flask import Blueprint
 from init import db, ma

@@ -10,7 +10,7 @@ class Users(db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     is_authorised = db.Column(db.Boolean, default=False)
 
-    games = db.Relationship("Game", back_populates="user")
+    games = db.Relationship("Games", back_populates="user")
 
 class UserSchema(ma.Schema):
     

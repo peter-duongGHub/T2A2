@@ -1,18 +1,18 @@
-from init import db, ma
+# from init import db, ma
 
-DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
+# # DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
 
-class Category(db.Model):
-    __tablename__ = "categories"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=False)
+# class Category(db.Model):
+#     __tablename__ = "categories"
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String, nullable=False)
+#     description = db.Column(db.String, nullable=False)
 
-    # events = db.Relationship("Event", back_populates="category")
+#     # events = db.Relationship("Event", back_populates="category")
 
-class CategorySchema(ma.Schema):
-    class Meta:
-        fields = ("id", "name", "description")
+# class CategorySchema(ma.Schema):
+#     class Meta:
+#         fields = ("id", "name", "description")
 
-categories_schema = CategorySchema(many=True)
-category_schema = CategorySchema()
+# categories_schema = CategorySchema(many=True)
+# category_schema = CategorySchema()
