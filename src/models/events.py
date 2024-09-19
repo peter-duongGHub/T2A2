@@ -12,16 +12,18 @@ class Events(db.Model):
 
     comments = db.Relationship("Comments", back_populates="event")
     player = db.Relationship("Players", back_populates="events")
-    # records = db.Relationship("Record", back_populates="event")
+    records = db.Relationship("Record", back_populates="event")
+    categories = db.Relationship("Category", back_populates="event")
 
 class EventSchema(ma.Schema):
     
-    # records = fields.List(fields.Nested("RecordSchema", only=[]))
+    records = fields.List(fields.Nested("RecordSchema", only=["progress", "date"]))
+    categories = fields.List(fields.Nested("CategorySchema", only=[""]))
     comments = fields.List(fields.Nested("CommentSchema", exclude=["event"]))
     player = fields.Nested("PlayerSchema", exclude=["date"])
 
     class Meta:
-        fields = ("id", "description", "date", "duration", "comments", "player")
+        fields = ("id", "description", "date", "duration", "comments", "player", "records", "categories")
 
     # name = fields.String(required=True, validate=Regexp(""))
     # description = fields.String(required=True, validate=Regexp(""))

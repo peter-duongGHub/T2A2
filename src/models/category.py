@@ -1,18 +1,24 @@
-# from init import db, ma
+from init import db, ma
+from marshmallow import fields
 
-# # DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
+# DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
 
-# class Category(db.Model):
-#     __tablename__ = "categories"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String, nullable=False)
-#     description = db.Column(db.String, nullable=False)
+class Category(db.Model):
+    __tablename__ = "categories"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
 
-#     # events = db.Relationship("Event", back_populates="category")
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
 
-# class CategorySchema(ma.Schema):
-#     class Meta:
-#         fields = ("id", "name", "description")
+    event = db.Relationship("Events", back_populates="categories")
 
-# categories_schema = CategorySchema(many=True)
-# category_schema = CategorySchema()
+class CategorySchema(ma.Schema):
+
+    event = fields.Nested("EventSchema", exclude=["categories"])
+
+    class Meta:
+        fields = ("id", "name", "description", "event")
+
+categories_schema = CategorySchema(many=True)
+category_schema = CategorySchema()

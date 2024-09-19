@@ -16,8 +16,6 @@ class RecordSchema(ma.Schema):
 
     player = fields.Nested("PlayerSchema", exclude=["date", "records", "comments"])
     event = fields.Nested("EventSchema", only=["description", "duration", "date"])
-    # log = fields.Nested("LogSchema",)
-    # event = fields.Nested("EventSchema",)
 
     class Meta:
         fields = ("id", "progress", "date")
