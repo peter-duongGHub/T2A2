@@ -67,5 +67,14 @@ def update_comment(comment_id):
 # Delete comment
 @comments_bp.route("<int:comment_id>", methods=["DELETE"])
 def delete_comment(comment_id):
-    pass
+    stmt = db.Select(Comments).filter_by(id=comment_id)
+    comment = db.session.scalar(stmt)
+
+    if comment:
+        db.session.delete(comment)
+        db.session.commit()
+        return {"success" : f"Deleted comment with id {comment_id}."}
+    else:
+        return {"error" : "Please enter a valid comment id."}
+
     
