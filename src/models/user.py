@@ -2,8 +2,8 @@ from init import db,ma
 from marshmallow import fields
 from marshmallow.validate import Regexp
 
-class User(db.Model):
-    __tablename__ = "user"
+class Users(db.Model):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)

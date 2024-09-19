@@ -9,14 +9,14 @@ from auth import check_admin
 
 user_bp = Blueprint("use", __name__, url_prefix="/user")
 
-from models.user import User, user_schema, UserSchema
+from models.user import Users, user_schema, UserSchema
 
 # Create a user - DONE WITH ERROR HANDLING CREATING USER
 @user_bp.route("/register", methods=["POST"])
 def create_user():
     try: 
         request_data = UserSchema().load(request.get_json())
-        user = User(
+        user = Users(
             name = request_data.get("name"),
             email = request_data.get("email")
             # is_authorised = request_data.get("is_authorised")
@@ -48,7 +48,7 @@ def create_user():
 def delete_user(user_id):
     try:
         # Fetch the user from the database
-        stmt = db.Select(User).filter_by(id=user_id)
+        stmt = db.Select(Users).filter_by(id=user_id)
         user = db.session.scalar(stmt)
 
         if user:
@@ -86,7 +86,7 @@ def update_user():
         request_name = body_data.get("name")
         # Fetch the current user from the database
         user_id = get_jwt_identity()
-        stmt = db.Select(User).filter_by(id=user_id)
+        stmt = db.Select(Users).filter_by(id=user_id)
         user = db.session.scalar(stmt)
         
         if user:
@@ -129,7 +129,7 @@ def login_user():
             return{"error": "Email and password are required"}, 400
         
         # Query the database for the user by email
-        stmt = db.Select(User).filter_by(email=request_email)
+        stmt = db.Select(Users).filter_by(email=request_email)
         user = db.session.scalar(stmt)
         
         if user and bcrypt.check_password_hash(user.password, request_password):

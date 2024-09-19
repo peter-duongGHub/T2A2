@@ -1,7 +1,7 @@
 from init import db, ma, bcrypt
 from flask import request, Blueprint
-from models.player import Player, player_schema, players_schema
-from models.game import Game, game_schema, games_schema
+from models.player import Players, player_schema, players_schema
+from models.game import Games, game_schema, games_schema
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from auth import check_admin
@@ -21,7 +21,7 @@ def create_player(game_id):
     name = request_data.get("name")
     date = request_data.get("date")
     role = request_data.get("role")
-    stmt = db.Select(Game).filter_by(id=game_id)
+    stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
 
     # Validate required fields
@@ -29,12 +29,12 @@ def create_player(game_id):
         return{"error": "Name, date & role are required"}, 400
 
     # Check if the name is already in use
-    existing_user = db.Select(Player).filter_by(name=name)
+    existing_user = db.Select(Players).filter_by(name=name)
     if existing_user:
         return{"error": "Name already in use"}, 400
 
     # Create a new Player instance
-    player = Player(
+    player = Players(
         name=name,
         date=date,
         role=role,
@@ -63,7 +63,7 @@ def update_player(player_id):
 
     # Query the database for the user
     try:
-        stmt = db.Select(Player).filter_by(id=player_id)
+        stmt = db.Select(Players).filter_by(id=player_id)
         player = db.session.scalar(stmt)
 
     except SQLAlchemyError as e:
@@ -90,7 +90,7 @@ def update_player(player_id):
 def delete_user(player_id):
     try:
         # Attempt to retrieve the user with the given id
-        stmt = db.Select(Player).filter_by(id=player_id)
+        stmt = db.Select(Players).filter_by(id=player_id)
         player = db.session.scalar(stmt)
 
         # If user is found, delete and commit
@@ -112,7 +112,7 @@ def delete_user(player_id):
 # View all players
 @player_db.route("/<int:game_id>/players", methods=["GET"])
 def view_players():
-    stmt = db.select(Player)
+    stmt = db.select(Players)
     player = db.session.scalars(stmt)
 
     if player:
@@ -123,7 +123,7 @@ def view_players():
 # View specific players
 @player_db.route("/<int:game_id>/players/<int:player_id>", methods=["GET"])
 def specific_players(player_id):
-    stmt = db.select(Player).filter_by(id=player_id)
+    stmt = db.select(Players).filter_by(id=player_id)
     player = db.session.scalar(stmt)
 
     if player:

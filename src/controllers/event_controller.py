@@ -2,17 +2,17 @@ from init import db, jwt
 # from jwt_extended import jwt_required
 
 # from models.comments import Comments, comments_schema, comment_schema
-from models.events import Event, event_schema,events_schema
+from models.events import Events, event_schema,events_schema
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.player import Player
+from models.player import Players
 
 event_bp = Blueprint("event", __name__, url_prefix="/events")
 
 # GET SPECIFIC EVENT
 @event_bp.route("/<int:event_id>", methods=["GET"])
 def get_specific(event_id):
-    stmt = db.Select(Event).filter_by(id=event_id)
+    stmt = db.Select(Events).filter_by(id=event_id)
     event = db.session.scalar(stmt)
 
     if event:
@@ -24,7 +24,7 @@ def get_specific(event_id):
 # GET ALL EVENTS
 @event_bp.route("/", methods=["GET"])
 def get_all():
-    stmt = db.Select(Event)
+    stmt = db.Select(Events)
     event = db.session.scalars(stmt)
     if event:
         return events_schema.dump(event), 201
@@ -40,7 +40,7 @@ def create_event(player_id):
     player = db.session.scalar(stmt)
 
     if player:
-        event = Event(
+        event = Events(
             description = request_data.get("description"),
             date = request_data.get("date"),
             duration = request_data.get("duration"),
@@ -71,7 +71,7 @@ def update_event(player_id):
 @event_bp.route("/<int:event_id>", methods=["DELETE"])
 @jwt_required()
 def delete_event(event_id):
-    stmt = db.Select(Event).filter_by(id=event_id)
+    stmt = db.Select(Events).filter_by(id=event_id)
     event = db.session.scalar(stmt)
 
     if event:

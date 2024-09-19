@@ -2,7 +2,7 @@ from init import db, ma
 from marshmallow import fields
 from marshmallow.validate import And, Regexp, OneOf
 
-class Event(db.Model):
+class Events(db.Model):
     __tablename__ = "events"
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(40), nullable=False)
@@ -12,14 +12,16 @@ class Event(db.Model):
 
     comments = db.Relationship("Comment", back_populates="event")
     player = db.Relationship("Player", back_populates="events")
+    # records = db.Relationship("Record", back_populates="event")
 
 class EventSchema(ma.Schema):
-
+    
+    # records = fields.List(fields.Nested("RecordSchema", only=[]))
     comments = fields.List(fields.Nested("CommentSchema", exclude=["event"]))
     player = fields.Nested("PlayerSchema", exclude=["date"])
 
     class Meta:
-        fields = ("id", "description", "date", "duration", "comments")
+        fields = ("id", "description", "date", "duration", "comments", "player")
 
     # name = fields.String(required=True, validate=Regexp(""))
     # description = fields.String(required=True, validate=Regexp(""))

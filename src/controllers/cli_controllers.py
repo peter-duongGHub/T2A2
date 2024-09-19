@@ -1,10 +1,10 @@
-from models.player import Player
-from models.user import User
-# from models.comments import Comments
-# from models.category import Category
-# from models.events import Event
-from models.game import Game
-# from models.progress import Progress
+from models.player import Players
+from models.user import Users
+from models.comments import Comments
+from models.category import Category
+from models.events import Events
+from models.game import Games
+from models.progress import Progress
 
 from flask import Blueprint
 from init import db, ma

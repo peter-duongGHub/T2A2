@@ -1,9 +1,9 @@
 from init import db, ma
 from flask import Blueprint, request
-from models.game import Game, game_schema, games_schema
+from models.game import Games, game_schema, games_schema
 from auth import check_admin
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.user import User
+from models.user import Users
 
 game_bp = Blueprint("game", __name__, url_prefix="/games")
 
@@ -15,10 +15,10 @@ def create_game():
     request_data = request.get_json()
     name = request_data.get("name")
     description = request_data.get("description")
-    stmt = db.Select(User).filter_by(id=get_jwt_identity())
+    stmt = db.Select(Users).filter_by(id=get_jwt_identity())
     user = db.session.scalar(stmt)
 
-    game = Game(
+    game = Games(
         name = name,
         description = description,
         user_id = user.id
@@ -31,7 +31,7 @@ def create_game():
 # Fetch specific game to view - READ
 @game_bp.route("/<int:game_id>", methods=["GET"])
 def view_games(game_id):
-    stmt = db.Select(Game).filter_by(id=game_id)
+    stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
 
     if game:
@@ -42,7 +42,7 @@ def view_games(game_id):
 # Fetch all games to view 
 @game_bp.route("/", methods=["GET"])
 def get_games():
-    stmt = db.Select(Game).order_by(Game.description.desc())
+    stmt = db.Select(Games).order_by(Games.description.desc())
     game = db.session.scalars(stmt)
 
     if game:
@@ -59,7 +59,7 @@ def update_game(game_id):
     request_data = request.get_json()
     name = request_data.get("name")
     description = request_data.get("description")
-    stmt = db.Select(Game).filter_by(id=game_id)
+    stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
 
     if game:
@@ -79,7 +79,7 @@ def update_game(game_id):
 def delete_game(game_id):
     try:
         # Attempt to retrieve the user with the given id
-        stmt = db.Select(Game).filter_by(id=game_id)
+        stmt = db.Select(Games).filter_by(id=game_id)
         game = db.session.scalar(stmt)
         # If user is found, delete and commit
         if game:
