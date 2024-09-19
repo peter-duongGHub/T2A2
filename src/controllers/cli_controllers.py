@@ -1,4 +1,4 @@
-# from models.player import Player
+from models.player import Player
 from models.user import User
 # from models.comments import Comments
 # from models.category import Category

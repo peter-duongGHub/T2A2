@@ -11,12 +11,12 @@ class Game(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
     user = db.Relationship("User", back_populates="games")
-    # players = db.Relationship("Players", back_populates="game")
+    players = db.Relationship("Players", back_populates="game")
 
 class GameSchema(ma.Schema):
 
     user = fields.Nested('UserSchema', only=["name", "email", "id"])
-    # players = fields.List(fields.Nested('PlayerSchema', exclude=["game"]))
+    players = fields.List(fields.Nested('PlayerSchema', exclude=["game"]))
 
     class Meta:
         fields = ("id", "name", "description", "user")
