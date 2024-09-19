@@ -11,18 +11,21 @@ class Player(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey("game.id"), nullable=False)
 
     game = db.Relationship("Games", back_populates="players")
+    events = db.Relationship("Event", back_populates="player")
+
     # comments = db.Relationship("Comments", back_populates="player")
     # progresses = db.Relationship("Progress", back_populates="player")
 
 class PlayerSchema(ma.Schema):
 
     game = fields.Nested("GameSchema", only=["name", "description", "user"])
+    events = fields.List(fields.Nested("EventSchema", only=["description", "date", "duration"]))
     # comments = fields.Nested("CommentSchema", only=["id", "message"])
     # progresses = fields.Nested("ProgressSchema", only=["progress, date"])
 
 
     class Meta:
-        fields = ("id", "name", "level", "date", "role", "game")
+        fields = ("id", "name", "level", "date", "role", "game", "events")
 
 players_schema = PlayerSchema(many=True)
 player_schema = PlayerSchema()

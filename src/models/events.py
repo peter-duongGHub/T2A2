@@ -8,13 +8,15 @@ class Event(db.Model):
     description = db.Column(db.String(40), nullable=False)
     date = db.Column(db.Date, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
+    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
 
     comments = db.Relationship("Comment", back_populates="event")
-
+    player = db.Relationship("Player", back_populates="events")
 
 class EventSchema(ma.Schema):
 
     comments = fields.List(fields.Nested("CommentSchema", exclude=["event"]))
+    player = fields.Nested("PlayerSchema", exclude=["date"])
 
     class Meta:
         fields = ("id", "description", "date", "duration", "comments")

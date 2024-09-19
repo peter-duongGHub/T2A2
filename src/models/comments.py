@@ -17,6 +17,7 @@ class Comments(db.Model):
 class CommentSchema(ma.Schema):
 
     player = fields.Nested("PlayerSchema", only=["name", "role", "level"])
+    event = fields.Nested("EventSchema", only=["description", "duration", "date"])
 
     class Meta:
         fields = ("id", "message", "player", "event")
