@@ -36,7 +36,7 @@ def get_all():
 @jwt_required()
 def create_event(player_id):
     request_data = request.get_json()
-    stmt = db.Select(Player).filter_by(id=player_id)
+    stmt = db.Select(Players).filter_by(id=player_id)
     player = db.session.scalar(stmt)
 
     if player:
@@ -56,7 +56,7 @@ def create_event(player_id):
 @jwt_required()
 def update_event(player_id):
     request_body = request.get_json()
-    stmt = db.Select(Player).filter_by(id=player_id)
+    stmt = db.Select(Players).filter_by(id=player_id)
     player = db.session.scalar(stmt)
 
     if player:
