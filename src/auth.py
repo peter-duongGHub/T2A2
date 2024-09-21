@@ -1,7 +1,7 @@
 from flask_jwt_extended import get_jwt_identity
 from functools import wraps
 from init import db
-from models.user import User
+from models.user import Users
 
 def check_admin(func):
     @wraps(func)
@@ -10,7 +10,7 @@ def check_admin(func):
         user_id = get_jwt_identity()
         
         # Query the database to get the user by their ID
-        stmt = db.Select(User).filter_by(id=user_id)
+        stmt = db.Select(Users).filter_by(id=user_id)
         user = db.session.scalar(stmt)
             
         # Check if the user is an admin
@@ -18,6 +18,6 @@ def check_admin(func):
             return func(*args, **kwargs)
         # Return an error response if the user is not an admin
         else:
-            return {"error": "Only admins can perform delete."}, 403
+            return {"error": "No such user, only admins can perform delete."}, 403
 
     return wrapper

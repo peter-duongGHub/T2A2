@@ -2,12 +2,13 @@ from flask import request, Blueprint
 from models.comments import Comments, comment_schema, comments_schema
 from init import db, ma
 from models.events import Events, event_schema, events_schema
-
-comments_bp = Blueprint("comments", __name__, url_prefix="/events/<int:event_id>/comments")
+from models.player import Players
+from flask_jwt_extended import jwt_required, get_jwt_identity
+comments_bp = Blueprint("comments", __name__, url_prefix="/<int:player_id>/comments")
 
 # View all comments
 @comments_bp.route("/", methods=["GET"])
-def view_comments():
+def view_comments(game_id, player_id):
     stmt = db.Select(Comments)
     comment = db.session.scalars(stmt)
     if comment:
@@ -17,7 +18,7 @@ def view_comments():
 
 # View specific comment
 @comments_bp.route("/<int:comment_id>", methods=["GET"])
-def specific_comment(comment_id):
+def specific_comment(comment_id, game_id, player_id):
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
     if comment:
@@ -26,20 +27,30 @@ def specific_comment(comment_id):
         return {"error" : f"There is no comment with id {comment_id}."}
 
 # Create a comment
-@comments_bp.route("<int:event_id>", methods=["POST"])
-def create_comment(event_id):
-    stmt = db.Select(Events).filter_by(id=event_id)
-    event = db.session.scalar(stmt)
+@comments_bp.route("/<int:event_id>", methods=["POST"])
+@jwt_required()
+def create_comment(event_id, player_id, game_id):
+    stmt = db.Select(Players).filter_by(id=player_id)
+    player = db.session.scalar(stmt)
+
+    event_stmt = db.Select(Events).filter_by(id=event_id)
+    event = db.session.scalar(event_stmt)
 
     request_body = request.get_json()
     message = request_body.get("message")
 
-
-    if event:
+    if player:
         comment = Comments(
-            message = "This is a random message",
-            event_id = event.id
+            message = message,
+            player_id = player.id
         )
+    
+        if event:
+            comment.event_id = event.id
+        else: 
+            comment.event_id = event
+
+
         db.session.add(comment)
         db.session.commit()
 
@@ -50,7 +61,7 @@ def create_comment(event_id):
 
 # Update comment
 @comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])
-def update_comment(comment_id):
+def update_comment(event_id, game_id, player_id, comment_id):
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
     request_body = request.get_json()
@@ -66,7 +77,7 @@ def update_comment(comment_id):
 
 # Delete comment
 @comments_bp.route("<int:comment_id>", methods=["DELETE"])
-def delete_comment(comment_id):
+def delete_comment(event_id, game_id, player_id, comment_id):
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
 

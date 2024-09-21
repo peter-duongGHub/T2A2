@@ -38,8 +38,8 @@ def create_user():
             return {"error": f"The {e.orig.diag.column_name} is required"}, 400
         if 'unique constraint' in str(e.orig):
             return {"error": "Email already in database, please enter a unique email address"}, 400
-    except ValidationError:
-        return{"message": "Please enter a name starting with an alphanumeric character."}
+    except ValidationError as e:
+            return{"error" : f"{e}"}, 400
 
 # Delete a user
 @user_bp.route("/<int:user_id>", methods=["DELETE"])
@@ -109,10 +109,14 @@ def update_user():
         # Handle SQLAlchemy errors
         db.session.rollback()  # Rollback any changes to maintain database integrity
         return{"error": "Database error", "details": str(e)}, 500
+    
+    except ValidationError as e:
+            return{"error" : f"{e}"}, 400
 
-    except Exception as e:
-        # Handle unexpected errors
-        return{"error": "An unexpected error occurred", "details": str(e)}, 500
+
+    # except Exception as e:
+    #     # Handle unexpected errors
+    #     return{"error": "An unexpected error occurred", "details": str(e)}, 500
 
 # Login User
 @user_bp.route("/login", methods=["POST"])

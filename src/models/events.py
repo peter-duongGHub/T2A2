@@ -8,11 +8,11 @@ class Events(db.Model):
     description = db.Column(db.String(40), nullable=False)
     date = db.Column(db.Date, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
-    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
+    player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
 
     comments = db.Relationship("Comments", back_populates="event")
     player = db.Relationship("Players", back_populates="events")
-    records = db.Relationship("Record", back_populates="event")
+    records = db.Relationship("Records", back_populates="event")
     categories = db.Relationship("Category", back_populates="event")
 
 class EventSchema(ma.Schema):

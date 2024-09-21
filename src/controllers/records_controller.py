@@ -1,11 +1,10 @@
 from flask import Blueprint, request
 from models.record import Records, record_schema, records_schema
-from models.events import Events, event_schema, events_schema
-from models.player import Players, player_schema, players_schema
-from init import db, ma
+from models.player import Players
+from init import db
 from flask_jwt_extended import jwt_required
 
-record_bp = Blueprint("record", __name__, url_prefix="/records")
+record_bp = Blueprint("records", __name__, url_prefix="/records")
 
 # Create record for progress
 @record_bp.route("/<int:player_id>", methods=["POST"])

@@ -7,8 +7,8 @@ class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String, nullable=False)
 
-    player_id = db.Column(db.Integer, db.ForeignKey("player.id"), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey("event.id"), nullable=False)
+    player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
 
     player = db.Relationship("Players", back_populates="comments")
     event = db.Relationship("Events", back_populates="comments")

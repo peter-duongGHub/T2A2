@@ -5,7 +5,9 @@ from auth import check_admin
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.user import Users
 
-game_bp = Blueprint("game", __name__, url_prefix="/games")
+from controllers.player_controller import player_bp
+game_bp = Blueprint("game", __name__, url_prefix="/game")
+game_bp.register_blueprint(player_bp)
 
 # Creating a game into database from HTTP request - CREATE
 @game_bp.route("/", methods=["POST"])
