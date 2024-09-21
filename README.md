@@ -437,7 +437,6 @@ Each divisible attribute has been provided its own table to rely solely on its o
 ### Key/Legend
 #### Entity 
 A rectangle representing a data entity (e.g., User, Order, Product).
-- 
 
 
 #### Attribute	
