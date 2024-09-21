@@ -414,12 +414,80 @@ class Users(db.Model):
 - Relate these tables with a foreign key.
 - Eliminate fields that don't depend on the key.
 
+### How Normalisation occurs in project
+Each divisible attribute has been provided its own table to rely solely on its own primary key. 
+
+#### 1NF - First Normal Form
+- [x] All columns contain atomic (indivisible) values
+- [x] Each entry in a column is of the same data type.
+- [x] Each column has a unique name.
+- [x] The order in which data is stored does not matter.
+
+#### 2NF - Second Normal Form
+- [x] All non-key attributes are fully functionally dependent on the primary key (no partial dependency).
+
+#### 3NF - Third Normal Form
+- [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 ### ERD
 ![Crows-Foot-Notation](./docs/ERDT2A2.drawio.png)
 
+### Other levels of normalisation - Model: User
+
+### Key/Legend
+#### Entity 
+A rectangle representing a data entity (e.g., User, Order, Product).
+- 
+
+
+#### Attribute	
+An oval connected to an entity, representing a property of that entity (e.g., name, price).
+
+#### Primary Key	
+An underlined attribute that uniquely identifies each record within an entity.
+
+#### Foreign Key	
+An attribute that references the primary key of another entity, often shown with a dashed line.
+
+#### Crow's Foot	
+A symbol that indicates the "many" side of a relationship, represented by three lines.
+
+#### Single Line	
+Indicates a "one" relationship, meaning that each instance of an entity can be associated with only one instance of another entity.
+
+#### Double Line	
+Indicates a mandatory relationship, where an instance of one entity must be associated with at least one instance of another entity.
+
+#### Zero or One	
+A circle at the end of a line that indicates the possibility of having no related instance in the relationship.
+
+#### One or Many	
+A combination of a line and a Crow's Foot symbol that shows that an instance may have zero or more related instances.
+
+#### Relationship Name	
+A diamond shape that describes the nature of the relationship between entities (e.g., places, contains).
+
+
 
 ## R7
+### Models
+#### Users
+- User-Games Relationship:
+The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
+- Interaction:
+
+
+#### Games
+
+#### Players
+
+#### Comments
+
+#### Records
+
+#### Events
+
+#### Category
 
 ## R8
 
