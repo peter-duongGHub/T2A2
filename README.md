@@ -1,16 +1,66 @@
-# T2A2 API WebServer
+# T2A2 API WebServer - Game Event Tracker
+
+Table of Contents
+## R1 - Explain the problem you are trying to solve and how the app solves the problem
+## R2 - Task Management - Trello and Github
+## R3 - Third-Party Services, Packages & Dependencies
+## R4 - Benefits and drawbacks of PostgreSQL
+## R5 - Explain features, purpose and functionalities of ORM in the app
+## R6 - An ERD for your app
+## R7 - Explain models and their relationships and explain how relationships aid database implementation
+## User Model
+## Game Model
+## Player Model
+## Comments Model
+## Records Model
+## Events Model
+## Category Model
+## R8 - Explain app's API endpoints including:
+- HTTP verb
+- Path or route
+- Any required body or header data
+- Response
+
 
 ## R1
 ### Explain Solved Problem
 With the increasing popularity of games, the management and analysis of past in-game events becomes increasingly more significant as the player base and complexities of games evolve. A common denominator within most games is the absence of in-game event tracking whereby players have a way to execute events but they do not have a way to review each past event committed. Having an event tracker can help players review any changes to their characters and track the progressive development of characters on an ongoing basis, this can help prevents users from spending far too much time on the game if they have progressed a certain amount and for users that are forgetful, they're able to account for what they previously did with their players. 
-### Explain How
+
+### Explain How problem is addressed and References
 This app works by using
 
 
 
 
-## R2
+## R2 Task allocation and Management - Trello & GitHub
+### Trello
+For this application Trello was used for management of tasks and acted as a sort of checklist to ensure all rubric was covered and completed as well as the flow of creating the application was consistent and gradual. Specific dates were allocated to each task and objective to ensure the application was progressing according to plan towards the submission date. Trello was used for organisation of the project, time management and tracking tasks as well as visualises the workflow. Each card used a colour coded system for categorisation of tasks and different cards were allocated to define milestones and deadlines. Checklists within each card were to help break down components of each card further and to emphasise points required for the rubric of the T2A2 Webserver assignment.
 
+![https://trello.com/b/9sVow73W/t2a2-api-webserver]()
+
+#### Reference
+![Trello-Image]()
+
+
+### GitHub
+Github was used to track changes and recovery of data if necessary. Throughout the length of the project each file that had been completed had a git operation performed to push the local repository changes to a remote repository (github) to help with debugging, organisation and collaboration (where necessary). GitHub was also used as a requirement for this assignment T2A2 to help track changes to the project.
+
+#### Example of how this was done
+1. Login to Github and create a new repository
+2. Create new local directory on computer
+3. Open Ubuntu
+4. Initialise local repository with: ```git init```
+5. Echo a read me file: ```echo "T2A2" >> README.md```
+6. Add any changes to a staging area for the current directory: ```git add .```
+7. Commit changes in staging area with a meaningful message: ```git commit -m "first commit"```
+8. Ensure the current branch is main: ```git branch -M main```
+9. Add origin of remote repository: ```git remote add origin git@github.com:peter-duongGHub/T2A2-1.git```
+10. Push upstream to the main branch as origin: ```git push -u origin main```
+
+![GitHub-Project]()
+
+#### Reference
+![GitHub-Image]()
 
 
 ## R3
@@ -20,6 +70,8 @@ An extensive explanation of each dependency used in this application can be foun
 
 ### Installation:
 #### Virtual Environment
+Virtual environment is used to keep my dependencies contained for this specific project to reduce contingencies and overlap with other projects users might be involved with - maintaining module versions and preventing overlapping of dependency versions.
+
 1. Setup virtual environment
 
 ```python3 -m venv venv```
@@ -29,32 +81,135 @@ An extensive explanation of each dependency used in this application can be foun
 ``` source venv/bin/activate```
 
 #### Psycopg2
+Psycopg2 is a popular PostgreSQL adapter for Python that provides a robust interface for connecting to and interacting with PostgreSQL databases. It’s designed to be efficient, secure, and easy to use, making it one of the most widely used libraries for PostgreSQL database management in Python applications such as my game event tracker application. It acts as a mediator between my application logic and PostgreSQL ensuring operations and requests to the database function smoothly. 
+
+##### Installation
 1. Install psycopg2 package
 
 ``` pip install psycopg2-binary```
 
+##### Description
+
+#### Python Dotenv
+Python dotenv is used in this application to help with configuration setttings stored within an .env file. This helps with modularisation as it seperates the application logic from the configuration data. It is utilised to help with configuring the jwt secret key, database URL, database adapter, user and password. For the example below the ```os``` module is imported and used with ```os.environ.get("variable")``` to link the configuration settings to the .env file where ```("variable")``` would be replaced with the configuration setting variable such as ```SECRET_KEY``` in the .env.example file.
+
+Example:
+
+![Python-Dotenv](./docs/env.PNG)
+
+
+![Python-Dotenv](./docs/env2.PNG)
+
+
+##### Installation
+1. Install python-dotenv package
+
+``` pip install python-dotenv```
+
+
+#### PostgreSQL
+PostgreSQL is the database system that my application will be using. The purpose of PostgreSQL is to act as an relational database management system (RDBMS) by storing data within tables that consist of rows and columns. Specifically for this application, PostgreSQL is used to help store user input into a relational database. This is greatly beneficial for users who use my API webserver as they can store data and retrieve that stored data whenever necessary.
+It contains many components and features that are used within this application such as constraints including:
+- Primary Keys
+- Foreign Keys
+- Unique Constraints
+- Default Constraints
+- Nullable Constraints
+
 #### Flask
+Flask is a lightweight web framework for Python that allows developers to build web applications quickly and easily. Flask depends on the Werkzeug WSGI toolkit, the Jinja template engine, and the Click CLI toolkit. It does have many cool features like url routing, template engine. The example provided below shows the features of flask that have been utilised for the application. This example code shows flask may be used to map URL's to controllers and return a view. This is very handle as different routes can be defined with this decorator to facilitate different functions dependent on the route. This is a fundamental feature when building applications on the web as it plays a significant role in user interaction and interface.
+
+https://flask.palletsprojects.com/en/3.0.x/
+
+#### Example code
+```
+@app.route('/')
+def home():
+    return 'Hello, World!'`
+```
+
+#### SQLAlchemy
+SQLAlchemy is used within the game event tracking application to assist with database CRUD operations such as retrieving values from an entity within the relational database etc. It is also used within the database tables for attributes and data type definitions, commits to the database session and scalars for executing of the database object. This example shows ```db.Select``` is used to fetch an object from the model ```Games``` and return it to the view with the use of Marshmallow.
+
+#### Example
+```
+@game_bp.route("/<int:game_id>", methods=["GET"])
+def view_games(game_id):
+    stmt = db.Select(Games).filter_by(id=game_id)
+    game = db.session.scalar(stmt)
+
+    if game:
+        return game_schema.dump(game), 200
+    else:
+        return{"error": f"There is no game with id: {game_id}"}
+```
+
 ##### flask_sqlalchemy
 1. Install flask_sqlalchemy package
 
 ``` pip install flask_sqlalchemy```
+
+#### Marshmallow
+For this application marshmallow has been used to create my schemas and help with serialising and deserialising my python objects into a readable object for the view. It has also been used to help define the specific attributes that will be accessed by different tables as well as validation of inputs by the user - restricting users to certain inputs and conditions. 
+
+An example of how marshmallow has been used extensively in my application has been provided below. 
+
+##### Use within application
+In this example I have used marshmallow to create a schema class model named ```GameSchema``` and used many of marshmallows features such as ```fields``` and ```validate```. Some methods of fields were used for different purposes. ```Nested``` was used to define which attributes from other tables were going to be availble for use, ```String``` was used for validating user input and ensuring user input is compulsory.
+
+![Game-Marshmallow](./docs/GameSchema.PNG)
 
 ##### flask_marshmallow
 1. Install flask_marshmallow package
 
 ``` pip install flask_marshmallow```
 
+##### marshmallow_sqlalchemy
+1. Install marshmallow_sqlalchemy package
+
+``` pip install marshmallow_sqlalchemy```
+
+
+#### JWT Manager
+JWT Manager is a popular Flask extension that provides easy integration of JSON Web Tokens (JWT) into the game event tracker application. Within this application it enables management of user authentication and authorization and retrieval of attribute id's with the use of ```get_jwt_identity()``` for display in the view.
+
+#### Example
+```
+@game_bp.route("/", methods=["POST"])
+@jwt_required()
+@check_admin
+def create_game():
+    request_data = request.get_json()
+    name = request_data.get("name")
+    description = request_data.get("description")
+    stmt = db.Select(Users).filter_by(id=get_jwt_identity())
+    user = db.session.scalar(stmt)
+
+    game = Games(
+        name = name,
+        description = description,
+        user_id = user.id
+        )
+
+    db.session.add(game)
+    db.session.commit()
+    return game_schema.dump(game), 201
+```
+
 ##### flask_jwt_extended
 1. Install flask_jwt_extended package
 
 ``` pip install flask_bcrypt```
 
-#### marshmallow_sqlalchemy
-1. Install marshmallow_sqlalchemy package
+#### Bcrypt
+Bcrypt is used within this application for its cryptographic hashing function designed specifically for securely storing passwords input by the user into the database. The example below shows how bcrypt has been used in this application to hash the user input password into a database object. Bcrypt has also been used to verify user's when logging in by comparing the user input password to the stored hashed password to see if they are the same - this assists in authenticating users upon logging in with the application.
 
-``` pip install marshmallow_sqlalchemy```
+#### Example
+```
+  user.password = bcrypt.generate_password_hash(request_password).decode("utf-8") or user.password
+```
 
-#### flask_bcrypt
+##### flask_bcrypt
 1. Install flask_bcrypt package
 
 ``` pip install flask_bcrypt```
@@ -172,55 +327,103 @@ CREATE DATABASE <database_name>
 (Microfocus.com, 2018)
 
 ## R5 - SQLAlchemy (ORM)
-SQLAlchemy is a popular Object-Relational Mapping (ORM) library for Python, providing a high-level abstraction for working with relational databases. It simplifies database interactions by allowing you to work with Python objects instead of raw SQL queries. 
+SQLAlchemy is a popular Object-Relational Mapping (ORM) library for Python, providing a high-level abstraction for working with relational databases by acting as a mediator between python application code and the relational database, facilitating interactions between the two without the use of SQL queries. SQLAlchemy helps with querying the database through the utilisation of python class conversions to SQL statements. SQLAlchemy has a multitude of features ranging from CRUD operations, class mapping, defining of foreign keys, relationships, attributes and datatypes. Some of these key features will be discussed below.
 
+https://datascientest.com/en/sqlalchemy-what-is-it-whats-it-for
 https://www.sqlalchemy.org/
 
 ### Features 
-#### Declarative Mapping
-- Define your database schema using Python classes. The ORM’s declarative base class allows you to define mappings in a clear and Pythonic way.
-    - **Class and Table Mapping** :
-    - **Column Mapping** : Map class attributes to table columns
+#### CRUD Operations
+A key feature with the use of SQLAlchemy's ORM layer is the ability to perform CRUD operations. This includes the creation, reading, updating and deleting of data in the database. This is essential as users provide input from the front-end, these user inputs may interact with the database and be stored for later retrieval, analysis or deletion. This specific example shows the ability for SQLAlchemy to provide a view back to the user.
+1. A decorator is used containing an endpoint and HTTP request method
+2. A controller function is defined
+3. Using a method from SQLAlchemy the specific database object is fetched
+4. A schema of the game is returned to the user with an appropriate error code. If there is no such specific game an error message is provided to the user.
 
-#### Migration Tools 
-SQLAlchemy integrates with migration tools like Alembic to handle database schema changes and versioning. Alembic allows you to generate and apply migration scripts for schema evolution.
+An example of how CRUD operations may be used in application can be seen below: 
 
-#### Custom Types and Adapters
-Define custom data types and adapt them for use with SQLAlchemy. This is useful for handling special types of data or integrating with non-standard database types.
+#### Example - CRUD Operations
 
-#### Transaction Isolation and Control
-Control transaction isolation levels and manage transactions manually if needed.
+```
+@game_bp.route("/<int:game_id>", methods=["GET"])
+def view_games(game_id):
+    stmt = db.Select(Games).filter_by(id=game_id)
+    game = db.session.scalar(stmt)
 
-#### Async Support
-SQLAlchemy provides support for asynchronous programming using async/await syntax. This is particularly useful for applications that require high concurrency and performance.
+    if game:
+        return game_schema.dump(game), 200
+    else:
+        return{"error": f"There is no game with id: {game_id}"}
+```
+#### Defining database models
+With the ORM layer implemented within SQLAlchemy, a key feature would be the definition of database models. This is done by:
+1. Create object instance of SQLAlchemy - for this example db is the object instance and has been created in an init.py file and imported as db.
+2. Defining the database model includes creating of a class with the ```<model_name>``` followed by ```db.Model``` passed as a parameter. 
+3. The table name needs to be defined using ```__tablename__```.
+4. Each attribute will be defined with the ```<attribute_name>``` followed by ```db.Column``` and definitions of its data type and constraints. E.g; ```db.Integer```, ```nullable=False```.
 
-#### Type Decorators
-Create custom type decorators to modify how SQLAlchemy interacts with specific data types, providing more control over data serialization and deserialization.
+#### Relationships
+Anothey key feature with the use of SQLAlchemy ORM is its ability to relate entities to one another with the use of ```db.relationship```.
+1. Following on from "Defining database models", the table that needs to be linked will be specified. In this example ```games```.
+2. ```games``` will be assigned a ```db.Relationship``` where it will be preceded by the ```<model_name>``` and a method namely ```back_populates```.
+3. ```<model_name>``` will be provided the value of the model needing to be linked to, ```back_populates``` will be provided a value relating to the  relationship between the two tables. In this example "user" is provided as the relationship between user and games is One-to-Many relationship. One user can make multiple games, although a game can only be made by one user. 
+
+#### Foreign Keys
+Foreign keys is another feature which can also be defined to provide more detail on the relationship type between entities. This example shows SQLAlchemy can be used to link the users primary key named ```id``` to the table ```Games```. 
+
+### Example Code - Foreign Keys
+```
+class Games(db.Model):
+    __tablename__ = "games"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+
+    user = db.Relationship("Users", back_populates="games")
+    players = db.Relationship("Players", back_populates="game")
+```
+
+### Example Code - Defining database models + Relationships
 
 
-#### Integration with Other Tools
-##### Integration with Web Frameworks
-SQLAlchemy integrates well with popular web frameworks like Flask and Django. For Flask, SQLAlchemy provides Flask-SQLAlchemy, a Flask extension that simplifies integration.
+```
+from init import db,ma
+from marshmallow import fields
+from marshmallow.validate import Regexp
 
-##### Compatibility
-SQLAlchemy works with a wide range of databases, including PostgreSQL, MySQL, SQLite, Oracle, and SQL Server. It also supports various database-specific features and optimizations.
+class Users(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    is_authorised = db.Column(db.Boolean, default=False)
 
-### Benefits
-
-1hr 37mins
-
-### Cons
-
-### Functionalities
-
-### Examples
+    games = db.Relationship("Games", back_populates="user")
+```
 
 
 ## R6 - Normalised database relations
+- Eliminate redundancy and inconsistenct dependencies
+- Eliminate repeating groups in individual tables.
+- Create a separate table for each set of related data.
+- Identify each set of related data with a primary key.
+- Create separate tables for sets of values that apply to multiple records.
+- Relate these tables with a foreign key.
+- Eliminate fields that don't depend on the key.
+
+
+### ERD
+![Crows-Foot-Notation](./docs/ERDT2A2.drawio.png)
+
 
 ## R7
 
 ## R8
 
-## Styling Guide
+## Styling Guide - API style guide
 ALL queries or model methods are commented to a THOROUGH level of detail, with reference to a style guide or comment style guide in the project documentation.
+
+https://docs.gitlab.com/ee/development/api_styleguide.html
