@@ -15,9 +15,14 @@ class Users(db.Model):
 class UserSchema(ma.Schema):
     
     games = fields.List(fields.Nested("GameSchema", exclude=["user"]))
-    name = fields.String(required=True, validate=Regexp("^[a-zA-Z]+$", error="Name must only contain characters A-Z."))
-    password = fields.String(required=True, validate=Regexp("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$", error="Password must contain at least one letter, one digit, and is between eight and sixteen characters in length."))
-    email = fields.String(required=True, validate=Regexp("^\S+@\S+$", error="Email must contain @ symbol followed and preceding non white space characters."))
+
+    name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Name must only contain characters A-Z, between 1 to 50 characters."))
+
+    password = fields.String(required=True, validate=Regexp("^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,16}$", 
+    error="Password must contain at least one letter, one digit, and is between eight and sixteen characters in length."))
+
+    email = fields.String(required=True, validate=Regexp("^\S+@\S+$", 
+    error="Email must contain @ symbol followed and preceding non white space characters."))
 
     class Meta:
         fields = ("id", "name", "password", "email", "is_authorised", "games")

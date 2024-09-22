@@ -17,8 +17,10 @@ class GameSchema(ma.Schema):
 
     user = fields.Nested('UserSchema', only=["name", "email", "id", "is_authorised"])
     players = fields.List(fields.Nested("PlayerSchema", exclude=["game"]))
-    name = fields.String(required=True, validate=Regexp("/^[A-Za-z]+$/"))
-    description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,40}$'/"))
+    name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
+    error="Accepting letters ONLY from 1-50 characters max")
+    description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
+    error="Accepting letters ONLY from 1-50 characters max")
 
     class Meta:
         fields = ("id", "name", "description", "user", "players")

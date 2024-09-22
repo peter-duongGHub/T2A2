@@ -1,4 +1,3 @@
-
 # from controllers.event_controller import event_bp
 from controllers.cli_controllers import db_commands
 from controllers.player_controller import player_bp
@@ -6,7 +5,6 @@ from controllers.game_controller import game_bp
 from controllers.user_controller import user_bp
 # from controllers.comments_controller import comments_bp
 from controllers.event_controller import event_bp
-# from controllers.records_controller import record_bp
 # from controllers.category_controller import category_bp
 
 from init import db, ma, bcrypt, jwt
@@ -31,7 +29,6 @@ def create_app():
     app.register_blueprint(user_bp)
     # app.register_blueprint(comments_bp)
     app.register_blueprint(event_bp)
-    # app.register_blueprint(record_bp)
     # app.register_blueprint(category_bp)
 
     return app
