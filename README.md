@@ -553,7 +553,7 @@ The games model will include the following components:
 
 #### Schema
 
-The users schema will include the following components:  
+The games schema will include the following components:  
 - **Meta**: 
   - **fields**: Fields helps define the atttributes that will be required from the games model
 - **games_schema/game_schema**: used to help handle single or multiple user objects. E.g if fetching multiple games to view ```games_schema``` would be used, if fetching only 1 game to view ```game_schema``` would be used.
@@ -638,19 +638,37 @@ def view_players(game_id):
 Players model includes the following components:
 
 #### Attributes
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
-- **id**: 
+- **id**: Defines primary key
+- **name**: Defines players name
+- **date**: Defines date player was created
+- **role**: Defines the players role in the game
+- **game_id**: Defines the foreign key referenced from the games model
+- **game**: Defines the relationship between the games model and the players model
+- **events**: Defines the relationship between the players model and the events model
+- **comments**: Defines the relationship between the players model and the comments model
 
-- User-Games Relationship:
+#### Player Schema
+
+The players schema will include the following components:  
+- **Meta**: 
+  - **fields**: Fields helps define the atttributes that will be required from the players model
+- **games_schema/game_schema**: used to help handle single or multiple user objects. E.g if fetching multiple players to view ```players_schema``` would be used, if fetching only 1 game to view ```player_schema``` would be used.
+- **game**: used to define the certain attributes to share from the games schema to the players schema. 
+- **events**: used to define the attributes to include from the events schema for sharing to the players schema.
+- **comments**: used to define the attributes to include from the comments schema for sharing to the players schema.
+- **name**: used for vdliation of user input from the front-end, name can only be letters from 1-50 characters max.
+
+
+- Players-Games Relationship:
 The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
+
+- Players-Comments Relationship:
+
+- Players-Events Relationship:
+
+
+
+
 - Interaction with other models:
 - Queries to access data using relationships:
 - Code Examples:
