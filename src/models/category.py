@@ -7,7 +7,7 @@ from marshmallow import fields
 # Import validate module to use Regexp and OneOf
 from marshmallow.validate import Regexp, OneOf
 
-# DESCRIPTION = ("CHARACTER", "ACTION", "SOCIAL")
+CATEGORIES = ("CHARACTER", "ACTION", "SOCIAL")
 
 # Create Category model using SQLAlchemy object
 class Category(db.Model):
@@ -16,7 +16,6 @@ class Category(db.Model):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=False)
 
     # Foreign key referenced to events model primary key id 
     event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
@@ -31,14 +30,16 @@ class CategorySchema(ma.Schema):
     event = fields.Nested("EventSchema", exclude=["categories"])
 
     # Validation of attributes, restricting user input to certain conditions
-    
+    name = fields.String(required=True, validate=OneOf(CATEGORIES))
 
     # Meta class to serialise attributes associated to category model
     class Meta:
-        fields = ("id", "name", "description", "event")
+        fields = ("id", "name", "event")
 
 # Used for handling multiple category objects
 categories_schema = CategorySchema(many=True)
 
 # Used for handling a single category object
 category_schema = CategorySchema()
+
+

@@ -656,34 +656,63 @@ The players schema will include the following components:
 - **game**: used to define the certain attributes to share from the games schema to the players schema. 
 - **events**: used to define the attributes to include from the events schema for sharing to the players schema.
 - **comments**: used to define the attributes to include from the comments schema for sharing to the players schema.
-- **name**: used for vdliation of user input from the front-end, name can only be letters from 1-50 characters max.
+- **name**: used for validation of user input from the front-end, name can only be letters from 1-50 characters max.
 
+- **Players-Games Relationship**:
+The relationship between Players and Games is a Many-to-One relationship. One game can have multiple players although each player has to be created for one game. The foreign key will be assigned to the Players table referenced from the primary key associated to the game table. 
 
-- Players-Games Relationship:
-The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
+- The players model interacts with the game model through the use of ```game = db.Relationship("Games", back_populates="players")```. This creates the relationship between the players and games table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+- foreign keys will be passed with ```game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)``` to assign the foreign key to the players model referenced from the games model's id.
 
-- Players-Comments Relationship:
+- **Players-Comments Relationship**:
+The relationship between Players and comments is a One-to-Many relationship as One player can have multiple comments but a comment can only be made by a player. The foreign key will be assigned to the comments table referenced from the primary key associated to the player table.
 
-- Players-Events Relationship:
+- The players model interacts with the comments model through the use of ```comments = db.Relationship("Comments", back_populates="player")```. This creates the relationship between the players and comments table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
+- **Players-Events Relationship**:
+The relationship between Players and events is a One-to-Many relationship as One player can create multiple events but an event can only be made by a player. The foreign key will be assigned to the events table referenced from the primary key associated to the player table.
 
+- The players model interacts with the events model through the use of ```events = db.Relationship("Events", back_populates="player")```. This creates the relationship between the players and events table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
+##### Queries
+- Create Player
+Using HTTP request method POST to create a player based on json body input from the front-end. This will create a new object instance of a player which also links the games attributes.
 
-- Interaction with other models:
-- Queries to access data using relationships:
-- Code Examples:
+- View Players
+Using HTTP request method GET to fetch players from the database and provide a list of players back to the view for the user to see.
 
-#### Events
-- Description:
+```
+@player_bp.route("/", methods=["GET"])
+def view_players(game_id):
+    stmt = db.select(Players)
+    player = db.session.scalars(stmt)
 
-- User-Games Relationship:
-The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
-- Interaction with other models:
-- Queries to access data using relationships:
-- Code Examples:
+    if player:
+        return players_schema.dump(player), 201
+    else:
+        return {"error" : "There are no players to show"}
+```
+
+### Events
+
+#### Events-Comments Relationship
+This is a One-to-Many relationship where the foreign key is added to the comments table referencing the primary key id of the event entity. This is because one event can have multiple comments but a comment can only be a part of one event.
+
+- The events model interacts with the comments model through the use of ```comments = db.Relationship("Comments", back_populates="event")```. This creates the relationship between the events and comments table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+#### Events-Player Relationship
+The relationship between events and players is a Many-to-One relationship. One event is assigned to a player but one player can create multiple events. The foreign key will be assigned to the events table referenced from the primary key associated to the players table. 
+
+- The events model interacts with the player model through the use of ```player = db.Relationship("Players", back_populates="events")```. This creates the relationship between the events and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+#### Events-Category Relationship
+The relationship between events and players is a One-to-Many relationship. One event can be a part of multiple categories whereas one category must be a part of one event. The foreign key will be assigned to the category table referenced from the primary key associated to the events table. 
+
+- The events model interacts with the category model through the use of ```categories = db.Relationship("Category", back_populates="event")```. This creates the relationship between the events and category table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+### Queries
 
 #### Comments
-- Description:
 
 - User-Games Relationship:
 The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
@@ -722,7 +751,9 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 
 #### Category
 
-## R8
+## R8 - API Endpoints
+### User Controller
+
 
 ## Styling Guide - API style guide
 ALL queries or model methods are commented to a THOROUGH level of detail, with reference to a style guide or comment style guide in the project documentation.

@@ -28,6 +28,7 @@ class GameSchema(ma.Schema):
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
     error="Accepting letters ONLY from 1-50 characters max")
+    
     description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
     error="Accepting letters ONLY from 1-50 characters max")
 
