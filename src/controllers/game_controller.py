@@ -1,33 +1,46 @@
+# Import SQLAlchemy and Bcrypt objects for database operations and hashing respectively
 from init import db, ma
+# Import flask modules Blueprint and request to use decorator routes and retrieve body data from front-end respectively
 from flask import Blueprint, request
+# Import game and user model with Game and User object instance and game schemas for CRUD operations and view respectively
 from models.game import Games, game_schema, games_schema
-from auth import check_admin
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.user import Users
 
+# Import check admin function from auth file to authenticate user to endpoint
+from auth import check_admin
+# Import flask_jwt_extended module to retrieve token id's and authentication
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
+# Import player blueprint to register blueprint in game controller for url prefix routing
 from controllers.player_controller import player_bp
-game_bp = Blueprint("game", __name__, url_prefix="/game")
+game_bp = Blueprint("game", __name__, url_prefix="<int:user_id>/game")
 game_bp.register_blueprint(player_bp)
 
-# Creating a game into database from HTTP request - CREATE
+# Creating a game depending on authentication and required JWT
 @game_bp.route("/", methods=["POST"])
 @jwt_required()
 @check_admin
 def create_game():
+    # Get the body data from JSON body (name, description)
     request_data = request.get_json()
     name = request_data.get("name")
     description = request_data.get("description")
+    # Query into Users table for user object id relating to the JWT identity
     stmt = db.Select(Users).filter_by(id=get_jwt_identity())
     user = db.session.scalar(stmt)
 
+    # Create game object from JSON body and user id relating to JWT
     game = Games(
         name = name,
         description = description,
         user_id = user.id
         )
 
+    # Add game object to database session
     db.session.add(game)
+    # Commit thoe game object to the database session
     db.session.commit()
+    # Return a view to the front-end of the game object - deserialised with schema and success code 201
     return game_schema.dump(game), 201
 
 # Fetch specific game to view - READ

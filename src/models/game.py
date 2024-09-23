@@ -12,8 +12,10 @@ class Games(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
+
     # Foreign key referenced to user model primary key id 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    
     # Defined relationships between users and players models to share certain attributes with game model
     user = db.Relationship("Users", back_populates="games")
     players = db.Relationship("Players", back_populates="game", cascade="all, delete")

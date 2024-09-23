@@ -8,10 +8,10 @@ from auth import check_admin
 
 from sqlalchemy.exc import SQLAlchemyError
 # from controllers.comments_controller import comments_bp
-# from controllers.event_controller import event_bp
+from controllers.event_controller import event_bp
 
 player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
-# @player_bp.register_blueprint(event_bp)
+@player_bp.register_blueprint(event_bp)
 
 # POST (CREATE) - Create Player into databse from a HTTP Request
 @player_bp.route("/", methods=["POST"])
