@@ -13,10 +13,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Import player blueprint to register blueprint in game controller for url prefix routing
 from controllers.player_controller import player_bp
-game_bp = Blueprint("game", __name__, url_prefix="<int:user_id>/game")
+game_bp = Blueprint("game", __name__, url_prefix="/<int:user_id>/game")
 game_bp.register_blueprint(player_bp)
 
-# Creating a game depending on authentication and required JWT
+# Creating a game depending on authentication and required JWT from user
 @game_bp.route("/", methods=["POST"])
 @jwt_required()
 @check_admin

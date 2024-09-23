@@ -4,7 +4,7 @@ from init import db, ma
 from models.events import Events, event_schema, events_schema
 from models.player import Players
 from flask_jwt_extended import jwt_required, get_jwt_identity
-comments_bp = Blueprint("comments", __name__, url_prefix="/<int:player_id>/comments")
+comments_bp = Blueprint("comments", __name__, url_prefix="/<int:event_id>/comments")
 
 # View all comments
 @comments_bp.route("/", methods=["GET"])
@@ -27,7 +27,7 @@ def specific_comment(comment_id, game_id, player_id):
         return {"error" : f"There is no comment with id {comment_id}."}
 
 # Create a comment
-@comments_bp.route("/event/<int:event_id>", methods=["POST"])
+@comments_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_comment(event_id, player_id, game_id):
     stmt = db.Select(Players).filter_by(id=player_id)

@@ -19,9 +19,7 @@ from models.user import Users, user_schema, UserSchema
 from controllers.game_controller import game_bp
 # Create blueprint for use as decorator by registering blueprint with main file function
 user_bp = Blueprint("use", __name__, url_prefix="/user")
-@user_bp.register_blueprint(game_bp)
-
-
+user_bp.register_blueprint(game_bp)
 
 # Create a route to register users
 @user_bp.route("/register", methods=["POST"])
@@ -33,7 +31,6 @@ def create_user():
         user = Users(
             name = request_data.get("name"),
             email = request_data.get("email")
-            # is_authorised = request_data.get("is_authorised")
         )
         # Retrieve password from front-end JSON body if it exists 
         password = request_data.get("password")

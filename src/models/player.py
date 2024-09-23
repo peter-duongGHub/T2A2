@@ -33,13 +33,13 @@ class PlayerSchema(ma.Schema):
     comments = fields.List(fields.Nested("CommentSchema", only=["id", "message"]))
     
     # Validation of attributes, restricting user input to certain conditions
-    # name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Name must only contain letters and must be between 1-50 characters long."))
-    # date = fields.Date(required=True, validate=Regexp("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$" , error="Date must be in the format dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy."))
-    # role = fields.String(required=True, validate=OneOf(ROLES), error="Role selected must be Tank, Healer or DPS")
+    name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Name must only contain letters and must be between 1-50 characters long."))
+    date = fields.Date(required=True, validate=Regexp("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$" , error="Date must be in the format dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy."))
+    role = fields.String(required=True, validate=OneOf(ROLES), error="Role selected must be Tank, Healer or DPS")
 
     # Meta class to serialise attributes associated to player model
     class Meta:
-        fields = ("id", "name", "date", "role", "game", "events", "comments")
+        fields = ("id", "name", "date", "role", "game", "comments")
 
 # Used for handling a single player object
 players_schema = PlayerSchema(many=True)

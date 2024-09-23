@@ -1,6 +1,6 @@
 from init import db, jwt
 # from jwt_extended import jwt_required
-# from models.comments import Comments, comments_schema, comment_schema
+from models.comments import Comments, comments_schema, comment_schema
 from models.events import Events, event_schema,events_schema
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -8,7 +8,7 @@ from models.player import Players
 from controllers.comments_controller import comments_bp
 
 event_bp = Blueprint("event", __name__, url_prefix="/<int:player_id>/events")
-@event_bp.register_blueprint(comments_bp)
+event_bp.register_blueprint(comments_bp)
 
 # GET SPECIFIC EVENT
 @event_bp.route("/<int:event_id>", methods=["GET"])
