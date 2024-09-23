@@ -13,7 +13,7 @@ class Players(db.Model):
     __tablename__ = "players"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
-    date = db.Column(db.Date, nullable=True)
+    date = db.Column(db.Date)
     role = db.Column(db.String, nullable=False)
 
     # Foreign key referenced to games model primary key id 
@@ -21,22 +21,21 @@ class Players(db.Model):
 
     # Defined relationships between games, events and comments models to share certain attributes with players model
     game = db.Relationship("Games", back_populates="players")
-    events = db.Relationship("Events", back_populates="player")
-    comments = db.Relationship("Comments", back_populates="player")
+    events = db.Relationship("Events", back_populates="player", cascade="all, delete")
+    comments = db.Relationship("Comments", back_populates="player", cascade="all, delete")
 
 # Create Player Schema to serialise and deserialise objects
 class PlayerSchema(ma.Schema):
 
     # Specific attributes provided from other model schemas to the player schema for CRUD operations
-    game = fields.Nested("GameSchema", only=["name", "description", "user", "id"])
+    game = fields.Nested("GameSchema", exclude=["players"])
     events = fields.List(fields.Nested("EventSchema", only=["description", "date", "duration"]))
     comments = fields.List(fields.Nested("CommentSchema", only=["id", "message"]))
     
     # Validation of attributes, restricting user input to certain conditions
-    # name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Name must only contain letters and must be between 1-50 characters long.") 
-    # error="Accepting letters ONLY from 1-50 characters max")
+    # name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Name must only contain letters and must be between 1-50 characters long."))
     # date = fields.Date(required=True, validate=Regexp("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$" , error="Date must be in the format dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy."))
-    role = fields.String(required=True, validate=OneOf(ROLES), error="Role selected must be Tank, Healer or DPS")
+    # role = fields.String(required=True, validate=OneOf(ROLES), error="Role selected must be Tank, Healer or DPS")
 
     # Meta class to serialise attributes associated to player model
     class Meta:

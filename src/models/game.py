@@ -16,7 +16,7 @@ class Games(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     # Defined relationships between users and players models to share certain attributes with game model
     user = db.Relationship("Users", back_populates="games")
-    players = db.Relationship("Players", back_populates="game")
+    players = db.Relationship("Players", back_populates="game", cascade="all, delete")
 
 # Create Game Schema to serialise and deserialise objects
 class GameSchema(ma.Schema):
@@ -28,7 +28,7 @@ class GameSchema(ma.Schema):
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
     error="Accepting letters ONLY from 1-50 characters max")
-    
+
     description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
     error="Accepting letters ONLY from 1-50 characters max")
 

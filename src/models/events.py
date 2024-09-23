@@ -2,8 +2,8 @@
 from init import db, ma
 # Import fields module from Marshmallow for defining schemas and validation of user input
 from marshmallow import fields, validates, ValidationError
-# Import validate module to use Regexp
-from marshmallow.validate import Regexp
+# Import validate module to use Regexp and OneOf
+from marshmallow.validate import Regexp, OneOf
 
 DESCRIPTION = ("ACTION", "QUEST", "SOCIAL")
 
@@ -20,7 +20,7 @@ class Events(db.Model):
     player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
     
     # Defined relationships between comments,player models to share certain attributes with events model
-    comments = db.Relationship("Comments", back_populates="event")
+    comments = db.Relationship("Comments", back_populates="event", cascade="all, delete")
     player = db.Relationship("Players", back_populates="events")
 
 # Create Event Schema to serialise and deserialise objects
@@ -31,7 +31,7 @@ class EventSchema(ma.Schema):
     player = fields.Nested("PlayerSchema", exclude=["date"])
 
     # Validation of attributes, restricting user input to certain conditions
-    description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Description must only contain characters A-Z, between 1 to 50 characters."))
+    description = fields.String(required=True, validate=OneOf(DESCRIPTION, error="Description must be either ACTION, QUEST OR SOCIAL."))
     date = fields.Date(required=True, validate=Regexp("^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$", error="Date must be in the format dd/mm/yyyy, dd-mm-yyyy or dd.mm.yyyy."))
     duration = fields.Float(required=True)
 

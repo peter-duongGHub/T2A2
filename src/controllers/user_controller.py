@@ -74,9 +74,9 @@ def delete_user(user_id):
 
 
 # Update
-@user_bp.route("/", methods=["PUT", "PATCH"])
+@user_bp.route("/<int:user_id>", methods=["PUT", "PATCH"])
 @jwt_required()
-def update_user():
+def update_user(user_id):
     try:    
         # Load and validate fields from the request body
         body_data = UserSchema().load(request.get_json(), partial=True)
@@ -85,11 +85,10 @@ def update_user():
         request_password = body_data.get("password")
         request_name = body_data.get("name")
         # Fetch the current user from the database
-        user_id = get_jwt_identity()
         stmt = db.Select(Users).filter_by(id=user_id)
         user = db.session.scalar(stmt)
         
-        if user:
+        if user_id == get_jwt_identity():
             # Update user fields if present in the request
             user.name = request_name or user.name
             if request_password:
@@ -101,9 +100,12 @@ def update_user():
             # Return the updated user data
             return user_schema.dump(user), 200
         
+        elif not user:
+            return{"error" : f"No such user with {user_id}"}
+        
         else:
             # Return an error response if the user is not found
-            return{"error": "User does not exist."}, 404
+            return{"error": f"Only user with the correct token can change user with id {user_id}"}, 404
         
     except SQLAlchemyError as e:
         # Handle SQLAlchemy errors
@@ -114,9 +116,9 @@ def update_user():
             return{"error" : f"{e}"}, 400
 
 
-    # except Exception as e:
-    #     # Handle unexpected errors
-    #     return{"error": "An unexpected error occurred", "details": str(e)}, 500
+    except Exception as e:
+        # Handle unexpected errors
+        return{"error": "An unexpected error occurred", "details": str(e)}, 500
 
 # Login User
 @user_bp.route("/login", methods=["POST"])
