@@ -46,11 +46,14 @@ def create_game():
 # Fetch specific game to view - READ
 @game_bp.route("/<int:game_id>", methods=["GET"])
 def view_games(game_id):
+    # Fetch specific game based on dynamic route (game_id)
     stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
 
+    # If game with game_id exists return to the view a deserialised game object with code 200 success
     if game:
         return game_schema.dump(game), 200
+    # Else return an error message 
     else:
         return{"error": f"There is no game with id: {game_id}"}
     
