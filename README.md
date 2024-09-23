@@ -1,26 +1,28 @@
 # T2A2 API WebServer - Game Event Tracker
 
-Table of Contents
-![R1 Explain the problem you are trying to solve and how the app solves the problem](#r1)
-## R2 - Task Management - Trello and Github
-## R3 - Third-Party Services, Packages & Dependencies
-## R4 - Benefits and drawbacks of PostgreSQL
-## R5 - Explain features, purpose and functionalities of ORM in the app
-## R6 - An ERD for your app
-## R7 - Explain models and their relationships and explain how relationships aid database implementation
-## User Model
-## Game Model
-## Player Model
-## Comments Model
-## Events Model
-## R8 - Explain app's API endpoints including:
-- HTTP verb
-- Path or route
-- Any required body or header data
-- Response
+## Table of Contents  
+[R1 - Explain the problem you are trying to solve and how the app solves the problem](#r1)  
+[R2 - Task Management - Trello and Github](#r2)  
+[R3 - Third-Party Services, Packages & Dependencies](#r3)  
+[R4 - Benefits and drawbacks of PostgreSQL](#r4)  
+[R5 - Explain features, purpose and functionalities of ORM in the app](#r5)  
+[R6 - An ERD for your app](#r6)  
+[R7 - Explain models and their relationships and explain how relationships aid database implementation:](#r7)    
+- [User Model](#users)  
+- [Game Model](#games)  
+- [Player Model](#players)  
+- [Comments Model](#comments)  
+- [Events Model](#events)
+      
+[R8 - Explain app's API endpoints:](#r8)  
+- [User Controller](#user-controller)  
+- [Game Controller](#games-controller)  
+- [Player Controller](#players-controller)  
+- [Comments Controller](#comments-controller)  
+- [Events Controller](#event-controller)
 
 
-## R1
+### R1
 ### Explain Solved Problem
 With the increasing popularity of games, the management and analysis of past in-game events becomes increasingly more significant as the player base and complexities of games evolve. A common denominator within most games is the absence of in-game event tracking whereby players have a way to execute events but they do not have a way to review each past event committed. Having an event tracker can help players review any changes to their characters and track the progressive development of characters on an ongoing basis, this can help prevents users from spending far too much time on the game if they have progressed a certain amount and for users that are forgetful, they're able to account for what they previously did with their players. 
 
