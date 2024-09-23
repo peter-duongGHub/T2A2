@@ -1,7 +1,7 @@
 # T2A2 API WebServer - Game Event Tracker
 
 Table of Contents
-## R1 - Explain the problem you are trying to solve and how the app solves the problem
+![R1 Explain the problem you are trying to solve and how the app solves the problem](#r1)
 ## R2 - Task Management - Trello and Github
 ## R3 - Third-Party Services, Packages & Dependencies
 ## R4 - Benefits and drawbacks of PostgreSQL
