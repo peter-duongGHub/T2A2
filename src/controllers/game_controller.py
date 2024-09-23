@@ -38,7 +38,7 @@ def create_game():
 
     # Add game object to database session
     db.session.add(game)
-    # Commit thoe game object to the database session
+    # Commit the game object to the database session
     db.session.commit()
     # Return a view to the front-end of the game object - deserialised with schema and success code 201
     return game_schema.dump(game), 201
@@ -54,61 +54,69 @@ def view_games(game_id):
     else:
         return{"error": f"There is no game with id: {game_id}"}
     
-# Fetch all games to view 
+# Create a route to fetch all games
 @game_bp.route("/", methods=["GET"])
 def get_games():
+    # Fetch all games from the database and order by description descending 
     stmt = db.Select(Games).order_by(Games.description.desc())
     game = db.session.scalars(stmt)
 
+    # If there are games in the database:
     if game:
+        # Deserialise the object and send to the view with a success code 200
         return games_schema.dump(game), 200
+    # If there are no games in the database return a message there are no games
     else:
         return {"error" : "There are currently no games to view."}    
 
 
-# Update specific game - Update
+# Create a route to update game attributes, must be authenticated and contain a JWT as bearer token
 @game_bp.route("/<int:game_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 @check_admin
 def update_game(game_id):
+    # Grab the body data from the JSON body and extract the name and description
     request_data = request.get_json()
     name = request_data.get("name")
     description = request_data.get("description")
+    # Check to see if there is a game with same id as game_id
     stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
 
+    # If there is a game with id = game_id in the database change the name and description attribute using the body data from request
     if game:
         game.name = name or game.name
         game.description = description or game.description
-        
+    # If no game with id = game_id return to view that the game does not exist
     else:
         return{"error": "No such game exists"}, 404
-    
+    # Commit the changes to the database session 
     db.session.commit()
+    # Return to the view a deserialised game object and success 200 code
     return game_schema.dump(game), 200
 
-# Delete specific game - Delete
+# Create a route to delete a game from the database, must be authenticated and have a JWT
 @game_bp.route("/<int:game_id>", methods=["DELETE"])
 @jwt_required()
 @check_admin
 def delete_game(game_id):
     try:
-        # Attempt to retrieve the user with the given id
+        # Check if game with game_id exists in the database
         stmt = db.Select(Games).filter_by(id=game_id)
         game = db.session.scalar(stmt)
-        # If user is found, delete and commit
+        # If game is found, delete the game object and commit the change to the database session
         if game:
             db.session.delete(game)
             db.session.commit()
-            # Return a success message
+            # Return a success message that the game has been deleted with success 200 code
             return {"message" : f"Game with id {game_id} is deleted."}, 200
             
-        # If user is not found, return a 404 error
+        # If user is not found, return message and error code 400
         else:
             return {"message" : f"Game with id {game_id} not found."}, 404
         
+    # Error handle for any other outlier errors
     except Exception as e:
-        # Handle any unexpected errors
         return {"message" : f"{str(e)}"}, 500
     
 
