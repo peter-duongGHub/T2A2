@@ -12,9 +12,7 @@ Table of Contents
 ## Game Model
 ## Player Model
 ## Comments Model
-## Records Model
 ## Events Model
-## Category Model
 ## R8 - Explain app's API endpoints including:
 - HTTP verb
 - Path or route
@@ -705,11 +703,6 @@ The relationship between events and players is a Many-to-One relationship. One e
 
 - The events model interacts with the player model through the use of ```player = db.Relationship("Players", back_populates="events")```. This creates the relationship between the events and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-#### Events-Category Relationship
-The relationship between events and players is a One-to-Many relationship. One event can be a part of multiple categories whereas one category must be a part of one event. The foreign key will be assigned to the category table referenced from the primary key associated to the events table. 
-
-- The events model interacts with the category model through the use of ```categories = db.Relationship("Category", back_populates="event")```. This creates the relationship between the events and category table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
-
 ### Queries
 
 #### Comments
@@ -720,39 +713,339 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - Queries to access data using relationships:
 - Code Examples:
 
-#### Records
-- Description:
-
-- User-Games Relationship:
-The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
-- Interaction with other models:
-- Queries to access data using relationships:
-- Code Examples:
-
-#### Category
-- Description:
-
-- User-Games Relationship:
-The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
-- Interaction with other models:
-- Queries to access data using relationships:
-- Code Examples:
-
-
 #### Games
 
 #### Players
 
 #### Comments
 
-#### Records
-
 #### Events
 
-#### Category
-
 ## R8 - API Endpoints
+
 ### User Controller
+
+#### Creating a user  
+```@user_bp.route("/register", methods=["POST"])```  
+- **HTTP Verb**: POST
+- **Route Path**: /user/register
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns created user
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Delete a user
+```@user_bp.route("/<int:user_id>", methods=["DELETE"])```
+- **HTTP Verb**: DELETE
+- **Route Path**: ```/user/<int:user_id>```
+- **Required body/Header Data**: JWT required - JSON web token required, provided from creating user, must input as bearer token
+- **ON SUCCESS**: Returns message of user that has been deleted successfully with 200 code
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Login a user
+```@user_bp.route("/login", methods=["POST"])```
+- **HTTP Verb**: POST
+- **Route Path**: ```/user/login```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns message of user that has logged in with email, admin rights and token 
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Update a user
+```@user_bp.route("/", methods=["PUT", "PATCH"])```
+- **HTTP Verb**: PUT, PATCH
+- **Route Path**: ```/user```
+- **Required body/Header Data**: JWT required, JSON web token required to update users
+- **ON SUCCESS**: Returns message of user attributes to the view after updating
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+### Games Controller
+
+#### Creating a game
+```@game_bp.route("/", methods=["POST"])```
+- **HTTP Verb**: POST
+- **Route Path**: ```user/<int:user_id>/game```
+- **Required body/Header Data**: JWT required, JSON web token required to create a game by user
+- **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Fetching a specific game
+```@game_bp.route("/<int:game_id>", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns message of specific game depending on the dynamic route with a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Fetching all games
+```@game_bp.route("/", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns message of all games with a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Updating a game
+```@game_bp.route("/<int:game_id>", methods=["PUT", "PATCH"])```
+- **HTTP Verb**: PUT, PATCH
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
+- **Required body/Header Data**: JWT required, JSON web token required to update game - only users with admin privilege can update a game
+- **ON SUCCESS**: Returns message of the specific game updated with a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Deleting a game
+```@game_bp.route("/<int:game_id>", methods=["DELETE"])```
+- **HTTP Verb**: DELETE
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
+- **Required body/Header Data**: JWT required, JSON web token required to delete game - only users with admin privilege can delete a game
+- **ON SUCCESS**: Returns message of the specific game deleted with a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+### Players controller
+#### Create a player
+```@player_bp.route("/", methods=["POST"])```
+- **HTTP Verb**: POST
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns message of the player created to the associated game and a success code 201
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Update a player
+```@player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])```
+- **HTTP Verb**: PUT, PATCH
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Required body/Header Data**: JWT required, JSON web token required to update a player - only users with admin privilege can update a players attributes
+- **ON SUCCESS**: Returns message of the player updated to the view and a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Delete a player
+```@player_bp.route("/<int:player_id>", methods=["DELETE"])```
+- **HTTP Verb**: DELETE
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Required body/Header Data**: JWT required, JSON web token required to delete a player - only users with admin privilege can delete a player
+- **ON SUCCESS**: Returns message of the player deleted to the view and a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### View all players
+```@player_bp.route("/", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns all player objects from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### View specific player
+```@player_bp.route("/", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns specific player object from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+### Event controller
+
+#### Create event
+```@event_bp.route("/", methods=["POST"])```
+- **HTTP Verb**: POST
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to create an event
+- **ON SUCCESS**: Returns event object created and provides a success code 201
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Get specific event
+```@event_bp.route("/<int:event_id>", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns specific event objects from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Get all events
+```@event_bp.route("/", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns all event objects from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+
+#### Update Event
+```@event_bp.route("/<int:event_id>", methods=["PUT","PATCH"])```
+- **HTTP Verb**: PUT, PATCH
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to update an event
+- **ON SUCCESS**: Returns event object from the database after updating to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Delete Event
+```@event_bp.route("/<int:event_id>", methods=["DELETE"])```
+- **HTTP Verb**: DELETE
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to delete an event
+- **ON SUCCESS**: Returns event object from the database after deleting to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+### Comments controller
+
+#### View comments
+```@comments_bp.route("/", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns comments objects from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### View specific comment
+```@comments_bp.route("/<int:comment_id>", methods=["GET"])```
+- **HTTP Verb**: GET
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns specific comment object from the database to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Create comment
+```@comments_bp.route("/", methods=["POST"])```
+- **HTTP Verb**: POST
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns comment object created from the database to the view and provides a success code 201
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Update comment
+```@comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])```
+- **HTTP Verb**: PUT, PATCH
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Required body/Header Data**: None
+- **ON SUCCESS**: Returns comment object after updating to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+#### Delete comment
+```@comments_bp.route("<int:comment_id>", methods=["DELETE"])```
+- **HTTP Verb**: DELETE
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to delete a comment
+- **ON SUCCESS**: Returns comment object after deleting to the view and provides a success code 200
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+
+![]
+![]
+![]
+![]
+
+
 
 
 ## Styling Guide - API style guide

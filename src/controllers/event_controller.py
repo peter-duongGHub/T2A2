@@ -15,7 +15,7 @@ def get_specific(event_id):
     event = db.session.scalar(stmt)
 
     if event:
-        return event_schema.dump(event), 201
+        return event_schema.dump(event), 200
     else:
         return {f"Cannot find event with event id: '{event_id}'"}
 
@@ -31,7 +31,7 @@ def get_all():
         return {"error" : f"No events to view."}
 
 # Player Create Event
-@event_bp.route("/player/<int:player_id>", methods=["POST"])
+@event_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_event(player_id):
     request_data = request.get_json()
@@ -51,7 +51,7 @@ def create_event(player_id):
 
 
 # Update Event
-@event_bp.route("/player/<int:player_id>", methods=["PUT","PATCH"])
+@event_bp.route("/<int:event_id>", methods=["PUT","PATCH"])
 @jwt_required()
 def update_event(player_id):
     request_body = request.get_json()

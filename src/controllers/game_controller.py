@@ -72,7 +72,7 @@ def update_game(game_id):
         return{"error": "No such game exists"}, 404
     
     db.session.commit()
-    return game_schema.dump(game), 201
+    return game_schema.dump(game), 200
 
 # Delete specific game - Delete
 @game_bp.route("/<int:game_id>", methods=["DELETE"])
@@ -88,7 +88,7 @@ def delete_game(game_id):
             db.session.delete(game)
             db.session.commit()
             # Return a success message
-            return {"message" : f"Game with id {game_id} is deleted."}
+            return {"message" : f"Game with id {game_id} is deleted."}, 200
             
         # If user is not found, return a 404 error
         else:

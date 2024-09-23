@@ -1,7 +1,6 @@
 from models.player import Players
 from models.user import Users
 from models.comments import Comments
-from models.category import Category
 from models.events import Events
 from models.game import Games
 

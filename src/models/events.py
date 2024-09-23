@@ -5,6 +5,8 @@ from marshmallow import fields, validates, ValidationError
 # Import validate module to use Regexp
 from marshmallow.validate import Regexp
 
+DESCRIPTION = ("ACTION", "QUEST", "SOCIAL")
+
 # Create Events model using SQLAlchemy object
 class Events(db.Model):
     # Defined table name and the attributes, including data type and constraints
@@ -17,16 +19,14 @@ class Events(db.Model):
     # Foreign key referenced to players model primary key id 
     player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
     
-    # Defined relationships between comments,player and categories models to share certain attributes with events model
+    # Defined relationships between comments,player models to share certain attributes with events model
     comments = db.Relationship("Comments", back_populates="event")
     player = db.Relationship("Players", back_populates="events")
-    categories = db.Relationship("Category", back_populates="event")
 
 # Create Event Schema to serialise and deserialise objects
 class EventSchema(ma.Schema):
     
     # Specific attributes provided from other model schemas to the event schema for CRUD operations
-    categories = fields.List(fields.Nested("CategorySchema", only=[""]))
     comments = fields.List(fields.Nested("CommentSchema", exclude=["event"]))
     player = fields.Nested("PlayerSchema", exclude=["date"])
 
@@ -46,7 +46,7 @@ class EventSchema(ma.Schema):
 
     # Meta class to serialise attributes associated to event model
     class Meta:
-        fields = ("id", "description", "date", "duration", "comments", "player", "categories")
+        fields = ("id", "description", "date", "duration", "comments", "player")
 
 # Used for handling multiple event objects
 events_schema = EventSchema(many=True)
