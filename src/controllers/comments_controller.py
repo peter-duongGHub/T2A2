@@ -1,22 +1,33 @@
+# Import flask modules request and blueprint. Request is to retrieve JSON body data and Blueprint to create comment blueprint decorator
 from flask import request, Blueprint
+# Import SQLAlchemy object instance from the init file
+from init import db
+# Import model objects to create object instances and schema to deserialise objects for view
 from models.comments import Comments, comment_schema, comments_schema
-from init import db, ma
 from models.events import Events, event_schema, events_schema
 from models.player import Players
+
+# Import flask modules for authentication
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
+# Create comment blueprint for dynamic routing 
 comments_bp = Blueprint("comments", __name__, url_prefix="/<int:event_id>/comments")
 
-# View all comments
+# Create route to view all comment objects
 @comments_bp.route("/", methods=["GET"])
 def view_comments(game_id, player_id):
+    # Retrieve all comment objects from the database
     stmt = db.Select(Comments)
     comment = db.session.scalars(stmt)
+    # If there are comment objects in the database:
     if comment:
+        # Return deserialised comment objects to the view with a success 200 code
         return comments_schema.dump(comment), 200
     else:
+        # Return an error message if there are no comment objects
         return {"error" : "There are no comments to view"}
 
-# View specific comment
+# Create route to view specific comment object
 @comments_bp.route("/<int:comment_id>", methods=["GET"])
 def specific_comment(comment_id, game_id, player_id):
     stmt = db.Select(Comments).filter_by(id=comment_id)

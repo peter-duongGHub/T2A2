@@ -15,7 +15,6 @@ from sqlalchemy.exc import DataError
 # Import event controller to pass on url prefix to event controller blueprint
 from controllers.event_controller import event_bp
 
-
 player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
 @player_bp.register_blueprint(event_bp)
 
