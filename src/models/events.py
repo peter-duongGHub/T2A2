@@ -1,10 +1,11 @@
 # Import SQLAlchemy & Marshmallow object from init file for creating Model and Schema
 from init import db, ma
-# Import fields module from Marshmallow for defining schemas and validation of user input
+# Import fields module from Marshmallow for defining schemas and validation of user input through the use of validates and ValidationError for error handling
 from marshmallow import fields, validates, ValidationError
-# Import validate module to use Regexp and OneOf
+# Import validate module to use Regexp and OneOf for validation of inputs
 from marshmallow.validate import Regexp, OneOf
 
+# Defined constant to limit user inputs to ACTION, QUEST or SOCIAL for description attribute
 DESCRIPTION = ("ACTION", "QUEST", "SOCIAL")
 
 # Create Events model using SQLAlchemy object
