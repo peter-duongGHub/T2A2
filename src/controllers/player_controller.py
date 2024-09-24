@@ -86,7 +86,7 @@ def update_player(player_id, game_id, user_id):
 # delete player
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
 @jwt_required()
-def delete_user(player_id):
+def delete_user(player_id, user_id, game_id):
     try:
         # Attempt to retrieve the user with the given id
         stmt = db.Select(Players).filter_by(id=player_id)
@@ -110,7 +110,7 @@ def delete_user(player_id):
 
 # View all players
 @player_bp.route("/", methods=["GET"])
-def view_players(game_id):
+def view_players(game_id, user_id):
     stmt = db.select(Players)
     player = db.session.scalars(stmt)
 
@@ -121,7 +121,7 @@ def view_players(game_id):
     
 # View specific players
 @player_bp.route("/<int:player_id>", methods=["GET"])
-def specific_players(player_id, game_id):
+def specific_players(player_id, game_id, user_id):
     stmt = db.select(Players).filter_by(id=player_id)
     player = db.session.scalar(stmt)
 
