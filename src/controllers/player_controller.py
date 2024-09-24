@@ -5,6 +5,7 @@ from models.game import Games
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from auth import check_admin
+from sqlalchemy.exc import DataError
 
 from sqlalchemy.exc import SQLAlchemyError
 # from controllers.comments_controller import comments_bp
@@ -15,72 +16,72 @@ player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
 
 # POST (CREATE) - Create Player into databse from a HTTP Request
 @player_bp.route("/", methods=["POST"])
-def create_player(game_id):
-    # Retrieve JSON data from the request
-    request_data = request.get_json()
-    body_name = request_data.get("name")
+def create_player(game_id, user_id):
+    try:
+        # Retrieve JSON data from the request
+        request_data = request.get_json()
+        body_name = request_data.get("name")
 
-    # Validate required fields
-    # if not name or date or role:
-    #     return{"error": "Name, date & role are required"}, 400
+        # Validate required fields
+        # if not name or date or role:
+        #     return{"error": "Name, date & role are required"}, 400
 
-    # Check if the name is already in use
-    player_stmt = db.Select(Players).filter_by(name=body_name)
-    existing_user = db.session.scalar(player_stmt)
-    if existing_user:
-        return{"error"}, 400
+        # Check if the name is already in use
+        player_stmt = db.Select(Players).filter_by(name=body_name)
+        existing_user = db.session.scalar(player_stmt)
+        if existing_user:
+            return{"error" : f"Player with name {body_name} already exists"}, 400
 
-    else:
-    # Create a new Player instance
-        stmt = db.Select(Games).filter_by(id=game_id)
-        game = db.session.scalar(stmt)
-        player = Players(
-                name= body_name,
-                date= request_data.get("date"),
-                role= request_data.get("role"),
-                game_id = game.id
-            )
+        else:
+        # Create a new Player instance
+            stmt = db.Select(Games).filter_by(id=game_id)
+            game = db.session.scalar(stmt)
+            player = Players(
+                    name= body_name,
+                    date= request_data.get("date"),
+                    role= request_data.get("role"),
+                    game_id = game.id
+                )
 
-        token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
+            token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
 
-        # Add and commit the new player to the database
-        # try:
-    db.session.add(player)
-    db.session.commit()
-    # except SQLAlchemyError as e:
-    #     return{"error": "Database commit failed", "details": str(e)}, 500
+            # Add and commit the new player to the database
+            # try:
+        db.session.add(player)
+        db.session.commit()
+        # except SQLAlchemyError as e:
+        #     return{"error": "Database commit failed", "details": str(e)}, 500
 
-    # Return the newly created player's data
-    return player_schema.dump(player), 201
+        # Return the newly created player's data
+        return player_schema.dump(player), 201
+    except DataError:
+        return{"error" : "Please enter date in the correct format yyyy-mm-dd or yyyy-mm-dd."}
+        
 
 # Update player's name
 @player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])
 @jwt_required()
-def update_player(player_id, game_id):
+def update_player(player_id, game_id, user_id): 
     request_data = request.get_json()
     name = request_data.get("name")
 
-    # Query the database for the user
-    try:
+    if name:
+        # Query the database for the user
         stmt = db.Select(Players).filter_by(id=player_id)
         player = db.session.scalar(stmt)
+        if player is None:
+            return{"error": "No such player exists"}, 404
 
-    except SQLAlchemyError as e:
-        return{"error": "Database query failed", "details": str(e)}, 500
+        # Update user attributes if provided
+        if player:
+            player.name = name or player.name
 
-    if player is None:
-        return{"error": "No such player exists"}, 404
+            db.session.commit()
 
-    # Update user attributes if provided
-    if player:
-        player.name = name or player.name
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        return{"error": "Database commit failed", "details": str(e)}, 500
-
-    # Return the updated user information
-    return player_schema.dump(player), 200
+        # Return the updated user information
+        return player_schema.dump(player), 200
+    else:
+        return {"error" : "Please enter a new player name to update existing player name"}
     
 # delete player
 @player_bp.route("/<int:player_id>", methods=["DELETE"])

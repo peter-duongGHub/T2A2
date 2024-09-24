@@ -20,7 +20,7 @@ game_bp.register_blueprint(player_bp)
 @game_bp.route("/", methods=["POST"])
 @jwt_required()
 @check_admin
-def create_game():
+def create_game(user_id):
     # Get the body data from JSON body (name, description)
     request_data = request.get_json()
     name = request_data.get("name")
@@ -45,7 +45,7 @@ def create_game():
 
 # Fetch specific game to view - READ
 @game_bp.route("/<int:game_id>", methods=["GET"])
-def view_games(game_id):
+def view_games(game_id, user_id):
     # Fetch specific game based on dynamic route (game_id)
     stmt = db.Select(Games).filter_by(id=game_id)
     game = db.session.scalar(stmt)
@@ -59,7 +59,7 @@ def view_games(game_id):
     
 # Create a route to fetch all games
 @game_bp.route("/", methods=["GET"])
-def get_games():
+def get_games(user_id):
     # Fetch all games from the database and order by description descending 
     stmt = db.Select(Games).order_by(Games.description.desc())
     game = db.session.scalars(stmt)
@@ -77,7 +77,7 @@ def get_games():
 @game_bp.route("/<int:game_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 @check_admin
-def update_game(game_id):
+def update_game(game_id, user_id):
     # Grab the body data from the JSON body and extract the name and description
     request_data = request.get_json()
     name = request_data.get("name")
@@ -102,7 +102,7 @@ def update_game(game_id):
 @game_bp.route("/<int:game_id>", methods=["DELETE"])
 @jwt_required()
 @check_admin
-def delete_game(game_id):
+def delete_game(game_id, user_id):
     try:
         # Check if game with game_id exists in the database
         stmt = db.Select(Games).filter_by(id=game_id)
