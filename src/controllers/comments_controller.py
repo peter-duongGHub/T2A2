@@ -81,33 +81,47 @@ def create_comment(event_id, player_id, game_id):
     # Return to the view a deserialised comment object with a success code 201
     return comment_schema.dump(comment), 201
 
-# Update comment
+# Create a route to update a specific comment
 @comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])
 def update_comment(event_id, game_id, player_id, comment_id):
+    # Query specific comment object from the database based on dynamic route comment id
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
+
+    # Retrive JSON body input from front-end and extract "message" in a variable
     request_body = request.get_json()
     message = request_body.get("message")
+    # If there is the specific comment object in the database:
     if comment:
+        # Change comments attribute message to JSON input "message" from front-end
         comment.message = message or comment.message
     
+    # If specific comment doesnt exist in database:
     else:
+        # Return error message that it does not exist
         return {"error" : f"There is no comment with id {comment_id}."}
     
+    # Commit changes to the database session
     db.session.commit()
+    # Return to the view a deserialised comment object with success code 200
     return comment_schema.dump(comment), 200
 
-# Delete comment
+# Create a route to delete a specific commment 
 @comments_bp.route("<int:comment_id>", methods=["DELETE"])
 def delete_comment(event_id, game_id, player_id, comment_id):
+    # Fetch a specific comment object from the database based on the dynamic route comment id
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
 
+    # If comment object exists:
     if comment:
+        # Delete the comment object from the database session and commit the change to the database session
         db.session.delete(comment)
         db.session.commit()
+        # Return to the view a success message of the deleted comment object
         return {"success" : f"Deleted comment with id {comment_id}."}
     else:
+        # If there is no specific comment object in the database return error message.
         return {"error" : "Please enter a valid comment id."}
 
     
