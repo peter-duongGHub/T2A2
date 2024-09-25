@@ -7,16 +7,17 @@ from models.player import Players, player_schema, players_schema
 # Import Game model for creating of game objects
 from models.game import Games
 # Import flask module to create tokens for player creation and jwt required for authentication
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 # Import datetime for expiry of tokens
 from datetime import timedelta
 # Import module for error handling of incorrect date format
 from sqlalchemy.exc import DataError
 # Import event controller to pass on url prefix to event controller blueprint
 from controllers.event_controller import event_bp
+from datetime import datetime
 
 player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
-@player_bp.register_blueprint(event_bp)
+player_bp.register_blueprint(event_bp)
 
 # Create a route to create a player object into the database
 @player_bp.route("/", methods=["POST"])
@@ -28,7 +29,7 @@ def create_player(game_id, user_id):
         role = request_data.get("role")
 
         # Validate required fields
-        if not body_name or role:
+        if not body_name and role:
             return{"error": "Name & role are required"}, 400
 
         # Check if the name is already in use
@@ -39,23 +40,36 @@ def create_player(game_id, user_id):
 
         else:
         # Create a new Player instance
-            stmt = db.Select(Games).filter_by(id=game_id)
-            game = db.session.scalar(stmt)
+            game_stmt = db.Select(Games).filter_by(id=game_id)
+            game = db.session.scalar(game_stmt)
+
             player = Players(
                     name= body_name,
-                    date= request_data.get("date"),
-                    role= request_data.get("role"),
+                    role= role,
                     game_id = game.id
                 )
-            # Create token for created player object
-            token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
+            date = request_data.get("date")
+            if date:
+                date_object = datetime.strptime(date, "%m/%d/%Y")
+                dt = date_object.replace(tzinfo=None)
+                player.date = dt
 
-        # Add and commit the new player to the database
-        db.session.add(player)
-        db.session.commit()
+            # Create token for newly created player object
+            token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
+            # Add and commit the new player to the database
+            db.session.add(player)
+            db.session.commit()
+
+            player_stmt = db.Select(Players).filter_by(id=player.id)
+            player_obj = db.session.scalar(player_stmt)
+
 
         # Return the newly created player's data to the view after deserialising player object
-        return player_schema.dump(player), 201
+        return {"name" : player_obj.name,
+                "date" : player_obj.date,
+                "role" : player_obj.role,
+                "token" : token
+                }
     # Error handling if user input is not in correct date format 
     except DataError:
         return{"error" : "Please enter date in the correct format yyyy-mm-dd or yyyy-mm-dd."}
