@@ -4,7 +4,7 @@ from init import db, ma
 # Import fields module from Marshmallow for defining schemas and validation of user input
 from marshmallow import fields
 
-# Import validate module to use Regexp and OneOf
+# Import validate module to use Regexp for validation of user inputs
 from marshmallow.validate import Regexp
 
 # Create Comments model using SQLAlchemy object
@@ -15,7 +15,7 @@ class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String, nullable=False)
 
-    # Foreign keys reference players and events primary keys as joint table
+    # Foreign keys reference players and events primary keys id as joint table
     player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
 
