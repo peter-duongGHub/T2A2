@@ -13,7 +13,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 # Import datetime to add expiry to tokens
 from datetime import timedelta
 # Import auth file to provide administration checks for certain functions
-from auth import check_admin
+from check import check_admin
 # Import user model for creating user object(s) and schema for serialising and deserialising for display to the view
 from models.user import Users, user_schema, UserSchema
 from controllers.game_controller import game_bp

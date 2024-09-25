@@ -7,7 +7,7 @@ from models.game import Games, game_schema, games_schema
 from models.user import Users
 
 # Import check admin function from auth file to authenticate user to endpoint
-from auth import check_admin
+from check import check_admin
 # Import flask_jwt_extended module to retrieve token id's and authentication
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
