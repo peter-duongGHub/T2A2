@@ -29,7 +29,7 @@ class EventSchema(ma.Schema):
     
     # Specific attributes provided from other model schemas to the event schema for CRUD operations
     comments = fields.List(fields.Nested("CommentSchema", exclude=["event"]))
-    player = fields.Nested("PlayerSchema")
+    player = fields.Nested("PlayerSchema", only=["name", "date", "role", "game", "comments"])
 
     # Validation of attributes, restricting user input to certain conditions
     description = fields.String(required=True, validate=OneOf(DESCRIPTION))

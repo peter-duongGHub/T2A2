@@ -35,7 +35,7 @@ class CommentSchema(ma.Schema):
 
     # Meta class to serialise attributes associated to comment model
     class Meta:
-        fields = ("id", "message", "player")
+        fields = ("id", "message", "player", "event")
 
 # Used for handling multiple comment object
 comments_schema = CommentSchema(many=True)

@@ -68,6 +68,7 @@ def create_player(game_id, user_id):
         return {"name" : player_obj.name,
                 "date" : player_obj.date,
                 "role" : player_obj.role,
+                "id" : player_obj.id,
                 "token" : token
                 }
     # Error handling if user input is not in correct date format 

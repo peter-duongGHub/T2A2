@@ -54,7 +54,7 @@ def create_event(user_id, player_id, game_id):
     # Retrieve JSON body data from front-end
     request_data = request.get_json()
     # Check the database for specific player with player id from the dynamic route
-    stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+    stmt = db.Select(Players).filter_by(id=player_id)
     player = db.session.scalar(stmt)
     # If there is a player with specific player id:
     if player:
@@ -79,7 +79,7 @@ def create_event(user_id, player_id, game_id):
 # Create a route for updating events if there is a player with the correct JSON web token 
 @event_bp.route("/<int:event_id>", methods=["PUT","PATCH"])
 @jwt_required()
-def update_event(player_id):
+def update_event(event_id, user_id, player_id, game_id):
     # Retrieve JSON body data from the front-end input
     request_body = request.get_json()
     # Check the database for player object with player id from the dynamic route

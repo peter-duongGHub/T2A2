@@ -1,6 +1,6 @@
 # Import flask modules request and blueprint. Request is to retrieve JSON body data and Blueprint to create comment blueprint decorator
 from flask import request, Blueprint
-# Import SQLAlchemy object instance from the init file
+# Import SQLAlchemy object instance from the init file for database operations
 from init import db
 # Import model objects to create object instances and schema to deserialise objects for view
 from models.comments import Comments, comment_schema, comments_schema
@@ -10,7 +10,7 @@ from models.player import Players
 # Import flask modules for authentication
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-# Create comment blueprint for dynamic routing 
+# Create comment blueprint for registering blueprint in other files
 comments_bp = Blueprint("comments", __name__, url_prefix="/<int:event_id>/comments")
 
 # Create route to view all comment objects

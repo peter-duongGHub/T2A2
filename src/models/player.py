@@ -39,7 +39,7 @@ class PlayerSchema(ma.Schema):
 
     # Meta class to serialise attributes associated to player model
     class Meta:
-        fields = ("id", "name", "date", "role", "game", "comments")
+        fields = ("id", "name", "date", "role", "game", "comments", "events")
 
 # Used for handling a single player object
 players_schema = PlayerSchema(many=True)
