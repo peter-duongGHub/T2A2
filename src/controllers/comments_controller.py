@@ -30,44 +30,55 @@ def view_comments(game_id, player_id):
 # Create route to view specific comment object
 @comments_bp.route("/<int:comment_id>", methods=["GET"])
 def specific_comment(comment_id, game_id, player_id):
+    # Fetch comment with particular id based on dynamic route comment id - checks inside database for specific comment object
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
+    # If the comment exists:
     if comment:
+        # Return to the view a deserialised comment object with a success code 200
         return comment_schema.dump(comment), 200
     else:
+        # Return to the view an error message, there is no comment id equal to comment_id
         return {"error" : f"There is no comment with id {comment_id}."}
 
-# Create a comment
+# Create a route to create a comment for an event, requiring a JWT from when a player was created
 @comments_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_comment(event_id, player_id, game_id):
-    stmt = db.Select(Players).filter_by(id=player_id)
-    player = db.session.scalar(stmt)
+    # Fetch player object from database with the id related to the JWT identity
+    stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+    player = db.session.scalar(stmt)\
 
+    # Fetch the event object relating to the event id in the dynamic route
     event_stmt = db.Select(Events).filter_by(id=event_id)
     event = db.session.scalar(event_stmt)
 
+    # Extract JSON body from front-end into a variable message
     request_body = request.get_json()
     message = request_body.get("message")
 
+    # If there is a player object with the specific id:
     if player:
+        # Create a comment object with attributes
         comment = Comments(
             message = message,
             player_id = player.id
         )
-    
+        # If there is the specific event object create comment attribute event_id associated to the id of the specific event id in the database
         if event:
             comment.event_id = event.id
+        # If there is no specific event object in the database leave comment attribute as event
         else: 
             comment.event_id = event
 
-
+        # Add the comment object to the database session and commit the change to the database session
         db.session.add(comment)
         db.session.commit()
-
+    # If there is no player with id relating to JWT return an error message
     else:
         return {f"There is no such event with event id {event_id}."}
     
+    # Return to the view a deserialised comment object with a success code 201
     return comment_schema.dump(comment), 201
 
 # Update comment
