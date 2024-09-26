@@ -22,7 +22,7 @@ user_bp = Blueprint("use", __name__, url_prefix="/user")
 user_bp.register_blueprint(game_bp)
 
 # Create a route to register users
-@user_bp.route("/register", methods=["POST"])
+@user_bp.route("/create", methods=["POST"])
 def create_user():
     try: 
         # Retrieve body data from the front-end (from JSON body)
@@ -102,11 +102,11 @@ def update_user(user_id):
         request_password = body_data.get("password")
         request_name = body_data.get("name")
         # Fetch the user from the user_id from the dynamic route - looking through the database for the user that matches the id
-        stmt = db.Select(Users).filter_by(id=user_id)
+        stmt = db.Select(Users).filter_by(id=get_jwt_identity())
         user = db.session.scalar(stmt)
         
         # If the user_id matches the id of the token identity:
-        if user_id == get_jwt_identity():
+        if user_id == user.id:
             # Update user and password fields if present in the request
             user.name = request_name or user.name
             if request_password:
@@ -116,7 +116,7 @@ def update_user(user_id):
             db.session.commit()
             
             # Return the updated user data with a success 200 code
-            return user_schema.dump(user), 200
+            return {"success" : "Update successful"}, 200
         
         # If no such user with the user_id return message
         elif not user:
@@ -124,7 +124,7 @@ def update_user(user_id):
         
         # Else return message for if the token is not the correctly associated token to the user_id
         else:
-            return{"error": f"Only user with the correct token can change user with id {user_id}"}, 404
+            return{"error": f"Only user with the correct token can change user with id {user_id}"}, 401
         
     # Error handling for validating user input - if the user input is not valid error with specific input required appears
     except ValidationError as e:

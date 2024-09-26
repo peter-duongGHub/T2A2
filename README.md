@@ -730,56 +730,51 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 ### User Controller
 
 #### Creating a user  
-```@user_bp.route("/register", methods=["POST"])```  
+```@user_bp.route("/create", methods=["POST"])```  
 - **HTTP Verb**: POST
-- **Route Path**: /user/register
+- **Route Path**: ```/user/create```
 - **Required body/Header Data**: None
-- **ON SUCCESS**: Returns created user
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-![]
-![]
+- **ON SUCCESS**: Returns message to verify user object has been created with HTTP code 201 to confirm
+![Create-User](./docs/Create1.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, this example shows incorrect what is returned upon incorrect email format:
+![Create-User](./docs/Create2.PNG)
 
 #### Delete a user
 ```@user_bp.route("/<int:user_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
 - **Route Path**: ```/user/<int:user_id>```
 - **Required body/Header Data**: JWT required - JSON web token required, provided from creating user, must input as bearer token
-- **ON SUCCESS**: Returns message of user that has been deleted successfully with 200 code
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
-![]
-![]
+- **ON SUCCESS**: Returns message of user that has been deleted successfully with 200 code 
+![Delete-Success](./docs/Create6.PNG)
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example HTTP status code 404 not found is received and an error message stating no user id found.
+![Delete-Fail](./docs/Create5.PNG)
 
 #### Login a user
 ```@user_bp.route("/login", methods=["POST"])```
 - **HTTP Verb**: POST
 - **Route Path**: ```/user/login```
 - **Required body/Header Data**: None
-- **ON SUCCESS**: Returns message of user that has logged in with email, admin rights and token 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- 
+- **ON SUCCESS**: Returns message user that has logged in with email, admin rights and token displayed and a successful HTTP code 200
+![Login-User](./docs/Create3.PNG)
 
-![]
-![]
-![]
-![]
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example 401 HTTP error status code is thrown for failed authentication and wrong email or password message appears.
+
+![Login-User-Error](./docs/Create4.PNG)
 
 #### Update a user
-```@user_bp.route("/", methods=["PUT", "PATCH"])```
+```@user_bp.route("/<int:user_id>", methods=["PUT", "PATCH"])```
 - **HTTP Verb**: PUT, PATCH
-- **Route Path**: ```/user```
-- **Required body/Header Data**: JWT required, JSON web token required to update users
-- **ON SUCCESS**: Returns message of user attributes to the view after updating
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- **Route Path**: ```/user/<int:user_id>```
+- **Required body/Header Data**: JWT required, JSON web token from logged in user required to update users
+- 
+- **ON SUCCESS**: Returns message of user attributes to the view after updating user
+![Update-Success](./docs/Create8.PNG)
 
-![]
-![]
-![]
-![]
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the wrong JWT token was added and throws a HTTP error code 401 as unauthorised.
+![Update-Fail](./docs/Create7.PNG)
 
 ### Games Controller
 
@@ -787,7 +782,7 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 ```@game_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game```
-- **Required body/Header Data**: JWT required, JSON web token required to create a game by user
+- **Required body/Header Data**: JWT required, JSON web token required to create a game by relevant user
 - **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
