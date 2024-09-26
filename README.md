@@ -838,25 +838,22 @@ else:
 #### Create a player
 ```@player_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message of the player created to the associated game and a success code 201
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-
+![Player-Success](./docs/Player5.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the data input is not in the correct format and returns a HTTP 400 status code with an error message.
+![Player-Fail](./docs/Player4.PNG)
 
 #### Update a player
 ```@player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])```
 - **HTTP Verb**: PUT, PATCH
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to update a player - only users with admin privilege can update a players attributes
-- **ON SUCCESS**: Returns message of the player updated to the view and a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
+- **ON SUCCESS**: Returns message of the player object updated to the view and a success code 200
+![Player-Success](./docs/Player6.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the player name already exists in the database, a HTTP error code 400 is displayed as well as an error message in the view
+![Player-Fail](./docs/Player7.PNG)
 
 #### Delete a player
 ```@player_bp.route("/<int:player_id>", methods=["DELETE"])```
@@ -864,11 +861,9 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to delete a player - only users with admin privilege can delete a player
 - **ON SUCCESS**: Returns message of the player deleted to the view and a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-
+![Player-Success](./docs/Player8.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example trying to delete a player that does not exist will return an error message with a HTTP error code 404.
+![Player-Fail](./docs/Player9.PNG)
 
 #### View all players
 ```@player_bp.route("/", methods=["GET"])```
@@ -882,8 +877,6 @@ else:
 else:
         return {"error" : "There are no players to show"}, 404
 ```
-
-
 
 #### View specific player
 ```@player_bp.route("/", methods=["GET"])```

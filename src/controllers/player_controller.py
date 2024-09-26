@@ -3,7 +3,7 @@ from init import db
 # Import flask modules request and Blueprint to grab JSON body text from front-end and Blueprint to create decorator endpoints by registering blueprint
 from flask import request, Blueprint
 # Import Player model and schema for creating of player objects and player schema to return a deserialised player object to the view
-from models.player import Players, player_schema, players_schema
+from models.player import Players, player_schema, players_schema, PlayerSchema
 # Import Game model for creating of game objects
 from models.game import Games
 # Import flask module to create tokens for player creation and jwt required for authentication
@@ -16,6 +16,10 @@ from sqlalchemy.exc import DataError
 from controllers.event_controller import event_bp
 from datetime import datetime
 
+from sqlalchemy.exc import IntegrityError
+from psycopg2 import errorcodes
+from check import check_admin
+
 player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
 player_bp.register_blueprint(event_bp)
 
@@ -27,10 +31,6 @@ def create_player(game_id, user_id):
         request_data = request.get_json()
         body_name = request_data.get("name")
         role = request_data.get("role")
-
-        # Validate required fields
-        if not body_name and role:
-            return{"error": "Name & role are required"}, 400
 
         # Check if the name is already in use
         player_stmt = db.Select(Players).filter_by(name=body_name)
@@ -50,16 +50,18 @@ def create_player(game_id, user_id):
                 )
             date = request_data.get("date")
             if date:
-                date_object = datetime.strptime(date, "%m/%d/%Y")
+                date_object = datetime.strptime(date, "%Y/%m/%d")
                 dt = date_object.replace(tzinfo=None)
                 player.date = dt
 
-            # Create token for newly created player object
-            token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
+            
             # Add and commit the new player to the database
             db.session.add(player)
             db.session.commit()
 
+
+            # Create token for newly created player object
+            token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
             player_stmt = db.Select(Players).filter_by(id=player.id)
             player_obj = db.session.scalar(player_stmt)
 
@@ -70,11 +72,21 @@ def create_player(game_id, user_id):
                 "role" : player_obj.role,
                 "id" : player_obj.id,
                 "token" : token
-                }
+                }, 201
     # Error handling if user input is not in correct date format 
     except DataError:
-        return{"error" : "Please enter date in the correct format yyyy-mm-dd or yyyy-mm-dd."}
+        return{"error" : "Please enter date in the correct format yyyy-mm-dd or yyyy-mm-dd."}, 400
+    
+    except ValueError:
+        return{"error" : "Date must be in format YYYY-MM-DD"}, 400
+    
+    except IntegrityError as e:
+        if e.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+            return {"error": f"The {e.orig.diag.column_name} is required"}, 400
         
+    except Exception as e:
+        return {"error" : f"{e}"}, 400
+
 
 # Create a route to update a player objects inside the database name
 @player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])
@@ -87,23 +99,32 @@ def update_player(player_id, game_id, user_id):
     # If there is a name input:
     if name:
         # Query the database for a player with an id equal to the player_id in the route
+        name_stmt = db.Select(Players).filter_by(name=name)
+        player_name = db.session.scalar(name_stmt)
+        if player_name:
+            return {"error" : "Name already exists in database"}, 400
+        
         stmt = db.Select(Players).filter_by(id=player_id)
         player = db.session.scalar(stmt)
+
         # If there is no such player return error message
         if player is None:
             return{"error": "No such player exists"}, 404
         
         # If there is a player with id equal to the player id:
-        if player:
+        elif player:
             # Change the player name with id equal to player id to the front-end input name and commit to the database session
             player.name = name or player.name
             db.session.commit()
 
         # Return the updated player information to the view owith a success code 200
-        return player_schema.dump(player), 200
-    # If there is no name input return an error message
+            return player_schema.dump(player), 200
+    
+        else:
+            return{"error" : "Only associated created players can update their own names."}
+     # If there is no name input return an error message
     else:
-        return {"error" : "Please enter a new player name to update existing player name"}
+        return {"error" : "Please input a name to change the player name"}
     
 # Create a route to delete a specific player depending on the id of the player in the dynamic route
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
