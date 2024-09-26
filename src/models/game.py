@@ -15,7 +15,7 @@ class Games(db.Model):
 
     # Foreign key referenced to user model primary key id 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    
+
     # Defined relationships between users and players models to share certain attributes with game model
     user = db.Relationship("Users", back_populates="games")
     players = db.Relationship("Players", back_populates="game", cascade="all, delete")
@@ -28,11 +28,11 @@ class GameSchema(ma.Schema):
     players = fields.List(fields.Nested("PlayerSchema", exclude=["game"]))
     
     # Validation of attributes, restricting user input to certain conditions
-    name = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
-    error="Accepting letters ONLY from 1-50 characters max")
+    name = fields.String(required=True, validate=Regexp("^.{1,50}$"), 
+    error="Accepting any character between 1-50 characters max")
 
-    description = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/"), 
-    error="Accepting letters ONLY from 1-50 characters max")
+    description = fields.String(required=True, validate=Regexp("^[a-zA-Z_ ]*$"), 
+    error="Accepting only letters and spaces")
 
     # Meta class to serialise attributes associated to game model
     class Meta:

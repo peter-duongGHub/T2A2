@@ -783,13 +783,12 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game```
 - **Required body/Header Data**: JWT required, JSON web token required to create a game by relevant user
-- **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
-![]
-![]
+- **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game
+![Game-Success](./docs/Game3.PNG)
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example description input is missing and throws a HTTP 400 error code and returns an error message. 
+![Game-Failure](./docs/Game4.PNG)
 
 #### Fetching a specific game
 ```@game_bp.route("/<int:game_id>", methods=["GET"])```
@@ -797,12 +796,9 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message of specific game depending on the dynamic route with a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-![]
-![]
+![Game-Success](./docs/Game2.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example game id 20 is not a valid game in the database so a 400 HTTP error code is returned and an error message
+![Game-Fail](./docs/Game1.PNG)
 
 #### Fetching all games
 ```@game_bp.route("/", methods=["GET"])```
@@ -810,12 +806,13 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - **Route Path**: ```user/<int:user_id>/game```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message of all games with a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Game-Success](./docs/Game5.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there are no game object to display from the database an error message is provided to the view.
 
-![]
-![]
-![]
-![]
+```
+else:
+  return {"error" : "There are currently no games to view."}
+```
 
 #### Updating a game
 ```@game_bp.route("/<int:game_id>", methods=["PUT", "PATCH"])```
@@ -823,12 +820,9 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to update game - only users with admin privilege can update a game
 - **ON SUCCESS**: Returns message of the specific game updated with a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-![]
-![]
+![Game-Success](./docs/Game6.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the game does not exist so a 404 HTTP error code is thrown and an error message
+![Game-Fail](./docs/Game7.PNG)
 
 #### Deleting a game
 ```@game_bp.route("/<int:game_id>", methods=["DELETE"])```
@@ -836,12 +830,9 @@ The relationship between User and Games is a One-to-Many relationship. One user 
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to delete game - only users with admin privilege can delete a game
 - **ON SUCCESS**: Returns message of the specific game deleted with a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-![]
-![]
+![Game-Success](./docs/Game10.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example a 404 HTTP error code is thrown and an error message.
+![Game-Fail](./docs/Game11.PNG)
 
 ### Players controller
 #### Create a player

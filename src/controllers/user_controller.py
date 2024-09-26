@@ -120,7 +120,7 @@ def update_user(user_id):
         
         # If no such user with the user_id return message
         elif not user:
-            return{"error" : f"No such user with {user_id}"}
+            return{"error" : f"No such user with {user_id}"}, 404
         
         # Else return message for if the token is not the correctly associated token to the user_id
         else:
