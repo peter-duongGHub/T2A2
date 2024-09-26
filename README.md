@@ -858,7 +858,7 @@ else:
 #### Delete a player
 ```@player_bp.route("/<int:player_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to delete a player - only users with admin privilege can delete a player
 - **ON SUCCESS**: Returns message of the player deleted to the view and a success code 200
 ![Player-Success](./docs/Player8.PNG)
@@ -868,7 +868,7 @@ else:
 #### View all players
 ```@player_bp.route("/", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns all player objects from the database to the view and provides a success code 200
 ![Player-Success](./docs/Player1.PNG)
@@ -881,7 +881,7 @@ else:
 #### View specific player
 ```@player_bp.route("/", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns specific player object from the database to the view and provides a success code 200
 ![Player-Success](./docs/Player2.PNG)
@@ -894,13 +894,12 @@ else:
 #### Create event
 ```@event_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to create an event
 - **ON SUCCESS**: Returns event object created and provides a success code 201
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
+
 
 
 #### Get specific event
@@ -908,11 +907,13 @@ else:
 - **HTTP Verb**: GET
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: None
+  
 - **ON SUCCESS**: Returns specific event objects from the database to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Event-Fail](./docs/Event2.PNG)
+
 
 
 #### Get all events
@@ -920,11 +921,16 @@ else:
 - **HTTP Verb**: GET
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events```
 - **Required body/Header Data**: None
+- 
 - **ON SUCCESS**: Returns all event objects from the database to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Event-Success](./docs/Event1.PNG)  
 
-![]
-![]
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+```
+else:
+        # Return an error message if there are no event objects
+        return {"error" : f"No events to view."}
+```
 
 
 

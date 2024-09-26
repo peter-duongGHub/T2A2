@@ -28,7 +28,7 @@ class Players(db.Model):
 class PlayerSchema(ma.Schema):
 
     # Specific attributes provided from other model schemas to the player schema for CRUD operations
-    game = fields.Nested("GameSchema", exclude=["players"])
+    game = fields.Nested("GameSchema", only=["name", "description"])
     events = fields.List(fields.Nested("EventSchema", only=["description", "date", "duration"]))
     comments = fields.List(fields.Nested("CommentSchema", only=["id", "message"]))
     

@@ -30,7 +30,7 @@ def get_specific(event_id, user_id, player_id, game_id):
         return event_schema.dump(event), 200
     else:
         # Return an error message stating no specific event
-        return {"error" : f"Cannot find event with event id: {event_id}"}
+        return {"error" : f"Cannot find event with event id: {event_id}"}, 404
 
 
 # Create a route for getting all events from the database
