@@ -36,10 +36,11 @@ This app works by using
 ### Trello
 For this application Trello was used for management of tasks and acted as a sort of checklist to ensure all rubric was covered and completed as well as the flow of creating the application was consistent and gradual. Specific dates were allocated to each task and objective to ensure the application was progressing according to plan towards the submission date. Trello was used for organisation of the project, time management and tracking tasks as well as visualises the workflow. Each card used a colour coded system for categorisation of tasks and different cards were allocated to define milestones and deadlines. Checklists within each card were to help break down components of each card further and to emphasise points required for the rubric of the T2A2 Webserver assignment.
 
-![https://trello.com/b/9sVow73W/t2a2-api-webserver]()
+#### Trello web link:
+[https://trello.com/b/9sVow73W/t2a2-api-webserver](https://trello.com/b/9sVow73W/t2a2-api-webserver)
 
 #### Reference
-![Trello-Image]()
+![Trello-Image](./docs/Trello.PNG)
 
 
 ### GitHub
@@ -57,10 +58,11 @@ Github was used to track changes and recovery of data if necessary. Throughout t
 9. Add origin of remote repository: ```git remote add origin git@github.com:peter-duongGHub/T2A2-1.git```
 10. Push upstream to the main branch as origin: ```git push -u origin main```
 
-![GitHub-Project]()
+#### GitHub web link
+[https://github.com/peter-duongGHub/T2A2](https://github.com/peter-duongGHub/T2A2)
 
 #### Reference
-![GitHub-Image]()
+![GitHub-Image](./docs/Githubs.PNG)
 
 
 ## R3
