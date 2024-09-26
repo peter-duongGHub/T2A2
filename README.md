@@ -845,8 +845,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Update a player
 ```@player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])```
@@ -856,8 +855,6 @@ else:
 - **ON SUCCESS**: Returns message of the player updated to the view and a success code 200
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
 ![]
 ![]
 
@@ -871,8 +868,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### View all players
 ```@player_bp.route("/", methods=["GET"])```
@@ -880,12 +876,14 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns all player objects from the database to the view and provides a success code 200
+![Player-Success](./docs/Player1.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+```
+else:
+        return {"error" : "There are no players to show"}, 404
+```
 
-![]
-![]
-![]
-![]
+
 
 #### View specific player
 ```@player_bp.route("/", methods=["GET"])```
@@ -893,12 +891,10 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns specific player object from the database to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Player-Success](./docs/Player2.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example 
+![Player-Fail](./docs/Player3.PNG)
 
-![]
-![]
-![]
-![]
 
 ### Event controller
 
@@ -912,8 +908,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Get specific event
 ```@event_bp.route("/<int:event_id>", methods=["GET"])```
@@ -925,8 +920,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Get all events
 ```@event_bp.route("/", methods=["GET"])```
@@ -938,8 +932,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 
 #### Update Event
@@ -950,8 +943,6 @@ else:
 - **ON SUCCESS**: Returns event object from the database after updating to the view and provides a success code 200
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
 ![]
 ![]
 
@@ -965,8 +956,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 ### Comments controller
 
@@ -980,8 +970,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### View specific comment
 ```@comments_bp.route("/<int:comment_id>", methods=["GET"])```
@@ -993,8 +982,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Create comment
 ```@comments_bp.route("/", methods=["POST"])```
@@ -1006,8 +994,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Update comment
 ```@comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])```
@@ -1019,8 +1006,7 @@ else:
 
 ![]
 ![]
-![]
-![]
+
 
 #### Delete comment
 ```@comments_bp.route("<int:comment_id>", methods=["DELETE"])```
@@ -1030,8 +1016,6 @@ else:
 - **ON SUCCESS**: Returns comment object after deleting to the view and provides a success code 200
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
 ![]
 ![]
 

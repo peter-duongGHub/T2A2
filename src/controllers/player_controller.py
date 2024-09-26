@@ -139,10 +139,10 @@ def view_players(game_id, user_id):
     # If there are player objects:
     if player:
         # Provide the view with deserialised player objects
-        return players_schema.dump(player), 201
+        return players_schema.dump(player), 200
     # If there isnt return an error message
     else:
-        return {"error" : "There are no players to show"}
+        return {"error" : "There are no players to show"}, 404
     
 # Create an endpoint to view specific player
 @player_bp.route("/<int:player_id>", methods=["GET"])
@@ -157,5 +157,5 @@ def specific_players(player_id, game_id, user_id):
         return player_schema.dump(player), 200
     else:
         # Return an error message if there is no player with the specific id
-        return {"error" : f"Player with id {player_id} can not be found."}
+        return {"error" : f"Player with id {player_id} can not be found."}, 404
     
