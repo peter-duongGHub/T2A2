@@ -108,7 +108,7 @@ def update_player(player_id, game_id, user_id):
 # Create a route to delete a specific player depending on the id of the player in the dynamic route
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
 @jwt_required()
-def delete_user(player_id, user_id, game_id):
+def delete_player(player_id, user_id, game_id):
     try:
         # Retrieve the Player object with the specified player id in the dynamic route
         stmt = db.Select(Players).filter_by(id=player_id)

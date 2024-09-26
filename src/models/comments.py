@@ -27,8 +27,8 @@ class Comments(db.Model):
 class CommentSchema(ma.Schema):
 
     # Specific attributes provided from other model schemas to the comments schema for CRUD operations
-    player = fields.Nested("PlayerSchema", only=["name", "role", "level"])
-    event = fields.Nested("EventSchema", only=["description", "duration", "date", "player"])
+    player = fields.Nested("PlayerSchema", only=["name", "role", "game"])
+    event = fields.Nested("EventSchema", only=["description", "duration", "date"])
 
     # Validation of message attribute, restricting user input to certain conditions
     message = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Message must only contain characters A-Z, between 1 to 50 characters."))

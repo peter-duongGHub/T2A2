@@ -15,7 +15,7 @@ comments_bp = Blueprint("comments", __name__, url_prefix="/<int:event_id>/commen
 
 # Create route to view all comment objects
 @comments_bp.route("/", methods=["GET"])
-def view_comments(game_id, player_id):
+def view_comments(game_id, player_id, user_id, event_id):
     # Retrieve all comment objects from the database
     stmt = db.Select(Comments)
     comment = db.session.scalars(stmt)
@@ -29,7 +29,7 @@ def view_comments(game_id, player_id):
 
 # Create route to view specific comment object
 @comments_bp.route("/<int:comment_id>", methods=["GET"])
-def specific_comment(comment_id, game_id, player_id):
+def specific_comment(game_id, player_id, user_id, event_id, comment_id):
     # Fetch comment with particular id based on dynamic route comment id - checks inside database for specific comment object
     stmt = db.Select(Comments).filter_by(id=comment_id)
     comment = db.session.scalar(stmt)
@@ -44,10 +44,10 @@ def specific_comment(comment_id, game_id, player_id):
 # Create a route to create a comment for an event, requiring a JWT from when a player was created
 @comments_bp.route("/", methods=["POST"])
 @jwt_required()
-def create_comment(event_id, player_id, game_id):
+def create_comment(game_id, player_id, user_id, event_id):
     # Fetch player object from database with the id related to the JWT identity
-    stmt = db.Select(Players).filter_by(id=get_jwt_identity())
-    player = db.session.scalar(stmt)\
+    stmt = db.Select(Players).filter_by(id=player_id)
+    player = db.session.scalar(stmt)
 
     # Fetch the event object relating to the event id in the dynamic route
     event_stmt = db.Select(Events).filter_by(id=event_id)
@@ -62,14 +62,9 @@ def create_comment(event_id, player_id, game_id):
         # Create a comment object with attributes
         comment = Comments(
             message = message,
-            player_id = player.id
+            player_id = player.id,
+            event_id = event.id
         )
-        # If there is the specific event object create comment attribute event_id associated to the id of the specific event id in the database
-        if event:
-            comment.event_id = event.id
-        # If there is no specific event object in the database leave comment attribute as event
-        else: 
-            comment.event_id = event
 
         # Add the comment object to the database session and commit the change to the database session
         db.session.add(comment)
@@ -83,6 +78,7 @@ def create_comment(event_id, player_id, game_id):
 
 # Create a route to update a specific comment
 @comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])
+@jwt_required()
 def update_comment(event_id, game_id, player_id, comment_id):
     # Query specific comment object from the database based on dynamic route comment id
     stmt = db.Select(Comments).filter_by(id=comment_id)
@@ -108,6 +104,7 @@ def update_comment(event_id, game_id, player_id, comment_id):
 
 # Create a route to delete a specific commment 
 @comments_bp.route("<int:comment_id>", methods=["DELETE"])
+@jwt_required()
 def delete_comment(event_id, game_id, player_id, comment_id):
     # Fetch a specific comment object from the database based on the dynamic route comment id
     stmt = db.Select(Comments).filter_by(id=comment_id)
