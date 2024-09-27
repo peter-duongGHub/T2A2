@@ -25,6 +25,8 @@ player_bp.register_blueprint(event_bp)
 
 # Create a route to create a player object into the database
 @player_bp.route("/", methods=["POST"])
+@jwt_required
+@check_admin
 def create_player(game_id, user_id):
     try:
         # Retrieve JSON data from the request
@@ -91,6 +93,7 @@ def create_player(game_id, user_id):
 # Create a route to update a player objects inside the database name
 @player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])
 @jwt_required()
+@check_admin
 def update_player(player_id, game_id, user_id): 
     # Retrive data from the front-end JSON body and extract the name input
     request_data = request.get_json()
@@ -129,6 +132,7 @@ def update_player(player_id, game_id, user_id):
 # Create a route to delete a specific player depending on the id of the player in the dynamic route
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
 @jwt_required()
+@check_admin
 def delete_player(player_id, user_id, game_id):
     try:
         # Retrieve the Player object with the specified player id in the dynamic route

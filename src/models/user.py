@@ -17,6 +17,7 @@ class Users(db.Model):
 
     # Defined relationships between games model to share certain attributes with users model
     games = db.Relationship("Games", back_populates="user", cascade="all, delete")
+    players = db.Relationship("Players", back_populates="user", cascade="all, delete")
 
 # Create User Schema to serialise and deserialise objects
 class UserSchema(ma.Schema):
@@ -24,6 +25,7 @@ class UserSchema(ma.Schema):
     # Specific attributes provided from other model schemas to the user schema for CRUD operations
     games = fields.List(fields.Nested("GameSchema", exclude=["user"]))
 
+    players = fields.List(fields.Nested("PlayerSchema", only=["name", "id"]))
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp("^[a-zA-Z]{1,50}$", error="Name must only contain characters A-Z, between 1 to 50 characters."))
 

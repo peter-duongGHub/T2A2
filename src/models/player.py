@@ -23,6 +23,7 @@ class Players(db.Model):
     game = db.Relationship("Games", back_populates="players")
     events = db.Relationship("Events", back_populates="player", cascade="all, delete")
     comments = db.Relationship("Comments", back_populates="player", cascade="all, delete")
+    user = db.Relationship("Users", back_populates="players")
 
 # Create Player Schema to serialise and deserialise objects
 class PlayerSchema(ma.Schema):
@@ -31,7 +32,8 @@ class PlayerSchema(ma.Schema):
     game = fields.Nested("GameSchema", only=["name", "description"])
     events = fields.List(fields.Nested("EventSchema", only=["description", "date", "duration"]))
     comments = fields.List(fields.Nested("CommentSchema", only=["id", "message"]))
-    
+    user = fields.Nested("UserSchema", only=["name", "id", "is_authorised"])
+
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp("^.{1,50}$", error="Name must be between 1-50 characters long."))
     date = fields.Date(required=True, validate=Regexp("^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$"))
