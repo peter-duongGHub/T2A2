@@ -515,14 +515,14 @@ db.session.commit()
 ##### Delete user
 ```
 # Fetch the specific user from the database with user_id
-        stmt = db.Select(Users).filter_by(id=user_id)
-        user = db.session.scalar(stmt)
+stmt = db.Select(Users).filter_by(id=user_id)
+user = db.session.scalar(stmt)
 
- # If there is such a user with the specific user_id:
-        if user:
-            # Delete the user if found and commit to the database session
-            db.session.delete(user)
-            db.session.commit()
+# If there is such a user with the specific user_id:
+if user:
+# Delete the user if found and commit to the database session
+  db.session.delete(user)
+  db.session.commit()
 ```
 
 ##### Update User
@@ -530,7 +530,7 @@ db.session.commit()
 # Fetch the user from the user_id from the dynamic route - looking through the database for the user that matches the id
 
 stmt = db.Select(Users).filter_by(id=get_jwt_identity())
-        user = db.session.scalar(stmt)
+user = db.session.scalar(stmt)
 ```
 
 ```
@@ -641,6 +641,8 @@ if game:
 ```
 
 ### Players
+The players model was created as part of a game to bridge the game with the events each player can create and the comments they may also add to those events. 
+
 Players model includes the following components:
 
 #### Attributes
@@ -649,9 +651,11 @@ Players model includes the following components:
 - **date**: Defines date player was created
 - **role**: Defines the players role in the game
 - **game_id**: Defines the foreign key referenced from the games model
+- **user_id**: Defines the foreign key referenced from the user model
 - **game**: Defines the relationship between the games model and the players model
 - **events**: Defines the relationship between the players model and the events model
 - **comments**: Defines the relationship between the players model and the comments model
+- **user**: Defines the relationship between the players model and the user model
 
 #### Player Schema
 
