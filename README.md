@@ -690,23 +690,23 @@ The players schema will include the following components:
 #### Code Example
 ![Player-Model](./docs/Playermodel.PNG)
 
-- **Players-Games Relationship**  
+##### **Players-Games Relationship**  
 The relationship between Players and Games is a Many-to-One relationship. One game can have multiple players although each player has to be created for one game. The foreign key will be assigned to the Players table referenced from the primary key associated to the game table. 
 
 - The players model interacts with the game model through the use of ```game = db.Relationship("Games", back_populates="players")```. This creates the relationship between the players and games table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 - foreign keys will be passed with ```game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)``` to assign the foreign key to the players model referenced from the games model's id.
 
-- **Players-Comments Relationship**  
+##### **Players-Comments Relationship**  
 The relationship between Players and comments is a One-to-Many relationship as One player can have multiple comments but a comment can only be made by a player. The foreign key will be assigned to the comments table referenced from the primary key associated to the player table.
 
 - The players model interacts with the comments model through the use of ```comments = db.Relationship("Comments", back_populates="player")```. This creates the relationship between the players and comments table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-- **Players-Events Relationship**  
+##### **Players-Events Relationship**  
 The relationship between Players and events is a One-to-Many relationship as One player can create multiple events but an event can only be made by a player. The foreign key will be assigned to the events table referenced from the primary key associated to the player table.
 
 - The players model interacts with the events model through the use of ```events = db.Relationship("Events", back_populates="player")```. This creates the relationship between the players and events table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-- **Players-User Relationship**  
+##### **Players-User Relationship**  
 The relationship between Players and user is a Many-to-One relationship as one user can create multiple players and one player must be created by a user. The foreign key will be assigned to the players table referenced from the primary key associated to the user table.
 
 - The players model interacts with the user model through the use of ```user = db.Relationship("Users", back_populates="players")```. This creates the relationship between the players and user table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
