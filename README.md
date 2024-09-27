@@ -26,12 +26,6 @@
 ### Explain Solved Problem
 With the increasing popularity of games, the management and analysis of past in-game events becomes increasingly more significant as the player base and complexities of games evolve. A common denominator within most games is the absence of in-game event tracking whereby players have a way to execute events but they do not have a way to review each past event committed. Having an event tracker can help players review any changes to their characters and track the progressive development of characters on an ongoing basis, this can help prevents users from spending far too much time on the game if they have progressed a certain amount and for users that are forgetful, they're able to account for what they previously did with their players. 
 
-### Explain How problem is addressed and References
-This app works by using
-
-
-
-
 ## R2
 ### Trello
 For this application Trello was used for management of tasks and acted as a sort of checklist to ensure all rubric was covered and completed as well as the flow of creating the application was consistent and gradual. Specific dates were allocated to each task and objective to ensure the application was progressing according to plan towards the submission date. Trello was used for organisation of the project, time management and tracking tasks as well as visualises the workflow. Each card used a colour coded system for categorisation of tasks and different cards were allocated to define milestones and deadlines. Checklists within each card were to help break down components of each card further and to emphasise points required for the rubric of the T2A2 Webserver assignment.
