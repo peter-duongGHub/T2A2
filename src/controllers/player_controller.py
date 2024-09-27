@@ -41,7 +41,7 @@ def create_player(game_id, user_id):
             return{"error" : f"Player with name {body_name} already exists"}, 400
 
         else:
-        # Create a new Player instance
+            # Create a new Player instance with attribute of specific game attached to player 
             game_stmt = db.Select(Games).filter_by(id=game_id)
             game = db.session.scalar(game_stmt)
 
@@ -108,6 +108,7 @@ def update_player(player_id, game_id, user_id):
             if player_name:
                 return {"error" : "Name already exists in database"}, 400
             
+            # Query to fetch specific player from database
             stmt = db.Select(Players).filter_by(id=player_id)
             player = db.session.scalar(stmt)
 

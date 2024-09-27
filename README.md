@@ -662,13 +662,16 @@ Players model includes the following components:
 The players schema will include the following components:  
 - **Meta**: 
   - **fields**: Fields helps define the atttributes that will be required from the players model
-- **games_schema/game_schema**: used to help handle single or multiple user objects. E.g if fetching multiple players to view ```players_schema``` would be used, if fetching only 1 game to view ```player_schema``` would be used.
+- **players_schema/player_schema**: used to help handle single or multiple player objects. E.g if fetching multiple players to view ```players_schema``` would be used, if fetching only 1 player to view ```player_schema``` would be used.
 - **game**: used to define the certain attributes to share from the games schema to the players schema. 
 - **events**: used to define the attributes to include from the events schema for sharing to the players schema.
 - **comments**: used to define the attributes to include from the comments schema for sharing to the players schema.
-- **name**: used for validation of user input from the front-end, name can only be letters from 1-50 characters max.
+- **user**: used to define the attributes to include from the user schema for sharing to the players schema.
+- **name**: used for validation of user input from the front-end, name can only be from 1-50 characters max.
+- **date**: used for validation of date input from the front-end, date can only be in format MM/DD/YYYY
+- **role**: used for validation of user input from the front-end, role can only be "Tank", "Healer", or "DPS".
 
-- **Players-Games Relationship**:
+- **Players-Games Relationship**
 The relationship between Players and Games is a Many-to-One relationship. One game can have multiple players although each player has to be created for one game. The foreign key will be assigned to the Players table referenced from the primary key associated to the game table. 
 
 - The players model interacts with the game model through the use of ```game = db.Relationship("Games", back_populates="players")```. This creates the relationship between the players and games table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
@@ -684,8 +687,69 @@ The relationship between Players and events is a One-to-Many relationship as One
 
 - The players model interacts with the events model through the use of ```events = db.Relationship("Events", back_populates="player")```. This creates the relationship between the players and events table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-#### Queries to access player relationships:
+- **Players-User Relationship**:
+The relationship between Players and user is a Many-to-One relationship as one user can create multiple players and one player must be created by a user. The foreign key will be assigned to the players table referenced from the primary key associated to the user table.
 
+- The players model interacts with the user model through the use of ```user = db.Relationship("Users", back_populates="players")```. This creates the relationship between the players and user table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+#### Queries to access player relationships:
+##### Create player
+```
+# Check if the name is already in use
+player_stmt = db.Select(Players).filter_by(name=body_name)
+existing_user = db.session.scalar(player_stmt)
+
+# Create a new Player instance with attribute of specific game attached to player 
+game_stmt = db.Select(Games).filter_by(id=game_id)
+game = db.session.scalar(game_stmt)
+
+# Add and commit the new player to the database
+db.session.add(player)
+db.session.commit()
+
+# Query to fetch specific player to return to view 
+player_stmt = db.Select(Players).filter_by(id=player.id)
+player_obj = db.session.scalar(player_stmt)
+```
+
+##### Update player
+```
+# Query the database for a player with an id equal to the player_id in the route,
+if name exists in database return error message
+name_stmt = db.Select(Players).filter_by(name=name)
+player_name = db.session.scalar(name_stmt)
+
+# Query to fetch specific player from database
+stmt = db.Select(Players).filter_by(id=player_id)
+player = db.session.scalar(stmt)
+
+```
+
+##### Delete player
+```
+# Retrieve the Player object with the specified player id in the dynamic route
+stmt = db.Select(Players).filter_by(id=player_id)
+player = db.session.scalar(stmt)
+
+# If there is a player object with the specific player id delete the player and commit the change to the database session
+if player:
+  db.session.delete(player)
+  db.session.commit()
+```
+
+##### View player
+```
+# Fetch all player objects from the database
+stmt = db.select(Players)
+player = db.session.scalars(stmt)
+```
+
+##### View specific player
+```
+# Fetch specific player from the database depending on the id in the dynamic route
+stmt = db.select(Players).filter_by(id=player_id)
+player = db.session.scalar(stmt)
+```
 
 ### Events
 
