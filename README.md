@@ -449,7 +449,7 @@ For the player relation normalisation occurs by:
 #### 3NF - Third Normal Form
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
-#### Comments relation
+### Comments relation
 Within the comment relation there is one attribute: message as well as foreign keys player_id and event_id. The message attribute cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the comments primary key and relate to the player relation through the foreign key player_id and the event relation through the event_id.
 
 For the comment relation normalisation occurs by:
@@ -464,7 +464,7 @@ For the comment relation normalisation occurs by:
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 
-#### Event relation
+### Event relation
 Within the event relation there are three attributes: description, date and duration as well as foreign key player_id. The three attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the events primary key and relate to the player relation through the foreign key player_id.
 
 For the comment relation normalisation occurs by:
@@ -482,6 +482,7 @@ For the comment relation normalisation occurs by:
 ![Crows-Foot-Notation](./docs/ERD.PNG)
 
 ### Other levels of normalisation - Model: User
+
 
 ### Key/Legend
 
