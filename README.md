@@ -752,6 +752,32 @@ player = db.session.scalar(stmt)
 ```
 
 ### Events
+Events was created to help players define events committed by the player. It helps connects the player and comments made by the players for each event.
+
+Events includes the following components:
+
+#### Attributes:
+
+- **id** : Defines the primary key
+- **description** : Defines the events description
+- **date** : Defines events date
+- **duration** : Defines the events duration
+- **player_id** : Defines the foreign key referenced from the player id
+- **comments** : Defines the relationship between comment attributes and event attributes
+- **player** : Defines the relationship between player attributes and event attributes
+
+#### Schema:
+
+The Event schema will include the following components:  
+- **Meta**: 
+  - **fields**: Fields helps define the atttributes that will be required from the events model
+- **events_schema/event_schema**: used to help handle single or multiple event objects. E.g if fetching multiple events to view ```events_schema``` would be used, if fetching only 1 event to view ```event_schema``` would be used.
+- **comments**: used to define the certain attributes to share from the comments schema to the events schema. 
+- **player**: used to define the attributes to include from the player schema for sharing to the events schema.
+  
+- **description**: used to validate input, must be one of the following ("ACTION", "QUEST", "SOCIAL").
+- **date**: used to validate the date input with Regexp making sure the date is in the format MM/DD/YYYY.
+- **duration**: used for validation of duration, ensuring the value is only between 1 and 24 (assuming hours).
 
 #### Events-Comments Relationship
 This is a One-to-Many relationship where the foreign key is added to the comments table referencing the primary key id of the event entity. This is because one event can have multiple comments but a comment can only be a part of one event.
@@ -764,9 +790,47 @@ The relationship between events and players is a Many-to-One relationship. One e
 - The events model interacts with the player model through the use of ```player = db.Relationship("Players", back_populates="events")```. This creates the relationship between the events and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
 #### Queries to access event relationships:
+##### Get specific event
+```
+# Retrieve Event objects depending on the event id dynamic route
+stmt = db.Select(Events).filter_by(id=event_id)
+event = db.session.scalar(stmt)
+```
 
+##### Get all events
+```
+# Fetch all event objects from the database
+stmt = db.Select(Events)
+event = db.session.scalars(stmt)
+```
+
+##### Create event
+```
+# Check the database for specific player with player id from the dynamic route
+stmt = db.Select(Players).filter_by(id=player_id)
+player = db.session.scalar(stmt)
+```
+
+##### Update event
+```
+# Check the database for player object with player id from the dynamic route
+stmt = db.Select(Events).filter_by(id=event_id)
+event = db.session.scalar(stmt)
+```
+
+##### Delete event
+```
+# Check event table for specific event object with event id
+stmt = db.Select(Events).filter_by(id=event_id)
+event = db.session.scalar(stmt)
+
+# Delete the specific event object and commit the changes to the database session
+db.session.delete(event)
+db.session.commit()
+```
 
 ### Comments
+
 
 #### Attributes
 
