@@ -422,7 +422,7 @@ For the user relation normalisation occurs by:
 
 
 ### Game relation
-Within the game relation there are two attributes: name and description as well as a foreign key user_id. All two attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key relate to the User relation through the foreign key user_id. It also references the foreign key of the player relation through the game's primary key.
+Within the game relation there are two attributes: name and description as well as a foreign key user_id. All two attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key and relate to the User relation through the foreign key user_id. It also references the foreign key of the player relation through the game's primary key.
 
 For the game relation normalisation occurs by:
 #### 1NF - First Normal Form
@@ -436,9 +436,9 @@ For the game relation normalisation occurs by:
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 ### Player relation
-Within the player relation there are two attributes: name and description as well as a foreign key user_id. All two attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key relate to the User relation through the foreign key user_id. It also references the foreign key of the player relation through the game's primary key.
+Within the player relation there are three attributes: name, role and date as well as foreign key user_id and game_id. All three attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the player primary key and relate to the user relation through the foreign key user_id and the game relation through the game_id.
 
-For the game relation normalisation occurs by:
+For the player relation normalisation occurs by:
 #### 1NF - First Normal Form
 - [x] All columns contain atomic (indivisible) values
 - [x] Each column has a unique name.
@@ -450,6 +450,18 @@ For the game relation normalisation occurs by:
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 #### Comments relation
+Within the comment relation there is one attribute: message as well as foreign keys player_id and event_id. The message attribute cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the comments primary key and relate to the player relation through the foreign key player_id and the event relation through the event_id.
+
+For the comment relation normalisation occurs by:
+#### 1NF - First Normal Form
+- [x] All columns contain atomic (indivisible) values
+- [x] Each column has a unique name.
+
+#### 2NF - Second Normal Form
+- [x] All non-key attributes are dependent on the primary key (no partial dependency).
+
+#### 3NF - Third Normal Form
+- [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 
 #### Event relation
