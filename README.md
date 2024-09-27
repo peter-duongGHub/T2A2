@@ -671,6 +671,9 @@ The players schema will include the following components:
 - **date**: used for validation of date input from the front-end, date can only be in format MM/DD/YYYY
 - **role**: used for validation of user input from the front-end, role can only be "Tank", "Healer", or "DPS".
 
+#### Code Example:
+![Player-Model](./docs/Playermodel.PNG)
+
 - **Players-Games Relationship**
 The relationship between Players and Games is a Many-to-One relationship. One game can have multiple players although each player has to be created for one game. The foreign key will be assigned to the Players table referenced from the primary key associated to the game table. 
 
@@ -779,6 +782,9 @@ The Event schema will include the following components:
 - **date**: used to validate the date input with Regexp making sure the date is in the format MM/DD/YYYY.
 - **duration**: used for validation of duration, ensuring the value is only between 1 and 24 (assuming hours).
 
+#### Code Example
+![Event-Model](./docs/EventModel.PNG)
+
 #### Events-Comments Relationship
 This is a One-to-Many relationship where the foreign key is added to the comments table referencing the primary key id of the event entity. This is because one event can have multiple comments but a comment can only be a part of one event.
 
@@ -850,6 +856,9 @@ The Comment schema will include the following components:
 - **event**: used to define the attributes to include from the event schema for sharing to the comments schema.
   
 - **message**: used to validate input, must be characters between 1 to 50 characters.
+
+#### Code Example
+![Comment-Model](./docs/CommentModel.PNG)
 
 #### Relationships
 
