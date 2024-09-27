@@ -1022,11 +1022,12 @@ if comment:
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
 - **Required body/Header Data**: None
-- **ON SUCCESS**: Returns comment object created from the database to the view and provides a success code 201
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- 
+- **ON SUCCESS**: Returns comment object created from the database to the view as well as the event comment is added to and the player and provides a success code 201
+![Comment-Success](./docs/Comment3.PNG)
 
-![]
-![]
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example error HTTP code 400 is thrown with invalid input of message body and an error message appears in the view
+![Comment-Fail](./docs/Comment4.PNG)
 
 
 #### Update comment
@@ -1034,11 +1035,12 @@ if comment:
 - **HTTP Verb**: PUT, PATCH
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
 - **Required body/Header Data**: None
-- **ON SUCCESS**: Returns comment object after updating to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
+- **ON SUCCESS**: Returns comment object after updating to the view and provides a success code 200
+![Comment-Success](./docs/Comment5.PNG)
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Comment-Fail](./docs/Comment6.PNG)
 
 
 #### Delete comment
@@ -1046,14 +1048,11 @@ if comment:
 - **HTTP Verb**: DELETE
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to delete a comment
-- **ON SUCCESS**: Returns comment object after deleting to the view and provides a success code 200
+- **ON SUCCESS**: Returns success message of deleted comment object to the view and provides a success code 200
+![Comment-Success](./docs/Comment7.PNG)
+
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
-
-
-
+![Comment-Fail](./docs/Comment8.PNG)
 
 ## Styling Guide - API style guide
 ALL queries or model methods are commented to a THOROUGH level of detail, with reference to a style guide or comment style guide in the project documentation.

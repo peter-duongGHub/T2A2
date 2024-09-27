@@ -31,7 +31,7 @@ class CommentSchema(ma.Schema):
     event = fields.Nested("EventSchema", only=["description", "duration", "date"])
 
     # Validation of message attribute, restricting user input to certain conditions
-    message = fields.String(required=True, validate=Regexp("/r'^[A-Za-z]{1,50}$'/", error="Message must only contain characters A-Z, between 1 to 50 characters."))
+    message = fields.String(required=True, validate=Regexp("^.{1,50}$", error="Message must only contain characters A-Z, between 1 to 50 characters."))
 
     # Meta class to serialise attributes associated to comment model
     class Meta:

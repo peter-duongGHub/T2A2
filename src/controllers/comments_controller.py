@@ -3,7 +3,7 @@ from flask import request, Blueprint
 # Import SQLAlchemy object instance from the init file for database operations
 from init import db
 # Import model objects to create object instances and schema to deserialise objects for view
-from models.comments import Comments, comment_schema, comments_schema
+from models.comments import Comments, comment_schema, comments_schema, CommentSchema
 from models.events import Events, event_schema, events_schema
 from models.player import Players
 
@@ -61,7 +61,7 @@ def create_comment(game_id, player_id, user_id, event_id):
         event = db.session.scalar(event_stmt)
 
         # Extract JSON body from front-end into a variable message
-        request_body = request.get_json()
+        request_body = CommentSchema().load(request.get_json())
         message = request_body.get("message")
 
         # If there is a player object with the specific id:
@@ -76,19 +76,19 @@ def create_comment(game_id, player_id, user_id, event_id):
             # Add the comment object to the database session and commit the change to the database session
             db.session.add(comment)
             db.session.commit()
+            # Return to the view a deserialised comment object with a success code 201
+            return comment_schema.dump(comment), 201
         # If there is no player with id relating to JWT return an error message
         else:
             return {f"There is no such event with event id {event_id}."}
         
-        # Return to the view a deserialised comment object with a success code 201
-        return comment_schema.dump(comment), 201
     except Exception as e:
-        return {"error" : f"{e}"}
+        return {"error" : f"{e}"}, 400
 
 # Create a route to update a specific comment
 @comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])
 @jwt_required()
-def update_comment(event_id, game_id, player_id, comment_id):
+def update_comment(event_id, game_id, player_id, comment_id, user_id):
     try:
         # Query specific comment object from the database based on dynamic route comment id
         stmt = db.Select(Comments).filter_by(id=comment_id)
@@ -101,23 +101,22 @@ def update_comment(event_id, game_id, player_id, comment_id):
         if comment:
             # Change comments attribute message to JSON input "message" from front-end
             comment.message = message or comment.message
-        
+            # Commit changes to the database session
+            db.session.commit()
+            # Return to the view a deserialised comment object with success code 200
+            return comment_schema.dump(comment), 200
         # If specific comment doesnt exist in database:
         else:
             # Return error message that it does not exist
-            return {"error" : f"There is no comment with id {comment_id}."}
+            return {"error" : f"There is no comment with id {comment_id}."}, 404
         
-        # Commit changes to the database session
-        db.session.commit()
-        # Return to the view a deserialised comment object with success code 200
-        return comment_schema.dump(comment), 200
     except Exception as e:
-        return {"error" : f"{e}"}
+        return {"error" : f"{e}"}, 400
 
 # Create a route to delete a specific commment 
 @comments_bp.route("<int:comment_id>", methods=["DELETE"])
 @jwt_required()
-def delete_comment(event_id, game_id, player_id, comment_id):
+def delete_comment(event_id, game_id, player_id, comment_id, user_id):
     try:
         # Fetch a specific comment object from the database based on the dynamic route comment id
         stmt = db.Select(Comments).filter_by(id=comment_id)
@@ -129,11 +128,11 @@ def delete_comment(event_id, game_id, player_id, comment_id):
             db.session.delete(comment)
             db.session.commit()
             # Return to the view a success message of the deleted comment object
-            return {"success" : f"Deleted comment with id {comment_id}."}
+            return {"success" : f"Deleted comment with id {comment_id}."}, 200
         else:
             # If there is no specific comment object in the database return error message.
-            return {"error" : "Please enter a valid comment id."}
+            return {"error" : "Please enter a valid comment id."}, 404
     except Exception as e:
-        return {"error" : f"{e}"}
+        return {"error" : f"{e}"}, 400
 
     
