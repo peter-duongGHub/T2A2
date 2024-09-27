@@ -406,7 +406,55 @@ class Users(db.Model):
 - [x] Relate these tables with a foreign key.
 - [x] Eliminate fields that don't depend on the key.
 
-### How Normalisation occurs in project
+### How Normalisation occurs in project relations
+#### User relation
+Within the user relation there are four attributes: name, password, email and is_authorised. All four attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key and act as a reference to the game relation and player relation by foreign keys in both the game and player relations.
+
+For the user relation normalisation occurs by:
+#### 1NF - First Normal Form
+- [x] All columns contain atomic (indivisible) values
+- [x] Each column has a unique name.
+
+#### 2NF - Second Normal Form
+- [x] All non-key attributes are dependent on the primary key (no partial dependency).
+
+#### 3NF - Third Normal Form
+- [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
+
+
+#### Game relation
+Within the game relation there are two attributes: name and description as well as a foreign key user_id. All two attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key relate to the User relation through the foreign key user_id. It also references the foreign key of the player relation through the game's primary key.
+
+For the game relation normalisation occurs by:
+#### 1NF - First Normal Form
+- [x] All columns contain atomic (indivisible) values
+- [x] Each column has a unique name.
+
+#### 2NF - Second Normal Form
+- [x] All non-key attributes are dependent on the primary key (no partial dependency).
+
+#### 3NF - Third Normal Form
+- [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
+
+#### Player relation
+Within the game relation there are two attributes: name and description as well as a foreign key user_id. All two attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key relate to the User relation through the foreign key user_id. It also references the foreign key of the player relation through the game's primary key.
+
+For the game relation normalisation occurs by:
+#### 1NF - First Normal Form
+- [x] All columns contain atomic (indivisible) values
+- [x] Each column has a unique name.
+
+#### 2NF - Second Normal Form
+- [x] All non-key attributes are dependent on the primary key (no partial dependency).
+
+#### 3NF - Third Normal Form
+- [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
+
+#### Comments relation
+
+
+#### Event relation
+
 Each divisible attribute has been provided its own table to rely solely on its own primary key. 
 
 #### 1NF - First Normal Form
