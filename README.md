@@ -408,13 +408,13 @@ class Users(db.Model):
 
 
 ## R6 - Normalised database relations
-- Eliminate redundancy and inconsistenct dependencies
-- Eliminate repeating groups in individual tables.
-- Create a separate table for each set of related data.
-- Identify each set of related data with a primary key.
-- Create separate tables for sets of values that apply to multiple records.
-- Relate these tables with a foreign key.
-- Eliminate fields that don't depend on the key.
+- [x] Eliminate redundancy and inconsistenct dependencies
+- [x] Eliminate repeating groups in individual tables.
+- [x] Create a separate table for each set of related data.
+- [x] Identify each set of related data with a primary key.
+- [x] Create separate tables for sets of values that apply to multiple records.
+- [x] Relate these tables with a foreign key.
+- [x] Eliminate fields that don't depend on the key.
 
 ### How Normalisation occurs in project
 Each divisible attribute has been provided its own table to rely solely on its own primary key. 
@@ -437,37 +437,6 @@ Each divisible attribute has been provided its own table to rely solely on its o
 ### Other levels of normalisation - Model: User
 
 ### Key/Legend
-#### Entity 
-A rectangle representing a data entity (e.g., User, Order, Product).
-
-
-#### Attribute	
-An oval connected to an entity, representing a property of that entity (e.g., name, price).
-
-#### Primary Key	
-An underlined attribute that uniquely identifies each record within an entity.
-
-#### Foreign Key	
-An attribute that references the primary key of another entity, often shown with a dashed line.
-
-#### Crow's Foot	
-A symbol that indicates the "many" side of a relationship, represented by three lines.
-
-#### Single Line	
-Indicates a "one" relationship, meaning that each instance of an entity can be associated with only one instance of another entity.
-
-#### Double Line	
-Indicates a mandatory relationship, where an instance of one entity must be associated with at least one instance of another entity.
-
-#### Zero or One	
-A circle at the end of a line that indicates the possibility of having no related instance in the relationship.
-
-#### One or Many	
-A combination of a line and a Crow's Foot symbol that shows that an instance may have zero or more related instances.
-
-#### Relationship Name	
-A diamond shape that describes the nature of the relationship between entities (e.g., places, contains).
-
 
 
 ## R7
