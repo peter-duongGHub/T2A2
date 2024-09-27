@@ -465,17 +465,15 @@ For the comment relation normalisation occurs by:
 
 
 #### Event relation
+Within the event relation there are three attributes: description, date and duration as well as foreign key player_id. The three attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the events primary key and relate to the player relation through the foreign key player_id.
 
-Each divisible attribute has been provided its own table to rely solely on its own primary key. 
-
+For the comment relation normalisation occurs by:
 #### 1NF - First Normal Form
 - [x] All columns contain atomic (indivisible) values
-- [x] Each entry in a column is of the same data type.
 - [x] Each column has a unique name.
-- [x] The order in which data is stored does not matter.
 
 #### 2NF - Second Normal Form
-- [x] All non-key attributes are fully functionally dependent on the primary key (no partial dependency).
+- [x] All non-key attributes are dependent on the primary key (no partial dependency).
 
 #### 3NF - Third Normal Form
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
