@@ -604,6 +604,14 @@ The relationship between events and players is a Many-to-One relationship. One e
 
 ### Comments
 
+#### Attributes
+
+#### Schema
+
+#### Relationships
+
+#### Queries to access comment relationships:
+
 
 ## R8 - API Endpoints
 
