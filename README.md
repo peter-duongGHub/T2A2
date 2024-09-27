@@ -499,45 +499,9 @@ The users schema will include the following components:
 
 #### User-Games Relationship:
 The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. The user model interacts with the games model through the use of ```games = db.Relationship("Games", back_populates="user")```. This creates the relationship between the games and users table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
-#### Queries to access data using relationships:
 
-- **Create**:   
-Query to create a game from user input, the game will include the user attributes; name, email, id and is_authorised when displayed in the view to the user using the game_schema. 
-```
-@game_bp.route("/", methods=["POST"])
-@jwt_required()
-@check_admin
-def create_game():
-    request_data = request.get_json()
-    name = request_data.get("name")
-    description = request_data.get("description")
-    stmt = db.Select(Users).filter_by(id=get_jwt_identity())
-    user = db.session.scalar(stmt)
+#### Queries to access user relationships:
 
-    game = Games(
-        name = name,
-        description = description,
-        user_id = user.id
-        )
-
-    db.session.add(game)
-    db.session.commit()
-    return game_schema.dump(game), 201
-```
-
-- **View**:  
-- Query to view a specific game from user input, the game will include the user attributes; name, email, id and is_authorised when displayed in the view to the user using the game_schema. 
-```
-@game_bp.route("/<int:game_id>", methods=["GET"])
-def view_games(game_id):
-    stmt = db.Select(Games).filter_by(id=game_id)
-    game = db.session.scalar(stmt)
-
-    if game:
-        return game_schema.dump(game), 200
-    else:
-        return{"error": f"There is no game with id: {game_id}"}
-```
 
 ### Games
 The Games model was created to help with bridging a relationship between the games that are created and players associated to each game. The games model defines the games primary key, name of the game, description of the game and includes a foreign key referenced from the users model. It also has relationships with both the users model and players model. 
@@ -577,63 +541,7 @@ The relationship between Games and Players is a One-to-Many relationship. One ga
 
 - The game model interacts with the player model through the use of ``` players = db.Relationship("Players", back_populates="game")```. This creates the relationship between the games and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-##### Queries
-- Create
-POST HTTP request is used to create a player based on user input. The view will return the game the player is associated to. 
-```
-@player_bp.route("/", methods=["POST"])
-def create_player(game_id):
-    # Retrieve JSON data from the request
-    request_data = request.get_json()
-    body_name = request_data.get("name")
-
-    # Validate required fields
-    # if not name or date or role:
-    #     return{"error": "Name, date & role are required"}, 400
-
-    # Check if the name is already in use
-    player_stmt = db.Select(Players).filter_by(name=body_name)
-    existing_user = db.session.scalar(player_stmt)
-    if existing_user:
-        return{"error": "Name already in use"}, 400
-
-    else:
-    # Create a new Player instance
-        stmt = db.Select(Games).filter_by(id=game_id)
-        game = db.session.scalar(stmt)
-        player = Players(
-                name= body_name,
-                date= request_data.get("date"),
-                role= request_data.get("role"),
-                game_id = game.id
-            )
-
-        token = create_access_token(identity=str(player.id), expires_delta=timedelta(days=1))
-
-        # Add and commit the new player to the database
-        # try:
-        db.session.add(player)
-        db.session.commit()
-
-    # Return the newly created player's data
-    return player_schema.dump(player), 201
-
-```
-
-- View
-GET HTTP request used to fetch all players from the database. The view returned will also return certain attributes from the games tables as well as attributes from the players tables.
-
-```
-@player_bp.route("/", methods=["GET"])
-def view_players(game_id):
-    stmt = db.select(Players)
-    player = db.session.scalars(stmt)
-
-    if player:
-        return players_schema.dump(player), 201
-    else:
-        return {"error" : "There are no players to show"}
-```
+#### Queries to access game relationships:
 
 
 ### Players
@@ -676,24 +584,8 @@ The relationship between Players and events is a One-to-Many relationship as One
 
 - The players model interacts with the events model through the use of ```events = db.Relationship("Events", back_populates="player")```. This creates the relationship between the players and events table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-##### Queries
-- Create Player
-Using HTTP request method POST to create a player based on json body input from the front-end. This will create a new object instance of a player which also links the games attributes.
+#### Queries to access player relationships:
 
-- View Players
-Using HTTP request method GET to fetch players from the database and provide a list of players back to the view for the user to see.
-
-```
-@player_bp.route("/", methods=["GET"])
-def view_players(game_id):
-    stmt = db.select(Players)
-    player = db.session.scalars(stmt)
-
-    if player:
-        return players_schema.dump(player), 201
-    else:
-        return {"error" : "There are no players to show"}
-```
 
 ### Events
 
@@ -707,23 +599,11 @@ The relationship between events and players is a Many-to-One relationship. One e
 
 - The events model interacts with the player model through the use of ```player = db.Relationship("Players", back_populates="events")```. This creates the relationship between the events and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
-### Queries
+#### Queries to access event relationships:
 
-#### Comments
 
-- User-Games Relationship:
-The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
-- Interaction with other models:
-- Queries to access data using relationships:
-- Code Examples:
+### Comments
 
-#### Games
-
-#### Players
-
-#### Comments
-
-#### Events
 
 ## R8 - API Endpoints
 
