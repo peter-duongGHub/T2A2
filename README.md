@@ -830,15 +830,90 @@ db.session.commit()
 ```
 
 ### Comments
+Comments was made to help add comments to events that were made by players. 
 
+Comments is made of the following components:
+- **id** : Defines the primary key
+- **message** : Defines the comment message
+- **player_id** : Defines foreign key referenced from the player id
+- **event_id** : Defines the foreign key referenced from the event id
+- **player** : Defines the relationship between player model and comment models to share attributes
+- **event** : Defines the relationship between event model and comment models to share attributes
 
-#### Attributes
+#### Schema:
 
-#### Schema
+The Comment schema will include the following components:  
+- **Meta**: 
+  - **fields**: Fields helps define the atttributes that will be required from the comments model
+- **comments_schema/comment_schema**: used to help handle single or multiple comment objects. E.g if fetching multiple comments to view ```comments_schema``` would be used, if fetching only 1 comment to view ```comment_schema``` would be used.
+- **player**: used to define the certain attributes to share from the player schema to the comments schema. 
+- **event**: used to define the attributes to include from the event schema for sharing to the comments schema.
+  
+- **message**: used to validate input, must be characters between 1 to 50 characters.
 
 #### Relationships
 
+##### Comment-Event Relationship
+Comment-event relationship is a Many-to-One relationship. One event can have multiple comments but one comment can only belong to one event. The foreign key will be assigned to the comments table from the primary key associated to the events table.
+
+- The comment model interacts with the event model through the use of ```event = db.Relationship("Events", back_populates="comments")```. This creates the relationship between the events and comments table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+##### Comment-Player Relationship
+Comment-player relationship is a Many-to-One relationship. One player can create multiple comments but one comment can only belong to one player. The foreign key will be assigned to the comments table from the primary key associated to the player table.
+
+- The comment model interacts with the player model through the use of ```player = db.Relationship("Players", back_populates="comments")```. This creates the relationship between the players and comments table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
+
 #### Queries to access comment relationships:
+##### View comments
+```
+# Retrieve all comment objects from the database
+stmt = db.Select(Comments)
+comment = db.session.scalars(stmt)
+```
+
+##### View specific comment
+```
+# Fetch comment with particular id based on dynamic route comment id - checks inside database for specific comment object
+stmt = db.Select(Comments).filter_by(id=comment_id)
+comment = db.session.scalar(stmt)
+```
+
+##### Create comment
+```
+# Fetch player object from database with the id related to the JWT identity
+stmt = db.Select(Players).filter_by(id=player_id)
+player = db.session.scalar(stmt)
+
+# Fetch the event object relating to the event id in the dynamic route
+event_stmt = db.Select(Events).filter_by(id=event_id)
+event = db.session.scalar(event_stmt)
+
+# Add the comment object to the database session and commit the change to the database session
+db.session.add(comment)
+db.session.commit()
+```
+
+##### Update comment
+```
+# Query specific comment object from the database based on dynamic route comment id
+stmt = db.Select(Comments).filter_by(id=comment_id)
+comment = db.session.scalar(stmt)
+
+# Commit changes to the database session
+db.session.commit()
+```
+
+##### Delete comment
+```
+# Fetch a specific comment object from the database based on the dynamic route comment id
+stmt = db.Select(Comments).filter_by(id=comment_id)
+comment = db.session.scalar(stmt)
+
+# Delete the comment object from the database session and commit the change to the database session
+db.session.delete(comment)
+db.session.commit()
+```
 
 ## R8 - API Endpoints
 
