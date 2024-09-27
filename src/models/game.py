@@ -24,7 +24,7 @@ class Games(db.Model):
 class GameSchema(ma.Schema):
 
     # Specific attributes provided from other model schemas to the games schema for CRUD operations
-    user = fields.Nested('UserSchema', only=["name", "email", "id", "is_authorised"])
+    user = fields.Nested('UserSchema', only=["username", "email", "id", "is_authorised"])
     players = fields.List(fields.Nested("PlayerSchema", exclude=["game"]))
     
     # Validation of attributes, restricting user input to certain conditions

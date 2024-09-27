@@ -432,7 +432,7 @@ Each divisible attribute has been provided its own table to rely solely on its o
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 ### ERD
-![Crows-Foot-Notation](./docs/ERDT2A2.drawio.png)
+![Crows-Foot-Notation](./docs/ERD.PNG)
 
 ### Other levels of normalisation - Model: User
 
@@ -896,10 +896,23 @@ else:
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to create an event
-- **ON SUCCESS**: Returns event object created and provides a success code 201
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-
+- **ON SUCCESS**: Returns event object created to the view and provides a success code 201 
+```
+event = Events(
+            description = request_data.get("description"),
+            duration = request_data.get("duration"),
+            player_id = player.id
+        )
+        date = request_data.get("date")
+        if date:
+            date_object = datetime.strptime(date, "%m/%d/%Y")
+            event.date = date_object
+        # Return to the view a deserialised event object with success 201 code
+        return event_schema.dump(event), 201
+```
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example date is entered in the wrong format throwing
+a HTTP status error code 400 and error message
+![Event-Fail](./docs/Event11.PNG)
 
 
 #### Get specific event
@@ -909,10 +922,11 @@ else:
 - **Required body/Header Data**: None
   
 - **ON SUCCESS**: Returns specific event objects from the database to the view and provides a success code 200
+![Event-Success](./docs/Event7.PNG)
 
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, returns error 404 HTTP code as there is no such event with the id 6.
+![Event-Fail](./docs/Event6.PNG)
 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-![Event-Fail](./docs/Event2.PNG)
 
 
 
@@ -923,7 +937,7 @@ else:
 - **Required body/Header Data**: None
 - 
 - **ON SUCCESS**: Returns all event objects from the database to the view and provides a success code 200
-![Event-Success](./docs/Event1.PNG)  
+![Event-Success](./docs/Event3.PNG)  
 
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 ```
@@ -932,29 +946,33 @@ else:
         return {"error" : f"No events to view."}
 ```
 
-
-
 #### Update Event
 ```@event_bp.route("/<int:event_id>", methods=["PUT","PATCH"])```
 - **HTTP Verb**: PUT, PATCH
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to update an event
 - **ON SUCCESS**: Returns event object from the database after updating to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
-
-![]
-![]
+![Event-Success](./docs/Event8.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example incorrect input was entered for the description of the event and so a HTTP error code 400 is returned.
+![Event-Fail](./docs/Event9.PNG)
 
 #### Delete Event
 ```@event_bp.route("/<int:event_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to delete an event
-- **ON SUCCESS**: Returns event object from the database after deleting to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
+- **ON SUCCESS**: Returns event object from the database after deleting to the view and provides a success code 200 and success message of deletion
+```
+if event:
+        # Delete the specific event object and commit the changes to the database session
+        db.session.delete(event)
+        db.session.commit()
+        return {"Success" : f"User with {user_id} was successfully deleted."}
+```
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example a specific event id was entered into route which was not found in the database and returns a HTTP error code 404
+![Event-Fail](./docs/Event10.PNG)
 
 
 ### Comments controller
@@ -964,11 +982,19 @@ else:
 - **HTTP Verb**: GET
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
 - **Required body/Header Data**: None
+- 
 - **ON SUCCESS**: Returns comments objects from the database to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+![Comment-Success](./docs/Comment1.PNG)
 
-![]
-![]
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there are no comment objects in the database to view an error HTTP status code 404 and error message is sent to the view
+```
+if comment:
+        # Return deserialised comment objects to the view with a success 200 code
+        return comments_schema.dump(comment), 200
+    else:
+        # Return an error message if there are no comment objects
+        return {"error" : "There are no comments to view"}, 404
+```
 
 
 #### View specific comment
@@ -976,11 +1002,19 @@ else:
 - **HTTP Verb**: GET
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
 - **Required body/Header Data**: None
-- **ON SUCCESS**: Returns specific comment object from the database to the view and provides a success code 200
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
 
-![]
-![]
+- **ON SUCCESS**: Returns specific comment object from the database to the view and provides a success code 200
+![Comment-Success](./docs/Comment2.PNG)
+
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there is no comment object with comment id in the database a HTTP status error code 404 is returned and an error message.
+```
+if comment:
+        # Return to the view a deserialised comment object with a success code 200
+        return comment_schema.dump(comment), 200
+    else:
+        # Return to the view an error message, there is no comment id equal to comment_id
+        return {"error" : f"There is no comment with id {comment_id}."}, 404
+```
 
 
 #### Create comment

@@ -52,35 +52,43 @@ def create_game(user_id):
             return {"error": f"The {e.orig.diag.column_name} is required"}, 400
     except ValidationError as e:
         return {"error" : str(e)}, 400
+    except Exception as e:
+        return {"error" : f"{e}"}
 
 # Fetch specific game to view - READ
 @game_bp.route("/<int:game_id>", methods=["GET"])
 def view_games(game_id, user_id):
-    # Fetch specific game based on dynamic route (game_id)
-    stmt = db.Select(Games).filter_by(id=game_id)
-    game = db.session.scalar(stmt)
+    try:
+        # Fetch specific game based on dynamic route (game_id)
+        stmt = db.Select(Games).filter_by(id=game_id)
+        game = db.session.scalar(stmt)
 
-    # If game with game_id exists return to the view a deserialised game object with code 200 success
-    if game:
-        return game_schema.dump(game), 200
-    # Else return an error message 
-    else:
-        return{"error": f"There is no game with id: {game_id}"}, 404
+        # If game with game_id exists return to the view a deserialised game object with code 200 success
+        if game:
+            return game_schema.dump(game), 200
+        # Else return an error message 
+        else:
+            return{"error": f"There is no game with id: {game_id}"}, 404
+    except Exception as e:
+        return {"error" : f"{e}"}
     
 # Create a route to fetch all games
 @game_bp.route("/", methods=["GET"])
 def get_games(user_id):
-    # Fetch all games from the database and order by description descending 
-    stmt = db.Select(Games).order_by(Games.description.desc())
-    game = db.session.scalars(stmt)
+    try: 
+        # Fetch all games from the database and order by description descending 
+        stmt = db.Select(Games).order_by(Games.description.desc())
+        game = db.session.scalars(stmt)
 
-    # If there are games in the database:
-    if game:
-        # Deserialise the object and send to the view with a success code 200
-        return games_schema.dump(game), 200
-    # If there are no games in the database return a message there are no games
-    else:
-        return {"error" : "There are currently no games to view."}, 404    
+        # If there are games in the database:
+        if game:
+            # Deserialise the object and send to the view with a success code 200
+            return games_schema.dump(game), 200
+        # If there are no games in the database return a message there are no games
+        else:
+            return {"error" : "There are currently no games to view."}, 404    
+    except Exception as e:
+        return {"error" : f"{e}"}
 
 
 # Create a route to update game attributes, must be authenticated and contain a JWT as bearer token

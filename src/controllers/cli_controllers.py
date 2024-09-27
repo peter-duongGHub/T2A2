@@ -23,13 +23,13 @@ def create_tables():
 def seed_tables():
 
     users = [Users(
-        name = "random",
+        username = "random",
         password = bcrypt.generate_password_hash("1234").decode("utf-8"),
         email = "random@gmail.com",
         is_authorised = True
     ),
     Users(
-        name = "Peter",
+        username = "Peter",
         password = bcrypt.generate_password_hash("444").decode("utf-8"),
         email = "peter@gmail.com"
     )
@@ -41,12 +41,12 @@ def seed_tables():
     games = [Games(
         name = "CallOfDuty",
         description = "Shooter",
-        user = users[0]
+        user = users[1]
     ),
     Games(
         name = "League",
         description = "RPG",
-        user = users[0]
+        user = users[1]
     ),
     Games(
         name = "Minecraft",
@@ -62,21 +62,25 @@ def seed_tables():
         name = "Peter",
         date = "2024/05/05",
         role = "Tank",
-        game = games[0]
+        game = games[0],
+        user = users[1]
+
     ),
     Players(
         name = "Random",
         date = "2025/06/06",
         role = "DPS",
-        game = games[0]
+        game = games[0],
+        user = users[0]
+
 
     ),
     Players(
         name = "Open",
         date = "2026/02/02",
         role = "Healer",
-        game = games[0]
-
+        game = games[0],
+        user = users[1]
     )
     
     ]

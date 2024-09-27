@@ -33,7 +33,7 @@ class EventSchema(ma.Schema):
 
     # Validation of attributes, restricting user input to certain conditions
     description = fields.String(required=True, validate=OneOf(DESCRIPTION))
-    date = fields.Date(required=True, validate=Regexp("/^\d{2}\/\d{2}\/\d{4}$/" , error="Date must be in the format mm-dd-yyyy"))
+    date = fields.Date(required=True, validate=Regexp("(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
     duration = fields.Float(required=True)
 
     # Validate user import duration using marshmallow validates module

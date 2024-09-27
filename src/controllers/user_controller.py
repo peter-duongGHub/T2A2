@@ -15,7 +15,7 @@ from datetime import timedelta
 # Import auth file to provide administration checks for certain functions
 from check import check_admin
 # Import user model for creating user object(s) and schema for serialising and deserialising for display to the view
-from models.user import Users, user_schema, UserSchema
+from models.user import Users, user_schema, UserSchema, users_schema
 from controllers.game_controller import game_bp
 # Create blueprint for use as decorator by registering blueprint with main file function
 user_bp = Blueprint("use", __name__, url_prefix="/user")
@@ -29,7 +29,7 @@ def create_user():
         request_data = UserSchema().load(request.get_json())
         # Create user object from user input from JSON body (front-end)
         user = Users(
-            name = request_data.get("name"),
+            username = request_data.get("name"),
             email = request_data.get("email")
         )
         # Retrieve password from front-end JSON body if it exists 
@@ -59,6 +59,8 @@ def create_user():
     # Error handling for the user input, if the input does not match validating inputs error appears
     except ValidationError as e:
             return{"error" : f"{e}"}, 400
+    except Exception as e:
+        return {"error" : f"{e}"}
 
 # Create a route to delete a specific user based on user_id on the route
 @user_bp.route("/<int:user_id>", methods=["DELETE"])
@@ -108,7 +110,7 @@ def update_user(user_id):
         # If the user_id matches the id of the token identity:
         if user_id == user.id:
             # Update user and password fields if present in the request
-            user.name = request_name or user.name
+            user.username = request_name or user.username
             if request_password:
                 user.password = bcrypt.generate_password_hash(request_password).decode("utf-8") or user.password
             
@@ -175,3 +177,17 @@ def login_user():
     except Exception as e:
         # Handle other unexpected errors
         return{"error": "An unexpected error occurred", "details": str(e)}, 500
+
+# Show list of users
+@user_bp.route("/", methods=["GET"])
+def get_users():
+    try: 
+        stmt = db.Select(Users)
+        users = db.session.scalars(stmt)
+
+        if users:
+            return users_schema.dump(users)
+        else:
+            return{"error" : "No users to view"}
+    except Exception as e:
+        return {"error" : f"{e}"}

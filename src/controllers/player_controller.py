@@ -52,7 +52,7 @@ def create_player(game_id, user_id):
                 )
             date = request_data.get("date")
             if date:
-                date_object = datetime.strptime(date, "%Y/%m/%d")
+                date_object = datetime.strptime(date, "%d/%m/%Y")
                 dt = date_object.replace(tzinfo=None)
                 player.date = dt
 
@@ -95,39 +95,42 @@ def create_player(game_id, user_id):
 @jwt_required()
 @check_admin
 def update_player(player_id, game_id, user_id): 
-    # Retrive data from the front-end JSON body and extract the name input
-    request_data = request.get_json()
-    name = request_data.get("name")
+    try:
+        # Retrive data from the front-end JSON body and extract the name input
+        request_data = request.get_json()
+        name = request_data.get("name")
 
-    # If there is a name input:
-    if name:
-        # Query the database for a player with an id equal to the player_id in the route
-        name_stmt = db.Select(Players).filter_by(name=name)
-        player_name = db.session.scalar(name_stmt)
-        if player_name:
-            return {"error" : "Name already exists in database"}, 400
+        # If there is a name input:
+        if name:
+            # Query the database for a player with an id equal to the player_id in the route
+            name_stmt = db.Select(Players).filter_by(name=name)
+            player_name = db.session.scalar(name_stmt)
+            if player_name:
+                return {"error" : "Name already exists in database"}, 400
+            
+            stmt = db.Select(Players).filter_by(id=player_id)
+            player = db.session.scalar(stmt)
+
+            # If there is no such player return error message
+            if player is None:
+                return{"error": "No such player exists"}, 404
+            
+            # If there is a player with id equal to the player id:
+            elif player:
+                # Change the player name with id equal to player id to the front-end input name and commit to the database session
+                player.name = name or player.name
+                db.session.commit()
+
+            # Return the updated player information to the view owith a success code 200
+                return player_schema.dump(player), 200
         
-        stmt = db.Select(Players).filter_by(id=player_id)
-        player = db.session.scalar(stmt)
-
-        # If there is no such player return error message
-        if player is None:
-            return{"error": "No such player exists"}, 404
-        
-        # If there is a player with id equal to the player id:
-        elif player:
-            # Change the player name with id equal to player id to the front-end input name and commit to the database session
-            player.name = name or player.name
-            db.session.commit()
-
-        # Return the updated player information to the view owith a success code 200
-            return player_schema.dump(player), 200
-    
+            else:
+                return{"error" : "Only associated created players can update their own names."}
+        # If there is no name input return an error message
         else:
-            return{"error" : "Only associated created players can update their own names."}
-     # If there is no name input return an error message
-    else:
-        return {"error" : "Please input a name to change the player name"}
+            return {"error" : "Please input a name to change the player name"}
+    except Exception as e:
+        return {"error" : f"{e}"}
     
 # Create a route to delete a specific player depending on the id of the player in the dynamic route
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
@@ -157,30 +160,36 @@ def delete_player(player_id, user_id, game_id):
 # Create an endpoint to view all players
 @player_bp.route("/", methods=["GET"])
 def view_players(game_id, user_id):
-    # Fetch all player objects from the database
-    stmt = db.select(Players)
-    player = db.session.scalars(stmt)
+    try: 
+        # Fetch all player objects from the database
+        stmt = db.select(Players)
+        player = db.session.scalars(stmt)
 
-    # If there are player objects:
-    if player:
-        # Provide the view with deserialised player objects
-        return players_schema.dump(player), 200
-    # If there isnt return an error message
-    else:
-        return {"error" : "There are no players to show"}, 404
+        # If there are player objects:
+        if player:
+            # Provide the view with deserialised player objects
+            return players_schema.dump(player), 200
+        # If there isnt return an error message
+        else:
+            return {"error" : "There are no players to show"}, 404
+    except Exception as e:
+        return {"error" : f"{e}"}
     
 # Create an endpoint to view specific player
 @player_bp.route("/<int:player_id>", methods=["GET"])
 def specific_players(player_id, game_id, user_id):
-    # Fetch specific player from the database depending on the id in the dynamic route
-    stmt = db.select(Players).filter_by(id=player_id)
-    player = db.session.scalar(stmt)
+    try:
+        # Fetch specific player from the database depending on the id in the dynamic route
+        stmt = db.select(Players).filter_by(id=player_id)
+        player = db.session.scalar(stmt)
 
-    # If there is a player with the player id in the dynamic route:
-    if player:
-        # Return to the view the specific player object deserialised with a success code
-        return player_schema.dump(player), 200
-    else:
-        # Return an error message if there is no player with the specific id
-        return {"error" : f"Player with id {player_id} can not be found."}, 404
-    
+        # If there is a player with the player id in the dynamic route:
+        if player:
+            # Return to the view the specific player object deserialised with a success code
+            return player_schema.dump(player), 200
+        else:
+            # Return an error message if there is no player with the specific id
+            return {"error" : f"Player with id {player_id} can not be found."}, 404
+    except Exception as e:
+        return {"error" : f"{e}"}
+        

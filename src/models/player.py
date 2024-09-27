@@ -18,6 +18,7 @@ class Players(db.Model):
 
     # Foreign key referenced to games model primary key id 
     game_id = db.Column(db.Integer, db.ForeignKey("games.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     # Defined relationships between games, events and comments models to share certain attributes with players model
     game = db.Relationship("Games", back_populates="players")
@@ -32,16 +33,16 @@ class PlayerSchema(ma.Schema):
     game = fields.Nested("GameSchema", only=["name", "description"])
     events = fields.List(fields.Nested("EventSchema", only=["description", "date", "duration"]))
     comments = fields.List(fields.Nested("CommentSchema", only=["id", "message"]))
-    user = fields.Nested("UserSchema", only=["name", "id", "is_authorised"])
+    user = fields.Nested("UserSchema", only=["username", "is_authorised"])
 
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp("^.{1,50}$", error="Name must be between 1-50 characters long."))
-    date = fields.Date(required=True, validate=Regexp("^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$"))
+    date = fields.Date(required=True, validate=Regexp("(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
     role = fields.String(required=True, validate=OneOf(ROLES), error="Role selected must be Tank, Healer or DPS")
 
     # Meta class to serialise attributes associated to player model
     class Meta:
-        fields = ("id", "name", "date", "role", "game", "comments", "events")
+        fields = ("id", "name", "date", "role", "game", "comments", "events", "user")
 
 # Used for handling a single player object
 players_schema = PlayerSchema(many=True)
