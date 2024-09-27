@@ -1217,9 +1217,9 @@ if comment:
 ![Comment-Fail](./docs/Comment8.PNG)
 
 ## Styling Guide - API style guide - PEP 8
+All .py files have followed the PEP8 styling guide with the use of installed package AutoPep8(van Rossum, Warsaw and Coghlan, 2001).
 
-
-https://docs.gitlab.com/ee/development/api_styleguide.html
+![AutoPep8](./docs/Autopep8.PNG)
 
 ## References
 Melanie (2023). SQLAlchemy: What is it? What’s it for? [online] Data Science Courses | DataScientest. Available at: https://datascientest.com/en/sqlalchemy-what-is-it-whats-it-for.
@@ -1227,3 +1227,5 @@ Melanie (2023). SQLAlchemy: What is it? What’s it for? [online] Data Science C
 SQLAlchemy (2018). SQLAlchemy - The Database Toolkit for Python. [online] Sqlalchemy.org. Available at: https://www.sqlalchemy.org/.
 
 Duong, P. (2024) PeterDuong_T2A1-A Workbook Part A. Australia. [online] Available at: https://ait.instructure.com/courses/5351/assignments/56852
+
+van Rossum, G., Warsaw, B. and Coghlan, N. (2001). PEP 8 – Style Guide for Python Code. [online] peps.python.org. Available at: https://peps.python.org/pep-0008/.
