@@ -32,7 +32,7 @@ This app works by using
 
 
 
-## R2 Task allocation and Management - Trello & GitHub
+## R2
 ### Trello
 For this application Trello was used for management of tasks and acted as a sort of checklist to ensure all rubric was covered and completed as well as the flow of creating the application was consistent and gradual. Specific dates were allocated to each task and objective to ensure the application was progressing according to plan towards the submission date. Trello was used for organisation of the project, time management and tracking tasks as well as visualises the workflow. Each card used a colour coded system for categorisation of tasks and different cards were allocated to define milestones and deadlines. Checklists within each card were to help break down components of each card further and to emphasise points required for the rubric of the T2A2 Webserver assignment.
 
@@ -216,7 +216,7 @@ Bcrypt is used within this application for its cryptographic hashing function de
 
 ``` pip install flask_bcrypt```
 
-## R4 - PostgreSQL
+## R4
 PostgresQL is a catalog-driven, object relational database management system (ORDBMS) that is open source and is popularly utilised by multiple users due to its diverse functionality, features, stability, dependability & efficient implementation. It supports relational and non-relational queries such as SQL and JSON respectively (Duong, 2024). PostgreSQL stores data in tables columns and rows, whilst data is written and read using SQL language. A major variant of PostgreSQL in comparison to other relational database systems is the additional quantity of information stored such as; data types, access methods and functions, extending its routine storage of tables and columns in catalogs(Duong, 2024). 
 
 ### Application
@@ -328,7 +328,7 @@ CREATE DATABASE <database_name>
 ```
 (Duong, 2024).
 
-## R5 - SQLAlchemy (ORM)
+## R5
 SQLAlchemy is a popular Object-Relational Mapping (ORM) library for Python, providing a high-level abstraction for working with relational databases by acting as a mediator between python application code and the relational database, facilitating interactions between the two without the use of SQL queries(Melanie, 2023). SQLAlchemy helps with querying the database through the utilisation of python class conversions to SQL statements. SQLAlchemy has a multitude of features ranging from CRUD operations, class mapping, defining of foreign keys, relationships, attributes and datatypes(SQLAlchemy, 2018). Some of these key features will be discussed below.
 
 ### Features 
@@ -403,8 +403,7 @@ class Users(db.Model):
     games = db.Relationship("Games", back_populates="user")
 ```
 
-
-## R6 - Normalised database relations
+## R6
 - [x] Eliminate redundancy and inconsistenct dependencies
 - [x] Eliminate repeating groups in individual tables.
 - [x] Create a separate table for each set of related data.
@@ -890,7 +889,7 @@ db.session.delete(comment)
 db.session.commit()
 ```
 
-## R8 - API Endpoints
+## R8
 
 ### User Controller
 
