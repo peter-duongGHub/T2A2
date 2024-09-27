@@ -472,14 +472,13 @@ A diamond shape that describes the nature of the relationship between entities (
 
 ## R7
 ### Users  
-The users model was created to help define the attributes and each data type, constraint and relationship with other models (Games model). It was also created with validation methods included within marshmallows module validate to ensure users enter appropriate inputs from the front end. The Users model was also created to keep in mind of allowing or denying access to creating, 
-updating or deleting games - this is part of othe user controller. Only users that are authorised with a true value for ```is_authorised``` are allowed to create, update and delete games. Users that do not have these access rights are only able to view games. 
+The users model was created to help define the attributes and each data type, constraint and relationship with other models (Games and Players model). It was also created with validation methods included within marshmallows module validate to ensure users enter appropriate inputs from the front end. The Users model was also created to keep in mind of allowing or denying access to creating, updating or deleting games and players. Only users that are authorised with a true value for ```is_authorised``` are allowed to create, update and delete games and players. Users that do not have these access rights are only able to view games. 
 
 The users model will include the following components:  
 
 #### Attributes
 - **id**: Used as the primary key for the users table, integer type
-- **name**: Used to define the users name, string type, cant be left empty by front end input
+- **username**: Used to define the users name, string type, cant be left empty by front end input
 - **password**: Used to define user password, string type, cant be left empty by front end input
 - **email**: Used to define user email, string type, cant be left empty by front end input
 - **is_authorised**: Used to define admin rights, boolean type, if user leaves empty default value is False
@@ -489,19 +488,69 @@ The users model will include the following components:
 The users schema will include the following components:  
 - **Meta**: 
   - **fields**: Fields helps define the atttributes that will be required from the users model
-- **games**: used to define the certain attributes to share from the games table to the users table. Exclude was included to prevent schema including the user component to the users table.
-- **name**: used in schema to help with validating user input. Name must only contain characters A-Z.
+- **games**: used to define the certain attributes to share from the games table to the users table and define the attributes passed from the gameschema to the user schema.
+- **players**: used to define the certain attributes to share from the players table to the users table and define the attributes passed from the playerschema to the user schema.
+- **username**: used in schema to help with validating user input. Name must only contain characters A-Z between 1-50 characters.
 - **password**: used in schema to help with validating user input. Password must contain at least one letter, one digit, and is between eight and sixteen characters in length.
 - **email**: used in schema to help with validating user input. Email must contain @ symbol followed and preceding non white space characters.
 
 #### Code Example   
-![User-Model](./docs/User.PNG)
+![User-Model](./docs/usermodel.PNG)
 
 #### User-Games Relationship:
 The relationship between User and Games is a One-to-Many relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. The user model interacts with the games model through the use of ```games = db.Relationship("Games", back_populates="user")```. This creates the relationship between the games and users table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
+#### User-Players Relationship:
+The relationship between User and Players is a One-to-Many relationship. One user can create multiple players although one player has to be created by a user. The foreign key will be assigned to the Players table referenced from the primary key associated to the user table. The user model interacts with the players model through the use of ```players = db.Relationship("Players", back_populates="user")```. This creates the relationship between the players and users table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
+
 #### Queries to access user relationships:
 
+##### Create user
+Db session add and commit was used to add and commit user object to the database session.
+```
+db.session.add()
+db.session.commit()
+```
+
+##### Delete user
+```
+# Fetch the specific user from the database with user_id
+        stmt = db.Select(Users).filter_by(id=user_id)
+        user = db.session.scalar(stmt)
+
+ # If there is such a user with the specific user_id:
+        if user:
+            # Delete the user if found and commit to the database session
+            db.session.delete(user)
+            db.session.commit()
+```
+
+##### Update User
+```
+# Fetch the user from the user_id from the dynamic route - looking through the database for the user that matches the id
+
+stmt = db.Select(Users).filter_by(id=get_jwt_identity())
+user = db.session.scalar(stmt)
+```
+
+```
+# Commit changes to the database session
+db.session.commit()
+```
+
+##### Login User
+```
+# Query the database for the user by email
+stmt = db.Select(Users).filter_by(email=request_email)
+user = db.session.scalar(stmt)
+```
+
+##### Get User
+```
+# Query the database for all user objects 
+stmt = db.Select(Users)
+users = db.session.scalars(stmt)
+```
 
 ### Games
 The Games model was created to help with bridging a relationship between the games that are created and players associated to each game. The games model defines the games primary key, name of the game, description of the game and includes a foreign key referenced from the users model. It also has relationships with both the users model and players model. 
@@ -611,7 +660,6 @@ The relationship between events and players is a Many-to-One relationship. One e
 #### Relationships
 
 #### Queries to access comment relationships:
-
 
 ## R8 - API Endpoints
 
@@ -940,8 +988,8 @@ if comment:
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example since route has a comment id that does not exist in database returns error message to the view and a HTTP error code 404
 ![Comment-Fail](./docs/Comment8.PNG)
 
-## Styling Guide - API style guide
-ALL queries or model methods are commented to a THOROUGH level of detail, with reference to a style guide or comment style guide in the project documentation.
+## Styling Guide - API style guide - PEP 8
+
 
 https://docs.gitlab.com/ee/development/api_styleguide.html
 
