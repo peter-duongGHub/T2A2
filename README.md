@@ -1037,7 +1037,7 @@ if comment:
 - **ON SUCCESS**: Returns comment object after updating to the view and provides a success code 200
 ![Comment-Success](./docs/Comment5.PNG)
 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example since route has a comment id that does not exist in database return error message and HTTP error code 404
 ![Comment-Fail](./docs/Comment6.PNG)
 
 
@@ -1049,10 +1049,12 @@ if comment:
 - **ON SUCCESS**: Returns success message of deleted comment object to the view and provides a success code 200
 ![Comment-Success](./docs/Comment7.PNG)
 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example since route has a comment id that does not exist in database returns error message to the view and a HTTP error code 404
 ![Comment-Fail](./docs/Comment8.PNG)
 
 ## Styling Guide - API style guide
 ALL queries or model methods are commented to a THOROUGH level of detail, with reference to a style guide or comment style guide in the project documentation.
 
 https://docs.gitlab.com/ee/development/api_styleguide.html
+
+## References
