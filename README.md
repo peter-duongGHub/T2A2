@@ -530,7 +530,7 @@ db.session.commit()
 # Fetch the user from the user_id from the dynamic route - looking through the database for the user that matches the id
 
 stmt = db.Select(Users).filter_by(id=get_jwt_identity())
-user = db.session.scalar(stmt)
+        user = db.session.scalar(stmt)
 ```
 
 ```
@@ -572,13 +572,13 @@ The games schema will include the following components:
 - **Meta**: 
   - **fields**: Fields helps define the atttributes that will be required from the games model
 - **games_schema/game_schema**: used to help handle single or multiple user objects. E.g if fetching multiple games to view ```games_schema``` would be used, if fetching only 1 game to view ```game_schema``` would be used.
-- **user**: used to define the certain attributes to share from the users table to the games model. Exclude was included to prevent schema including specific user attributes to the games table.
-- **players**: used to define the attributes to exclude from the playerschema for sharing to the games model.
-- **name**: used for validation of user input from front-end, accepting letters ONLY from 1-40 characters max.
-- **description**: used for validation of user input from front-end, accepting letters ONLY from 1-40 characters max.
+- **user**: used to define the certain attributes to share from the users table to the games schema.
+- **players**: used to define the attributes to exclude from the playerschema for sharing to the games schema.
+- **name**: used for validation of user input from front-end, accepting any character from 1-50 characters max.
+- **description**: used for validation of user input from front-end, accepting letters and spaces ONLY.
 
 #### Code Example
-![Game-Model](./docs/Game.PNG)
+![Game-Model](./docs/Games2.PNG)
 
 #### Games-User Relationship:
 The relationship between Games and Users is a Many-to-One relationship. One user can create multiple games although one game has to be created by a user. The foreign key will be assigned to the Games table referenced from the primary key associated to the user table. 
@@ -591,7 +591,54 @@ The relationship between Games and Players is a One-to-Many relationship. One ga
 - The game model interacts with the player model through the use of ``` players = db.Relationship("Players", back_populates="game")```. This creates the relationship between the games and players table so that both models will be able to interact with each other models attributes - the schema will define which specific attributes are needed by the other model for CRUD operations.
 
 #### Queries to access game relationships:
+##### Create game
+```
+# Query into Users table for user object id relating to the JWT identity
+stmt = db.Select(Users).filter_by(id=get_jwt_identity())
+user = db.session.scalar(stmt)
 
+# Add game object to database session
+db.session.add(game)
+# Commit the game object to the database session
+db.session.commit()
+```
+
+##### View game
+```
+# Fetch specific game based on dynamic route (game_id)
+stmt = db.Select(Games).filter_by(id=game_id)
+game = db.session.scalar(stmt)
+```
+
+##### Get game
+```
+# Fetch all games from the database and order by description descending 
+stmt = db.Select(Games).order_by(Games.description.desc())
+game = db.session.scalars(stmt)
+```
+
+##### Update game
+```
+# Check to see if there is a game with same id as game_id
+stmt = db.Select(Games).filter_by(id=game_id)
+game = db.session.scalar(stmt)
+
+# Commit the changes to the database session 
+db.session.commit()
+```
+
+##### Delete game
+```
+# Check if game with game_id exists in the database
+stmt = db.Select(Games).filter_by(id=game_id)
+game = db.session.scalar(stmt)
+
+# If game is found, delete the game object and commit the change to the database session
+if game:
+  db.session.delete(game)
+  db.session.commit()
+
+```
 
 ### Players
 Players model includes the following components:
