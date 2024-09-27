@@ -9,6 +9,8 @@ from controllers.event_controller import event_bp
 from init import db, ma, bcrypt, jwt
 from flask import Flask
 import os
+
+
 def create_app():
 
     app = Flask(__name__)
@@ -29,4 +31,3 @@ def create_app():
     app.register_blueprint(event_bp)
 
     return app
-

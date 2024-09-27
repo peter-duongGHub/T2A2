@@ -9,6 +9,8 @@ from marshmallow.validate import Regexp, OneOf
 DESCRIPTION = ("ACTION", "QUEST", "SOCIAL")
 
 # Create Events model using SQLAlchemy object
+
+
 class Events(db.Model):
     # Defined table name and the attributes, including data type and constraints
     __tablename__ = "events"
@@ -17,23 +19,29 @@ class Events(db.Model):
     date = db.Column(db.Date)
     duration = db.Column(db.Float, nullable=False)
 
-    # Foreign key referenced to players model primary key id 
-    player_id = db.Column(db.Integer, db.ForeignKey("players.id"), nullable=False)
-    
+    # Foreign key referenced to players model primary key id
+    player_id = db.Column(db.Integer, db.ForeignKey(
+        "players.id"), nullable=False)
+
     # Defined relationships between comments,player models to share certain attributes with events model
-    comments = db.Relationship("Comments", back_populates="event", cascade="all, delete")
+    comments = db.Relationship(
+        "Comments", back_populates="event", cascade="all, delete")
     player = db.Relationship("Players", back_populates="events")
 
 # Create Event Schema to serialise and deserialise objects
+
+
 class EventSchema(ma.Schema):
-    
+
     # Specific attributes provided from other model schemas to the event schema for CRUD operations
     comments = fields.List(fields.Nested("CommentSchema", only=["message"]))
-    player = fields.Nested("PlayerSchema", only=["name", "date", "role", "game"])
+    player = fields.Nested("PlayerSchema", only=[
+                           "name", "date", "role", "game"])
 
     # Validation of attributes, restricting user input to certain conditions
     description = fields.String(required=True, validate=OneOf(DESCRIPTION))
-    date = fields.Date(required=True, validate=Regexp("(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
+    date = fields.Date(required=True, validate=Regexp(
+        "(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
     duration = fields.Float(required=True)
 
     # Validate user import duration using marshmallow validates module
@@ -47,7 +55,9 @@ class EventSchema(ma.Schema):
 
     # Meta class to serialise attributes associated to event model
     class Meta:
-        fields = ("id", "description", "date", "duration", "comments", "player")
+        fields = ("id", "description", "date",
+                  "duration", "comments", "player")
+
 
 # Used for handling multiple event objects
 events_schema = EventSchema(many=True)
