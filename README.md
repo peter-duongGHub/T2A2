@@ -1022,7 +1022,6 @@ if comment:
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
 - **Required body/Header Data**: None
-- 
 - **ON SUCCESS**: Returns comment object created from the database to the view as well as the event comment is added to and the player and provides a success code 201
 ![Comment-Success](./docs/Comment3.PNG)
 
