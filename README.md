@@ -403,8 +403,8 @@ class Users(db.Model):
 - [x] Create a separate table for each set of related data.
 - [x] Identify each set of related data with a primary key.
 - [x] Create separate tables for sets of values that apply to multiple records.
-- [x] Relate these tables with a foreign key.
-- [x] Eliminate fields that don't depend on the key.
+- [x] Relate tables with a foreign key.
+- [x] Eliminate fields that don't depend on the primary key.
 
 ### User relation
 Within the user relation there are four attributes: name, password, email and is_authorised. All four attributes cannot be further divisible and do not contain a repeating group. All attributes are entirely dependent on the primary key and act as a reference to the game relation and player relation by foreign keys in both the game and player relations.
