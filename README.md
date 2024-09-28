@@ -486,7 +486,69 @@ Normalisation for other model/relation Player model. This other level of normali
 ![Other-Normalisation](./docs/ERD2.drawio.png)
 
 ### Key/Legend
+#### User relation
+Box in ERD represents User entity, lines from the User entity represent One-to-Many relationships with Game and Player relations.
 
+- **name attribute**: Name attribute can only be characters between 1-50 characters and not nullable
+- **password attribute**: Password attribute can only be any character between 8 - 16 characters and not nullable
+- **email attribute**: Email can contain any character but must have @ symbol contained and not nullable
+- **is_authorised attribute**: Is default to false and accepts boolean values. Can be left empty - does not need input
+- **primary key**: user_id is the primary key and is an integer data type and cannot be null for the user relation
+- **Relationships**:
+  - **User-Game**: One-to-Many
+  - **User-Player**: One-to-Many
+
+#### Game relation 
+Box in ERD represents Game relation. Line from Game to User relation represents a Many-to-One relationship and the line from Game to Player representes a One-to-Many relationship.
+
+- **primary key**: game_id is the primary key and is an integer data type and cannot be NULL
+- **name attribute**: accepts characters between 1-50 characters max and cannot be null
+- **description**: accepts characters and spaces only and cannot be null
+- **foreign key**: user_id is the foreign key referenced from the User relation
+- **Relationships**:
+  - **Game-User**: Many-to-One
+  - **Game-Player**: One-to-Many
+  
+#### Player relation
+Box in ERD represents the Player relation. Line from the Player-Game represents Many-to-One. Player-Comments represents One-to-Many. Player-Event represents One-to-Many. Player-User represents Many-to-One relationship.
+
+- **primary key**: player_id is primary key can is an integer data type cannot be NULL
+- **name attribute**: accepts characters between 1-50 characters long and cannot be NULL
+- **role attribute**: accepts only specific values ("Tank", "DPS", "Healer") and cannot be NULL
+- **date attribute**: accepts only date formats in MM/DD/YYYY and cannot be left NULL
+- **foreign keys**:
+  - **game_id**: References game relation primary key
+  - **user_id**: References user relation primary key
+  - **Relationships**:
+    - **Player-Game**: Many-to-One
+    - **Player-Comments**: One-to-Many
+    - **Player-Event**: One-to-Many
+    - **Player-User**: Many-to-One
+
+#### Comment relation
+Box in ERD represents the Comment relation. Line from Comment-Player represents Many-to-One. Comment-Event represents Many-to-One. 
+
+- **primary key**: comments_id is the primary key and is an integer data type and cannot be NULL
+- **message attribute**: can be any character between 1-50 characters and cannot be NULL
+- **foreign keys**:
+  - **player_id**: represents the referenced primary key from player relation 
+  - **event_id**: represents the referenced primary key from event relation
+- **Relationships**:
+  - **Comments-Player**: Many-to-One
+  - **Comments-Event**: Many-to-One
+
+#### Event relation
+Box in ERD represents the Event relation. Line from Event-Comments represents One-to-Many relationship. Event-Player represents Many-to-One relationship.
+
+- **primary key**: event_id is the primary key and is an integer data type and cannot be NULL
+- **description attribute**: can be any character and cannot be NULL
+- **date attribute** must be in date format MM/DD/YYYY and cannot be NULL
+- **duration attribute** must be a float data type and cannot be NULL
+- **foreign key**:
+  - **player_id** player_id references primary key from the player relation
+- **Relationships**:
+  - **Event-Player**: Many-to-One
+  - **Event-Comments**: One-to-Many
 
 ## R7
 ### Users    
