@@ -479,10 +479,11 @@ For the comment relation normalisation occurs by:
 - [x] There are no transitive dependencies (non-key attributes should not depend on other non-key attributes).
 
 ### ERD
-![Crows-Foot-Notation](./docs/ERD.PNG)
+![Crows-Foot-Notation](./docs/ERD.drawio%20(1).png)
 
-### Other levels of normalisation - Model: User
-
+### Other levels of normalisation - Model: Player
+Normalisation for other model/relation Player model. This other level of normalisation is splitting the role attribute from the player model to create a new relation namely Role. Role relation will have a name attribute and a description attribute, normalising the original ERD further.
+![Other-Normalisation](./docs/ERD2.drawio.png)
 
 ### Key/Legend
 
