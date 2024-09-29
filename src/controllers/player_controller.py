@@ -6,6 +6,7 @@ from flask import request, Blueprint
 from models.player import Players, player_schema, players_schema, PlayerSchema
 # Import Game model for creating of game objects
 from models.game import Games
+# Import Game model for creating of user objects
 from models.user import Users
 # Import flask module to create tokens for player creation and jwt required for authentication
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -15,6 +16,7 @@ from datetime import timedelta
 from sqlalchemy.exc import DataError
 # Import event controller to pass on url prefix to event controller blueprint
 from controllers.event_controller import event_bp
+# 
 from datetime import datetime
 
 from sqlalchemy.exc import IntegrityError
@@ -38,39 +40,51 @@ def create_player(game_id, user_id):
         body_name = request_data.get("name")
         role = request_data.get("role")
 
+        # Query to select user objects from the database
         user_stmt = db.Select(Users).filter_by(id=user_id)
         user = db.session.scalar(user_stmt)
 
-        # Check if the name is already in use
+        # Check if the name for the created player is already in the database
         player_stmt = db.Select(Players).filter_by(name=body_name)
         existing_player = db.session.scalar(player_stmt)
+        # If name exists in database:
         if existing_player:
+            # return error message
             return {"error": f"Player with name {body_name} already exists"}, 400
 
         else:
-            # Create a new Player instance with attribute of specific game attached to player
+            # Create a new Player instance with attribute of specific game and date attached to player
 
             player = Players(
                 name=body_name,
                 role=role,
             )
-
+            # If user exists:
             if user:
+                # Referenced foreign key column will be id of user
                 player.user_id = user.id
             else:
+                # Else an error message will be returned to the view
                 return {"error" : "Please enter a correct user id in the route"}
 
+            # Query to select game objects from the database
             game_stmt = db.Select(Games).filter_by(id=game_id)
             game = db.session.scalar(game_stmt)
 
+            # If the game object exists with game_id:
             if game:
+                # Referenced foreign key column will be id of game
                 player.game_id=game.id
 
             else: 
+                # else return an error message
                 return {"error" : "Incorrect route game does not exist"}
 
+            # Get the data input from the body of request
             date = request_data.get("date")
+            # If it exists:
             if date:
+                # Change the format of the string into a date for storing inside database
                 date_object = datetime.strptime(date, "%d/%m/%Y")
                 dt = date_object.replace(tzinfo=None)
                 player.date = dt
@@ -100,17 +114,13 @@ def create_player(game_id, user_id):
 
     except ValueError:
         return {"error": "Date must be in format YYYY-MM-DD"}, 400
-
+    # Error handling if missing specific attributes for input
     except IntegrityError as e:
         if e.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"error": f"The {e.orig.diag.column_name} is required"}, 400
-
+    # Error handling any exceptions that may occur not accounted for
     except Exception as e:
         return {"error": f"{e}"}, 400
-
-    except TypeError as e:
-        return {"error": f"{e}"}
-
 
 # Create a route to update a player objects inside the database name
 @player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])
