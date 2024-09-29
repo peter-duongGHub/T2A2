@@ -19,6 +19,6 @@ def check_admin(func):
             return func(*args, **kwargs)
         # Return an error response if the user is not an admin
         else:
-            return {"error": "No such user, only admins can perform delete."}, 403
+            return {"error": "No such user, only admins can perform this operation."}, 403
 
     return wrapper

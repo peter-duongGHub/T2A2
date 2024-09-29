@@ -6,6 +6,7 @@ from flask import Blueprint, request
 from models.game import Games, game_schema, games_schema, GameSchema
 from models.user import Users
 
+# Error handling imported modules
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
@@ -20,7 +21,7 @@ from controllers.player_controller import player_bp
 game_bp = Blueprint("game", __name__, url_prefix="/<int:user_id>/game")
 game_bp.register_blueprint(player_bp)
 
-# Creating a game depending on authentication and required JWT from user
+# Creating a game depending on authentication and required JWT from authenticated user
 
 
 @game_bp.route("/", methods=["POST"])
@@ -28,6 +29,7 @@ game_bp.register_blueprint(player_bp)
 @check_admin
 def create_game(user_id):
     try:
+
         # Get the body data from JSON body (name, description)
         request_data = GameSchema().load(request.get_json(), partial=True)
         name = request_data.get("name")
@@ -35,20 +37,23 @@ def create_game(user_id):
         # Query into Users table for user object id relating to the JWT identity
         stmt = db.Select(Users).filter_by(id=get_jwt_identity())
         user = db.session.scalar(stmt)
+        if user:
+            # Create game object from JSON body and user id relating to JWT
+            game = Games(
+                name=name,
+                description=description,
+                user_id=user.id
+            )
 
-        # Create game object from JSON body and user id relating to JWT
-        game = Games(
-            name=name,
-            description=description,
-            user_id=user.id
-        )
-
-        # Add game object to database session
-        db.session.add(game)
-        # Commit the game object to the database session
-        db.session.commit()
-        # Return a view to the front-end of the game object - deserialised with schema and success code 201
-        return game_schema.dump(game), 201
+            # Add game object to database session
+            db.session.add(game)
+            # Commit the game object to the database session
+            db.session.commit()
+            # Return a view to the front-end of the game object - deserialised with schema and success code 201
+            return game_schema.dump(game), 201
+        else:
+            return{"error" : "Only admin users can create games."}, 400
+    # Error handling for invalid or missing inputs and any exceptional errors that may occur
     except IntegrityError as e:
         if e.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"error": f"The {e.orig.diag.column_name} is required"}, 400
