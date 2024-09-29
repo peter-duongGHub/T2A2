@@ -210,7 +210,7 @@ def view_players(game_id, user_id):
             return {"error": "There are no players to show"}, 404
     # Error handling in case error occurs
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create an endpoint to view specific player
 
@@ -229,5 +229,6 @@ def specific_players(player_id, game_id, user_id):
         else:
             # Return an error message if there is no player with the specific id
             return {"error": f"Player with id {player_id} can not be found."}, 404
+    # Error handling in case there are exceptions in error
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
