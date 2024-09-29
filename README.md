@@ -1120,9 +1120,9 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players```
 - **Required body/Header Data**: JWT required, JSON web token from logged in user required to create player
 - **ON SUCCESS**: Returns message of the player created to the associated game and a success code 201
-![Player-Success](./docs/Player5.PNG)
+![Player-Success](./docs/create_player.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the data input is not in the correct format and returns a HTTP 400 status code with an error message.
-![Player-Fail](./docs/Player4.PNG)
+![Player-Fail](./docs/create_player-fail.PNG)
 
 #### Update a player
 ```@player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])```
@@ -1130,9 +1130,9 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to update a player - only users with admin privilege can update a players attributes
 - **ON SUCCESS**: Returns message of the player object updated to the view and a success code 200
-![Player-Success](./docs/Player6.PNG)
+![Player-Success](./docs/update_player.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the player name already exists in the database, a HTTP error code 400 is displayed as well as an error message in the view
-![Player-Fail](./docs/Player7.PNG)
+![Player-Fail](./docs/update_player-fail.PNG)
 
 #### Delete a player
 ```@player_bp.route("/<int:player_id>", methods=["DELETE"])```
@@ -1140,7 +1140,7 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to delete a player - only users with admin privilege can delete a player
 - **ON SUCCESS**: Returns message of the player deleted to the view and a success code 200
-![Player-Success](./docs/Player8.PNG)
+![Player-Success](./docs/delete
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example trying to delete a player that does not exist will return an error message with a HTTP error code 404.
 ![Player-Fail](./docs/Player9.PNG)
 

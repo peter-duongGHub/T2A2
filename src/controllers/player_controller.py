@@ -171,26 +171,23 @@ def update_player(player_id, game_id, user_id):
 
 @player_bp.route("/<int:player_id>", methods=["DELETE"])
 @jwt_required()
-@check_admin
 def delete_player(player_id, user_id, game_id):
     try:
-        # Retrieve the Player object with the specified player id in the dynamic route
-        stmt = db.Select(Players).filter_by(id=player_id)
-        player = db.session.scalar(stmt)
-
-        # If there is a player object with the specific player id delete the player and commit the change to the database session
+        # Query to filter player based on the id of the player JWT
+        player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+        player = db.session.scalar(player_stmt)
         if player:
-            db.session.delete(player)
-            db.session.commit()
-            # Return a success message of the deleted player id
-            return (f"Player with id {player_id} is deleted.")
-
-        # If there is no such player with the player id return error message
-        else:
-            return (f"Player with id {player_id} not found."), 404
+                # Query to delete player object and commit to the database session
+                db.session.delete(player)
+                db.session.commit()
+                # Return a success message of the deleted player id
+                return (f"Player with id {player_id} is deleted."), 200
+        else: 
+            # return error message if no player with correct JWT
+            return{"error" : "Please check correct player JWT is input and correct player id is input"}, 400
     # General Error handling for any unexpected errors
     except Exception as e:
-        return (str(e)), 500
+        return (str(e)), 400
 
 
 # Create an route to view all players
