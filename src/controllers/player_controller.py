@@ -19,7 +19,7 @@ from controllers.event_controller import event_bp
 # Import datetime module for conversion of string to data object for database operation
 from datetime import datetime
 
-# Error handling modules imported 
+# Error handling modules imported
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
 # Authentication to check JWT included and admin rights
@@ -131,37 +131,37 @@ def create_player(game_id, user_id):
 @jwt_required()
 def update_player(player_id, game_id, user_id):
     try:
-            # Query to select specific player with the correct token id
-            player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
-            player = db.session.scalar(player_stmt)
-            # If player exists:
-            if player:
+        # Query to select specific player with the correct token id
+        player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+        player = db.session.scalar(player_stmt)
+        # If player exists:
+        if player:
 
-                # Retrive data from the front-end JSON body and extract the name input
-                request_data = PlayerSchema().load(request.get_json())
-                name = request_data.get("name")
+            # Retrive data from the front-end JSON body and extract the name input
+            request_data = PlayerSchema().load(request.get_json())
+            name = request_data.get("name")
 
-                # If there is a name input:
-                if name:
-                    # Query the database for a player with an id equal to the player_id in the route
-                    name_stmt = db.Select(Players).filter_by(name=name)
-                    player_name = db.session.scalar(name_stmt)
-                    if player_name:
-                        return {"error": "Name already exists in database"}, 400
+            # If there is a name input:
+            if name:
+                # Query the database for a player with an id equal to the player_id in the route
+                name_stmt = db.Select(Players).filter_by(name=name)
+                player_name = db.session.scalar(name_stmt)
+                if player_name:
+                    return {"error": "Name already exists in database"}, 400
 
-                    else:
-                        # Change the player name with id equal to player id to the front-end input name and commit to the database session
-                        player.name = name or player.name
-                        db.session.commit()
-
-                        # Return the updated player information to the view owith a success code 200
-                        return player_schema.dump(player), 200
                 else:
-                    # If there is no name input return an error message
-                    return {"error": "Please input a name to change the player name"}, 400
-            # If the player does not exist with the correct JWT id:
+                    # Change the player name with id equal to player id to the front-end input name and commit to the database session
+                    player.name = name or player.name
+                    db.session.commit()
+
+                    # Return the updated player information to the view owith a success code 200
+                    return player_schema.dump(player), 200
             else:
-                return {"error" : "Only players with correct JWT can update player details."}, 400
+                # If there is no name input return an error message
+                return {"error": "Please input a name to change the player name"}, 400
+        # If the player does not exist with the correct JWT id:
+        else:
+            return {"error": "Only players with correct JWT can update player details."}, 400
     # Error Handle exceptions that may occur
     except Exception as e:
         return {"error": f"{e}"}, 400
@@ -177,14 +177,14 @@ def delete_player(player_id, user_id, game_id):
         player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
         player = db.session.scalar(player_stmt)
         if player:
-                # Query to delete player object and commit to the database session
-                db.session.delete(player)
-                db.session.commit()
-                # Return a success message of the deleted player id
-                return (f"Player with id {player_id} is deleted."), 200
-        else: 
+            # Query to delete player object and commit to the database session
+            db.session.delete(player)
+            db.session.commit()
+            # Return a success message of the deleted player id
+            return (f"Player with id {player_id} is deleted."), 200
+        else:
             # return error message if no player with correct JWT
-            return{"error" : "Please check correct player JWT is input and correct player id is input"}, 400
+            return {"error": "Please check correct player JWT is input and correct player id is input"}, 400
     # General Error handling for any unexpected errors
     except Exception as e:
         return (str(e)), 400

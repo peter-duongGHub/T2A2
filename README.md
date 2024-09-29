@@ -115,8 +115,6 @@ It contains many components and features that are used within this application s
 #### Flask
 Flask is a lightweight web framework for Python that allows developers to build web applications quickly and easily. Flask depends on the Werkzeug WSGI toolkit, the Jinja template engine, and the Click CLI toolkit. It does have many cool features like url routing, template engine. The example provided below shows the features of flask that have been utilised for the application. This example code shows flask may be used to map URL's to controllers and return a view. This is very handle as different routes can be defined with this decorator to facilitate different functions dependent on the route. This is a fundamental feature when building applications on the web as it plays a significant role in user interaction and interface.
 
-https://flask.palletsprojects.com/en/3.0.x/
-
 #### Example code
 ```
 @app.route('/')

@@ -51,7 +51,7 @@ def create_game(user_id):
             # Return a view to the front-end of the game object - deserialised with schema and success code 201
             return game_schema.dump(game), 201
         else:
-            return{"error" : "Only admin users can create games."}, 400
+            return {"error": "Only admin users can create games."}, 400
     # Error handling for invalid or missing inputs and any exceptional errors that may occur
     except IntegrityError as e:
         if e.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
@@ -130,7 +130,7 @@ def update_game(game_id, user_id):
         return game_schema.dump(game), 200
     # Error handling for invalid input from JSON body
     except ValidationError as e:
-        return {"error" : f"{e}"}
+        return {"error": f"{e}"}
 
     # Error handling of exceptional errors that may occur
     except Exception as e:

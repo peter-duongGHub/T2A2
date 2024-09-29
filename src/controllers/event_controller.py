@@ -82,7 +82,7 @@ def create_event(user_id, player_id, game_id):
             )
             date = request_data.get("date")
             if date:
-                # Validation of event date input 
+                # Validation of event date input
                 date_object = datetime.strptime(date, "%m/%d/%Y")
                 dt = date_object.replace(tzinfo=None)
                 event.date = date
@@ -91,7 +91,7 @@ def create_event(user_id, player_id, game_id):
         else:
             # Return an error message because player doesnt exist
             return {"error": f"You cannot create an event as player {player_id} does not exist."}, 404
-        
+
     # Erro handling of exceptional errors and invalid input errors.
     except ValidationError as e:
         return {"error": {e}}, 400
@@ -151,7 +151,7 @@ def delete_event(event_id, user_id, player_id, game_id):
                 # Return an error message that there is no event object with the specific id
                 return {"error": f"There is no event with id {event_id}."}, 404
         else:
-            return{"error" : "Only player with created token can make operations on this event."}, 401
+            return {"error": "Only player with created token can make operations on this event."}, 401
     # Error handling for exceptional errors that may occur
     except Exception as e:
         return {"error": f"{e}"}, 400
