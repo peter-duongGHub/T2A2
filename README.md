@@ -1022,7 +1022,7 @@ db.session.commit()
 ```@user_bp.route("/<int:user_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
 - **Route Path**: ```/user/<int:user_id>```
-- **Required body/Header Data**: JWT required - JSON web token required, provided from creating user, must input as bearer token
+- **Required body/Header Data**: JWT required - JSON web token required, provided from logged in user, must input as bearer token
 
 - **ON SUCCESS**: Returns message of user that has been deleted successfully with 200 code 
 ![Delete-Success](./docs/Create6.PNG)
@@ -1061,7 +1061,7 @@ db.session.commit()
 ```@game_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game```
-- **Required body/Header Data**: JWT required, JSON web token required to create a game by relevant user
+- **Required body/Header Data**: JWT required, JSON web token required to create a game by relevant user with authorisation
 
 - **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game,
 success code 201
@@ -1193,7 +1193,7 @@ a HTTP status error code 400 and error message
 #### Get specific event
 ```@event_bp.route("/<int:event_id>", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: None
   
 - **ON SUCCESS**: Returns specific event objects from the database to the view and provides a success code 200
@@ -1208,7 +1208,7 @@ a HTTP status error code 400 and error message
 #### Get all events
 ```@event_bp.route("/", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events```
 - **Required body/Header Data**: None
 - 
 - **ON SUCCESS**: Returns all event objects from the database to the view and provides a success code 200
@@ -1222,7 +1222,7 @@ a HTTP status error code 400 and error message
 #### Update Event
 ```@event_bp.route("/<int:event_id>", methods=["PUT","PATCH"])```
 - **HTTP Verb**: PUT, PATCH
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to update an event
 - **ON SUCCESS**: Returns event object from the database after updating to the view and provides a success code 200
 ![Event-Success](./docs/Event8.PNG)
@@ -1232,7 +1232,7 @@ a HTTP status error code 400 and error message
 #### Delete Event
 ```@event_bp.route("/<int:event_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to delete an event
 
 - **ON SUCCESS**: Returns event object from the database after deleting to the view and provides a success code 200 and success message of deletion
@@ -1249,7 +1249,7 @@ a HTTP status error code 400 and error message
 #### View comments
 ```@comments_bp.route("/", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>/comments```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns comments objects from the database to the view and provides a success code 200
 ![Comment-Success](./docs/Comment1.PNG)
@@ -1263,7 +1263,7 @@ a HTTP status error code 400 and error message
 #### View specific comment
 ```@comments_bp.route("/<int:comment_id>", methods=["GET"])```
 - **HTTP Verb**: GET
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
 - **Required body/Header Data**: None
 
 - **ON SUCCESS**: Returns specific comment object from the database to the view and provides a success code 200
@@ -1278,8 +1278,8 @@ a HTTP status error code 400 and error message
 #### Create comment
 ```@comments_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments```
-- **Required body/Header Data**: None
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>/comments```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to create a comment
 - **ON SUCCESS**: Returns comment object created from the database to the view as well as the event comment is added to and the player and provides a success code 201
 ![Comment-Success](./docs/Comment3.PNG)
 
@@ -1290,8 +1290,8 @@ a HTTP status error code 400 and error message
 #### Update comment
 ```@comments_bp.route("<int:comment_id>", methods=["PUT", "PATCH"])```
 - **HTTP Verb**: PUT, PATCH
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
-- **Required body/Header Data**: None
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Required body/Header Data**: JWT required, JSON web token from created player required to update a comment
 
 - **ON SUCCESS**: Returns comment object after updating to the view and provides a success code 200
 ![Comment-Success](./docs/Comment5.PNG)
@@ -1303,7 +1303,7 @@ a HTTP status error code 400 and error message
 #### Delete comment
 ```@comments_bp.route("<int:comment_id>", methods=["DELETE"])```
 - **HTTP Verb**: DELETE
-- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/player/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
+- **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players/<int:player_id>/events/<int:event_id>/comments/<int:comment_id>```
 - **Required body/Header Data**: JWT required, JSON web token from created player required to delete a comment
 - **ON SUCCESS**: Returns success message of deleted comment object to the view and provides a success code 200
 ![Comment-Success](./docs/Comment7.PNG)
