@@ -151,7 +151,7 @@ def update_user(user_id):
 def login_user():
     try:
         # Retrieve JSON data from the request body
-        body_data = request.get_json()
+        body_data = UserSchema().load(request.get_json())
 
         # Store the request body email and password into variables if present
         request_email = body_data.get("email")
