@@ -29,7 +29,6 @@ game_bp.register_blueprint(player_bp)
 @check_admin
 def create_game(user_id):
     try:
-
         # Get the body data from JSON body (name, description)
         request_data = GameSchema().load(request.get_json(), partial=True)
         name = request_data.get("name")
@@ -78,6 +77,7 @@ def view_games(game_id, user_id):
         # Else return an error message
         else:
             return {"error": f"There is no game with id: {game_id}"}, 404
+    # Error handling in case exceptional error occurs
     except Exception as e:
         return {"error": f"{e}"}
 
@@ -98,6 +98,7 @@ def get_games(user_id):
         # If there are no games in the database return a message there are no games
         else:
             return {"error": "There are currently no games to view."}, 404
+    # Error handling of exceptional errors that may occur
     except Exception as e:
         return {"error": f"{e}"}
 
