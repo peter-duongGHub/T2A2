@@ -149,34 +149,22 @@ def update_player(player_id, game_id, user_id):
                     if player_name:
                         return {"error": "Name already exists in database"}, 400
 
-                    # Query to fetch specific player from database
-                    stmt = db.Select(Players).filter_by(id=player_id)
-                    player = db.session.scalar(stmt)
-
-                    # If there is no such player return error message
-                    if player is None:
-                        return {"error": "No such player exists"}, 404
-
-                    # If there is a player with id equal to the player id:
-                    elif player:
+                    else:
                         # Change the player name with id equal to player id to the front-end input name and commit to the database session
                         player.name = name or player.name
                         db.session.commit()
 
-                    # Return the updated player information to the view owith a success code 200
+                        # Return the updated player information to the view owith a success code 200
                         return player_schema.dump(player), 200
-
-                    else:
-                        return {"error": "Only associated created players can update their own names."}
-                # If there is no name input return an error message
                 else:
-                    return {"error": "Please input a name to change the player name"}
-            # If the player does not exists with the correct JWT id:
+                    # If there is no name input return an error message
+                    return {"error": "Please input a name to change the player name"}, 400
+            # If the player does not exist with the correct JWT id:
             else:
-                return {"error" : "Only players with correct JWT can update player details."}
+                return {"error" : "Only players with correct JWT can update player details."}, 400
     # Error Handle exceptions that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create a route to delete a specific player depending on the id of the player in the dynamic route
 
