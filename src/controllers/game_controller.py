@@ -79,7 +79,7 @@ def view_games(game_id, user_id):
             return {"error": f"There is no game with id: {game_id}"}, 404
     # Error handling in case exceptional error occurs
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create a route to fetch all games
 
@@ -100,7 +100,7 @@ def get_games(user_id):
             return {"error": "There are currently no games to view."}, 404
     # Error handling of exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 
 # Create a route to update game attributes, must be authenticated user containing JWT bearer token

@@ -46,8 +46,6 @@ class PlayerSchema(ma.Schema):
     # Validation of attributes, restricting user input to certain conditions
     name = fields.String(required=True, validate=Regexp(
         "^.{1,50}$", error="Name must be between 1-50 characters long."))
-    date = fields.Date(required=True, validate=Regexp(
-        "(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
     role = fields.String(required=True, validate=OneOf(
         ROLES), error="Role selected must be Tank, Healer or DPS")
 

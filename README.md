@@ -1015,7 +1015,7 @@ db.session.commit()
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message to verify user object has been created with HTTP code 201 to confirm
 ![Create-User](./docs/Create_user.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, this example shows incorrect what is returned upon incorrect email format:
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, this example shows incorrect what is returned upon incorrect email format, 400 HTTP error code
 ![Create-User](./docs/Create2.PNG)
 
 #### Delete a user
@@ -1049,7 +1049,7 @@ db.session.commit()
 - **Route Path**: ```/user/<int:user_id>```
 - **Required body/Header Data**: JWT required, JSON web token from logged in user required to update users
 - 
-- **ON SUCCESS**: Returns message of user attributes to the view after updating user
+- **ON SUCCESS**: Returns message of user attributes to the view after updating user, with success code 200
 ![Update-Success](./docs/Create8.PNG)
 
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the wrong JWT token was added and throws a HTTP error code 401 as unauthorised.
@@ -1063,11 +1063,12 @@ db.session.commit()
 - **Route Path**: ```user/<int:user_id>/game```
 - **Required body/Header Data**: JWT required, JSON web token required to create a game by relevant user
 
-- **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game
-![Game-Success](./docs/Game3.PNG)
+- **ON SUCCESS**: Returns message of newly created game to the view including the user that created the game,
+success code 201
+![Game-Success](./docs/create_game.PNG)
 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example description input is missing and throws a HTTP 400 error code and returns an error message. 
-![Game-Failure](./docs/Game4.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example only authorised user can perform action and throws a HTTP 403 error code and returns an error message
+![Game-Failure](./docs/create_game-fail.PNG)
 
 #### Fetching a specific game
 ```@game_bp.route("/<int:game_id>", methods=["GET"])```
@@ -1075,9 +1076,9 @@ db.session.commit()
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message of specific game depending on the dynamic route with a success code 200
-![Game-Success](./docs/Game2.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example game id 20 is not a valid game in the database so a 400 HTTP error code is returned and an error message
-![Game-Fail](./docs/Game1.PNG)
+![Game-Success](./docs/get_game_specific.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example game id is not a valid game in the database so a 404 HTTP error code is returned and an error message
+![Game-Fail](./docs/get_game_specific-fail.PNG)
 
 #### Fetching all games
 ```@game_bp.route("/", methods=["GET"])```
@@ -1085,12 +1086,10 @@ db.session.commit()
 - **Route Path**: ```user/<int:user_id>/game```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message of all games with a success code 200
-![Game-Success](./docs/Game5.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there are no game object to display from the database an error message is provided to the view.
-
+![Game-Success](./docs/get_game.PNG)
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there are no game object to display from the database an error message is provided to the view. with a 404 error code.
 ```
-else:
-  return {"error" : "There are currently no games to view."}
+{"error" : "There are currently no games to view."}
 ```
 
 #### Updating a game
@@ -1099,9 +1098,9 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to update game - only users with admin privilege can update a game
 - **ON SUCCESS**: Returns message of the specific game updated with a success code 200
-![Game-Success](./docs/Game6.PNG)
+![Game-Success](./docs/update_game.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the game does not exist so a 404 HTTP error code is thrown and an error message
-![Game-Fail](./docs/Game7.PNG)
+![Game-Fail](./docs/update_game-fail.PNG)
 
 #### Deleting a game
 ```@game_bp.route("/<int:game_id>", methods=["DELETE"])```
@@ -1109,9 +1108,9 @@ else:
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>```
 - **Required body/Header Data**: JWT required, JSON web token required to delete game - only users with admin privilege can delete a game
 - **ON SUCCESS**: Returns message of the specific game deleted with a success code 200
-![Game-Success](./docs/Game10.PNG)
+![Game-Success](./docs/delete_game.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example a 404 HTTP error code is thrown and an error message.
-![Game-Fail](./docs/Game11.PNG)
+![Game-Fail](./docs/delete_game-fail.PNG)
 
 ### Players controller
 #### Create a player
@@ -1121,7 +1120,7 @@ else:
 - **Required body/Header Data**: JWT required, JSON web token from logged in user required to create player
 - **ON SUCCESS**: Returns message of the player created to the associated game and a success code 201
 ![Player-Success](./docs/create_player.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the data input is not in the correct format and returns a HTTP 400 status code with an error message.
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the data input is missing an input and returns a HTTP 400 status code with an error message.
 ![Player-Fail](./docs/create_player-fail.PNG)
 
 #### Update a player
@@ -1131,7 +1130,7 @@ else:
 - **Required body/Header Data**: JWT required, JSON web token required to update a player - only created players with correct tokens can update player
 - **ON SUCCESS**: Returns message of the player object updated to the view and a success code 200
 ![Player-Success](./docs/update_player.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the player name already exists in the database, a HTTP error code 400 is displayed as well as an error message in the view
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the player name is missing, a HTTP error code 400 is displayed as well as an error message in the view
 ![Player-Fail](./docs/update_player-fail.PNG)
 
 #### Delete a player
@@ -1141,7 +1140,7 @@ else:
 - **Required body/Header Data**: JWT required, JSON web token required to delete a player - only created players with correct tokens can delete player
 - **ON SUCCESS**: Returns message of the player deleted to the view and a success code 200
 ![Player-Success](./docs/delete_player.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example trying to delete a player that does not exist will return an error message with a HTTP error code 404.
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example trying to delete a player that does not exist without correct JWT will return an error message with a HTTP error code 404.
 ![Player-Fail](./docs/delete_player-fail.PNG)
 
 #### View all players
@@ -1163,9 +1162,8 @@ else:
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns specific player object from the database to the view and provides a success code 200
 ![Player-Success](./docs/get_player_specific.PNG)
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example 
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example specific player id doesnt exist so a 404 HTTP error is given
 ![Player-Fail](./docs/get_player_specific-fail.PNG)
-
 
 ### Event controller
 

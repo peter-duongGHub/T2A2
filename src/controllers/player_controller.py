@@ -38,7 +38,7 @@ player_bp.register_blueprint(event_bp)
 def create_player(game_id, user_id):
     try:
         # Retrieve JSON data from the request
-        request_data = request.get_json()
+        request_data = PlayerSchema().load(request.get_json())
         body_name = request_data.get("name")
         role = request_data.get("role")
 
@@ -89,7 +89,7 @@ def create_player(game_id, user_id):
                 # Change the format of the string into a date for storing inside database
                 date_object = datetime.strptime(date, "%m/%d/%Y")
                 dt = date_object.replace(tzinfo=None)
-                player.date = dt
+                player.date = date
 
             # Add and commit the new player to the database
             db.session.add(player)
@@ -138,7 +138,7 @@ def update_player(player_id, game_id, user_id):
             if player:
 
                 # Retrive data from the front-end JSON body and extract the name input
-                request_data = request.get_json()
+                request_data = PlayerSchema().load(request.get_json())
                 name = request_data.get("name")
 
                 # If there is a name input:
