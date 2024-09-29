@@ -193,7 +193,7 @@ def delete_player(player_id, user_id, game_id):
         return (str(e)), 500
 
 
-# Create an endpoint to view all players
+# Create an route to view all players
 @player_bp.route("/", methods=["GET"])
 def view_players(game_id, user_id):
     try:
@@ -208,6 +208,7 @@ def view_players(game_id, user_id):
         # If there isnt return an error message
         else:
             return {"error": "There are no players to show"}, 404
+    # Error handling in case error occurs
     except Exception as e:
         return {"error": f"{e}"}
 
