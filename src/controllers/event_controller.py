@@ -135,6 +135,7 @@ def update_event(event_id, user_id, player_id, game_id):
 @jwt_required()
 def delete_event(event_id, user_id, player_id, game_id):
     try:
+        # Query to get player with the associated JWT bearer token
         player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
         player = db.session.scalar(player_stmt)
         if player:
