@@ -87,7 +87,7 @@ def create_player(game_id, user_id):
             # If it exists:
             if date:
                 # Change the format of the string into a date for storing inside database
-                date_object = datetime.strptime(date, "%d/%m/%Y")
+                date_object = datetime.strptime(date, "%m/%d/%Y")
                 dt = date_object.replace(tzinfo=None)
                 player.date = dt
 
@@ -112,10 +112,10 @@ def create_player(game_id, user_id):
                 }, 201
     # Error handling if user input is not in correct date format
     except DataError:
-        return {"error": "Please enter date in the correct format yyyy-mm-dd or yyyy-mm-dd."}, 400
+        return {"error": "Please enter date in the correct format MM-DD-YYYY or MM-DD-YYYY."}, 400
 
     except ValueError:
-        return {"error": "Date must be in format YYYY-MM-DD"}, 400
+        return {"error": "Date must be in format MM-DD-YYYY"}, 400
     # Error handling if missing specific attributes for input
     except IntegrityError as e:
         if e.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
