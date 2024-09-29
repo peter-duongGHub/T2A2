@@ -103,7 +103,7 @@ def get_games(user_id):
         return {"error": f"{e}"}
 
 
-# Create a route to update game attributes, must be authenticated and contain a JWT as bearer token
+# Create a route to update game attributes, must be authenticated user containing JWT bearer token
 @game_bp.route("/<int:game_id>", methods=["PUT", "PATCH"])
 @jwt_required()
 @check_admin
@@ -128,8 +128,13 @@ def update_game(game_id, user_id):
         db.session.commit()
         # Return to the view a deserialised game object and success 200 code
         return game_schema.dump(game), 200
+    # Error handling for invalid input from JSON body
+    except ValidationError as e:
+        return {"error" : f"{e}"}
+
+    # Error handling of exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create a route to delete a game from the database, must be authenticated and have a JWT
 
@@ -144,6 +149,7 @@ def delete_game(game_id, user_id):
         game = db.session.scalar(stmt)
         # If game is found, delete the game object and commit the change to the database session
         if game:
+            # Query to delete game object and commit to the database session
             db.session.delete(game)
             db.session.commit()
             # Return a success message that the game has been deleted with success 200 code
