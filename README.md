@@ -515,7 +515,7 @@ Box in ERD represents the Player relation. Line from the Player-Game represents 
 - **primary key**: player_id is primary key can is an integer data type cannot be NULL
 - **name attribute**: accepts characters between 1-50 characters long and cannot be NULL
 - **role attribute**: accepts only specific values ("Tank", "DPS", "Healer") and cannot be NULL
-- **date attribute**: accepts only date formats in MM/DD/YYYY and cannot be left NULL
+- **date attribute**: accepts only date formats in MM/DD/YYYY
 - **foreign keys**:
   - **game_id**: References game relation primary key
   - **user_id**: References user relation primary key
@@ -542,7 +542,7 @@ Box in ERD represents the Event relation. Line from Event-Comments represents On
 
 - **primary key**: event_id is the primary key and is an integer data type and cannot be NULL
 - **description attribute**: can be any character and cannot be NULL
-- **date attribute** must be in date format MM/DD/YYYY and cannot be NULL
+- **date attribute** must be in date format MM/DD/YYYY
 - **duration attribute** must be a float data type and cannot be NULL
 - **foreign key**:
   - **player_id** player_id references primary key from the player relation
