@@ -16,22 +16,24 @@ from datetime import timedelta
 from sqlalchemy.exc import DataError
 # Import event controller to pass on url prefix to event controller blueprint
 from controllers.event_controller import event_bp
-# 
+# Import datetime module for conversion of string to data object for database operation
 from datetime import datetime
 
+# Error handling modules imported 
 from sqlalchemy.exc import IntegrityError
 from psycopg2 import errorcodes
+# Authentication to check JWT included and admin rights
 from check import check_admin
 
+# Create player blue print for use as decorator
 player_bp = Blueprint("player", __name__, url_prefix="/<int:game_id>/players")
 player_bp.register_blueprint(event_bp)
 
 # Create a route to create a player object into the database
 
-# Authentication to check JWT included and admin rights
-
 
 @player_bp.route("/", methods=["POST"])
+# JWT required, requires a user JWT created after logging in user to be input as bearer token
 @jwt_required()
 def create_player(game_id, user_id):
     try:
@@ -65,7 +67,7 @@ def create_player(game_id, user_id):
                 player.user_id = user.id
             else:
                 # Else an error message will be returned to the view
-                return {"error" : "Please enter a correct user id in the route"}
+                return {"error": "Please enter a correct user id in the route"}
 
             # Query to select game objects from the database
             game_stmt = db.Select(Games).filter_by(id=game_id)
@@ -74,11 +76,11 @@ def create_player(game_id, user_id):
             # If the game object exists with game_id:
             if game:
                 # Referenced foreign key column will be id of game
-                player.game_id=game.id
+                player.game_id = game.id
 
-            else: 
+            else:
                 # else return an error message
-                return {"error" : "Incorrect route game does not exist"}
+                return {"error": "Incorrect route game does not exist"}
 
             # Get the data input from the body of request
             date = request_data.get("date")
@@ -105,8 +107,8 @@ def create_player(game_id, user_id):
                 "role": player_obj.role,
                 "id": player_obj.id,
                 "token": token,
-                "user" : player_obj.user.id,
-                "game" : player_obj.game.id
+                "user": player_obj.user.id,
+                "game": player_obj.game.id
                 }, 201
     # Error handling if user input is not in correct date format
     except DataError:
@@ -123,45 +125,56 @@ def create_player(game_id, user_id):
         return {"error": f"{e}"}, 400
 
 # Create a route to update a player objects inside the database name
+
+
 @player_bp.route("/<int:player_id>", methods=["PUT", "PATCH"])
 @jwt_required()
-@check_admin
 def update_player(player_id, game_id, user_id):
     try:
-        # Retrive data from the front-end JSON body and extract the name input
-        request_data = request.get_json()
-        name = request_data.get("name")
+            # Query to select specific player with the correct token id
+            player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+            player = db.session.scalar(player_stmt)
+            # If player exists:
+            if player:
 
-        # If there is a name input:
-        if name:
-            # Query the database for a player with an id equal to the player_id in the route
-            name_stmt = db.Select(Players).filter_by(name=name)
-            player_name = db.session.scalar(name_stmt)
-            if player_name:
-                return {"error": "Name already exists in database"}, 400
+                # Retrive data from the front-end JSON body and extract the name input
+                request_data = request.get_json()
+                name = request_data.get("name")
 
-            # Query to fetch specific player from database
-            stmt = db.Select(Players).filter_by(id=player_id)
-            player = db.session.scalar(stmt)
+                # If there is a name input:
+                if name:
+                    # Query the database for a player with an id equal to the player_id in the route
+                    name_stmt = db.Select(Players).filter_by(name=name)
+                    player_name = db.session.scalar(name_stmt)
+                    if player_name:
+                        return {"error": "Name already exists in database"}, 400
 
-            # If there is no such player return error message
-            if player is None:
-                return {"error": "No such player exists"}, 404
+                    # Query to fetch specific player from database
+                    stmt = db.Select(Players).filter_by(id=player_id)
+                    player = db.session.scalar(stmt)
 
-            # If there is a player with id equal to the player id:
-            elif player:
-                # Change the player name with id equal to player id to the front-end input name and commit to the database session
-                player.name = name or player.name
-                db.session.commit()
+                    # If there is no such player return error message
+                    if player is None:
+                        return {"error": "No such player exists"}, 404
 
-            # Return the updated player information to the view owith a success code 200
-                return player_schema.dump(player), 200
+                    # If there is a player with id equal to the player id:
+                    elif player:
+                        # Change the player name with id equal to player id to the front-end input name and commit to the database session
+                        player.name = name or player.name
+                        db.session.commit()
 
+                    # Return the updated player information to the view owith a success code 200
+                        return player_schema.dump(player), 200
+
+                    else:
+                        return {"error": "Only associated created players can update their own names."}
+                # If there is no name input return an error message
+                else:
+                    return {"error": "Please input a name to change the player name"}
+            # If the player does not exists with the correct JWT id:
             else:
-                return {"error": "Only associated created players can update their own names."}
-        # If there is no name input return an error message
-        else:
-            return {"error": "Please input a name to change the player name"}
+                return {"error" : "Only players with correct JWT can update player details."}
+    # Error Handle exceptions that may occur
     except Exception as e:
         return {"error": f"{e}"}
 
