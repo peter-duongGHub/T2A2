@@ -482,7 +482,7 @@ For the comment relation normalisation occurs by:
 ![Crows-Foot-Notation](./docs/ERD.drawio%20(1).png)
 
 ### Other levels of normalisation - Model: Player
-Normalisation for other model/relation Player model. This other level of normalisation is splitting the role attribute from the player model to create a new relation namely Role. Role relation will have a name attribute and a description attribute, normalising the original ERD further.
+Normalisation for other model/relation Player model. This other level of normalisation is splitting the role attribute from the player model to create a new relation namely Role. Role relation will have a name attribute and a description attribute, normalising the original ERD further.  
 ![Other-Normalisation](./docs/ERD2.drawio.png)
 
 ### Key/Legend
@@ -1014,7 +1014,7 @@ db.session.commit()
 - **Route Path**: ```/user/create```
 - **Required body/Header Data**: None
 - **ON SUCCESS**: Returns message to verify user object has been created with HTTP code 201 to confirm
-![Create-User](./docs/Create1.PNG)
+![Create-User](./docs/Create_user.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, this example shows incorrect what is returned upon incorrect email format:
 ![Create-User](./docs/Create2.PNG)
 
@@ -1118,7 +1118,7 @@ else:
 ```@player_bp.route("/", methods=["POST"])```
 - **HTTP Verb**: POST
 - **Route Path**: ```user/<int:user_id>/game/<int:game_id>/players```
-- **Required body/Header Data**: None
+- **Required body/Header Data**: JWT required, JSON web token from logged in user required to create player
 - **ON SUCCESS**: Returns message of the player created to the associated game and a success code 201
 ![Player-Success](./docs/Player5.PNG)
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example the data input is not in the correct format and returns a HTTP 400 status code with an error message.
@@ -1191,7 +1191,9 @@ event = Events(
 ```
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example date is entered in the wrong format throwing
 a HTTP status error code 400 and error message
-![Event-Fail](./docs/Event11.PNG)
+```
+  {"description" : ['Must be one of ACTION, QUEST, SOCIAL.'], 'date': ['Not a valid date.']}
+```
 
 
 #### Get specific event

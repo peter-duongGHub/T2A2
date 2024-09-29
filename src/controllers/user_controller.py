@@ -31,7 +31,7 @@ def create_user():
         request_data = UserSchema().load(request.get_json())
         # Create user object from user input from JSON body (front-end)
         user = Users(
-            username=request_data.get("name"),
+            username=request_data.get("username"),
             email=request_data.get("email")
         )
         # Retrieve password from front-end JSON body if it exists
@@ -100,6 +100,7 @@ def delete_user(user_id):
 @user_bp.route("/<int:user_id>", methods=["PUT", "PATCH"])
 # JSON Web token required so that only users with the associated JWT can make changes to the user
 @jwt_required()
+@check_admin
 def update_user(user_id):
     try:
         # Load and validate fields from the request body
@@ -107,7 +108,7 @@ def update_user(user_id):
 
         # Extract the password and name from the body data
         request_password = body_data.get("password")
-        request_name = body_data.get("name")
+        request_name = body_data.get("username")
         # Fetch the user from the user_id from the dynamic route - looking through the database for the user that matches the id
         stmt = db.Select(Users).filter_by(id=get_jwt_identity())
         user = db.session.scalar(stmt)
@@ -192,12 +193,16 @@ def login_user():
 @user_bp.route("/", methods=["GET"])
 def get_users():
     try:
+        # Query to select all User objects from the database
         stmt = db.Select(Users)
         users = db.session.scalars(stmt)
 
+        # If users exist provide to the view list of user objects
         if users:
             return users_schema.dump(users)
         else:
+            # If no return error message to view
             return {"error": "No users to view"}
+    # Error handling for any erorrs that may occur
     except Exception as e:
         return {"error": f"{e}"}

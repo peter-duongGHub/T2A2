@@ -6,6 +6,7 @@ from flask import request, Blueprint
 from models.player import Players, player_schema, players_schema, PlayerSchema
 # Import Game model for creating of game objects
 from models.game import Games
+from models.user import Users
 # Import flask module to create tokens for player creation and jwt required for authentication
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 # Import datetime for expiry of tokens
@@ -25,10 +26,11 @@ player_bp.register_blueprint(event_bp)
 
 # Create a route to create a player object into the database
 
+# Authentication to check JWT included and admin rights
+
 
 @player_bp.route("/", methods=["POST"])
-@jwt_required
-@check_admin
+@jwt_required()
 def create_player(game_id, user_id):
     try:
         # Retrieve JSON data from the request
@@ -36,22 +38,37 @@ def create_player(game_id, user_id):
         body_name = request_data.get("name")
         role = request_data.get("role")
 
+        user_stmt = db.Select(Users).filter_by(id=user_id)
+        user = db.session.scalar(user_stmt)
+
         # Check if the name is already in use
         player_stmt = db.Select(Players).filter_by(name=body_name)
-        existing_user = db.session.scalar(player_stmt)
-        if existing_user:
+        existing_player = db.session.scalar(player_stmt)
+        if existing_player:
             return {"error": f"Player with name {body_name} already exists"}, 400
 
         else:
             # Create a new Player instance with attribute of specific game attached to player
-            game_stmt = db.Select(Games).filter_by(id=game_id)
-            game = db.session.scalar(game_stmt)
 
             player = Players(
                 name=body_name,
                 role=role,
-                game_id=game.id
             )
+
+            if user:
+                player.user_id = user.id
+            else:
+                return {"error" : "Please enter a correct user id in the route"}
+
+            game_stmt = db.Select(Games).filter_by(id=game_id)
+            game = db.session.scalar(game_stmt)
+
+            if game:
+                player.game_id=game.id
+
+            else: 
+                return {"error" : "Incorrect route game does not exist"}
+
             date = request_data.get("date")
             if date:
                 date_object = datetime.strptime(date, "%d/%m/%Y")
@@ -69,11 +86,13 @@ def create_player(game_id, user_id):
             player_obj = db.session.scalar(player_stmt)
 
         # Return the newly created player's data to the view after deserialising player object
-        return {"name": player_obj.name,
-                "date": player_obj.date,
+        return {"player_name": player_obj.name,
+                "creation_date": player_obj.date,
                 "role": player_obj.role,
                 "id": player_obj.id,
-                "token": token
+                "token": token,
+                "user" : player_obj.user.id,
+                "game" : player_obj.game.id
                 }, 201
     # Error handling if user input is not in correct date format
     except DataError:
@@ -88,6 +107,9 @@ def create_player(game_id, user_id):
 
     except Exception as e:
         return {"error": f"{e}"}, 400
+
+    except TypeError as e:
+        return {"error": f"{e}"}
 
 
 # Create a route to update a player objects inside the database name
