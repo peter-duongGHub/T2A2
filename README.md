@@ -1174,17 +1174,14 @@ success code 201
 - **Required body/Header Data**: JWT required, JSON web token from created player required to create an event
 - **ON SUCCESS**: Returns event object created to the view and provides a success code 201 
 ```
-event = Events(
-            description = request_data.get("description"),
-            duration = request_data.get("duration"),
-            player_id = player.id
-        )
-        date = request_data.get("date")
-        if date:
-            date_object = datetime.strptime(date, "%m/%d/%Y")
-            event.date = date_object
-        # Return to the view a deserialised event object with success 201 code
-        return event_schema.dump(event), 201
+{
+	"comments": [],
+	"date": null,
+	"description": "ACTION",
+	"duration": 23.0,
+	"id": 1,
+	"player": 15
+}
 ```
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example date is entered in the wrong format throwing
 a HTTP status error code 400 and error message
@@ -1217,11 +1214,9 @@ a HTTP status error code 400 and error message
 - **ON SUCCESS**: Returns all event objects from the database to the view and provides a success code 200
 ![Event-Success](./docs/Event3.PNG)  
 
-- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format
+- **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, 404 HTTP error code
 ```
-else:
-        # Return an error message if there are no event objects
-        return {"error" : f"No events to view."}
+{"error" : "No events to view."}
 ```
 
 #### Update Event
@@ -1242,11 +1237,7 @@ else:
 
 - **ON SUCCESS**: Returns event object from the database after deleting to the view and provides a success code 200 and success message of deletion
 ```
-if event:
-        # Delete the specific event object and commit the changes to the database session
-        db.session.delete(event)
-        db.session.commit()
-        return {"Success" : f"User with {user_id} was successfully deleted."}
+{"Success" : "User with user id was successfully deleted."}
 ```
 
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example a specific event id was entered into route which was not found in the database and returns a HTTP error code 404
@@ -1265,12 +1256,7 @@ if event:
 
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there are no comment objects in the database to view an error HTTP status code 404 and error message is sent to the view
 ```
-if comment:
-        # Return deserialised comment objects to the view with a success 200 code
-        return comments_schema.dump(comment), 200
-    else:
-        # Return an error message if there are no comment objects
-        return {"error" : "There are no comments to view"}, 404
+{"error" : "There are no comments to view"}, 404
 ```
 
 
@@ -1285,12 +1271,7 @@ if comment:
 
 - **ON FAILURE**: Returns Error dependent on user input, missing input or incorrect input format, in this example if there is no comment object with comment id in the database a HTTP status error code 404 is returned and an error message.
 ```
-if comment:
-        # Return to the view a deserialised comment object with a success code 200
-        return comment_schema.dump(comment), 200
-    else:
-        # Return to the view an error message, there is no comment id equal to comment_id
-        return {"error" : f"There is no comment with id {comment_id}."}, 404
+{"error" : "There is no comment with id."}, 404
 ```
 
 

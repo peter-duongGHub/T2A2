@@ -30,8 +30,9 @@ def view_comments(game_id, player_id, user_id, event_id):
         else:
             # Return an error message if there are no comment objects
             return {"error": "There are no comments to view"}, 404
+    # Error handling for exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create route to view specific comment object
 
@@ -49,8 +50,9 @@ def specific_comment(game_id, player_id, user_id, event_id, comment_id):
         else:
             # Return to the view an error message, there is no comment id equal to comment_id
             return {"error": f"There is no comment with id {comment_id}."}, 404
+    # Error handling for exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create a route to create a comment for an event, requiring a JWT from when a player was created
 
@@ -87,8 +89,8 @@ def create_comment(game_id, player_id, user_id, event_id):
             return comment_schema.dump(comment), 201
         # If there is no player with id relating to JWT return an error message
         else:
-            return {f"There is no such event with event id {event_id}."}
-
+            return {f"There is no such event with event id {event_id}."}, 404
+    # Error handling for exceptional errors that may occur
     except Exception as e:
         return {"error": f"{e}"}, 400
 
@@ -103,8 +105,8 @@ def update_comment(event_id, game_id, player_id, comment_id, user_id):
         stmt = db.Select(Comments).filter_by(id=comment_id)
         comment = db.session.scalar(stmt)
 
-        # Retrive JSON body input from front-end and extract "message" in a variable
-        request_body = request.get_json()
+        # Retrive JSON body input from front-end and extract "message" in a variable and validation through comment schema
+        request_body = CommentSchema().load(request.get_json())
         message = request_body.get("message")
         # If there is the specific comment object in the database:
         if comment:
@@ -118,7 +120,7 @@ def update_comment(event_id, game_id, player_id, comment_id, user_id):
         else:
             # Return error message that it does not exist
             return {"error": f"There is no comment with id {comment_id}."}, 404
-
+    # Error handling for exceptional errors that may occur
     except Exception as e:
         return {"error": f"{e}"}, 400
 
@@ -143,5 +145,6 @@ def delete_comment(event_id, game_id, player_id, comment_id, user_id):
         else:
             # If there is no specific comment object in the database return error message.
             return {"error": "Please enter a valid comment id."}, 404
+    # Error handling for exceptional errors that may occur
     except Exception as e:
         return {"error": f"{e}"}, 400

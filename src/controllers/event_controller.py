@@ -13,7 +13,8 @@ from models.player import Players
 from controllers.comments_controller import comments_bp
 from datetime import datetime
 
-from marshmallow import ValidationError
+# Import module for error handling
+from marshmallow.exceptions import ValidationError
 
 # Create event blueprint for use in decorator for endpoints
 event_bp = Blueprint("event", __name__, url_prefix="/<int:player_id>/events")
@@ -36,8 +37,9 @@ def get_specific(event_id, user_id, player_id, game_id):
         else:
             # Return an error message stating no specific event
             return {"error": f"Cannot find event with event id: {event_id}"}, 404
+    # Error handling for any exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 
 # Create a route for getting all events from the database
@@ -54,8 +56,9 @@ def get_all(user_id, player_id, game_id):
         else:
             # Return an error message if there are no event objects
             return {"error": f"No events to view."}, 404
+    # Error handling for any exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400
 
 # Create a route for creating events if there is a player with the correct JSON web token
 
@@ -66,7 +69,7 @@ def create_event(user_id, player_id, game_id):
     # Retrieve JSON body data from front-end
     request_data = EventSchema().load(request.get_json())
     # Check the database for specific player with player id from the dynamic route
-    stmt = db.Select(Players).filter_by(id=player_id)
+    stmt = db.Select(Players).filter_by(id=get_jwt_identity())
     player = db.session.scalar(stmt)
     # If there is a player with specific player id:
     try:
@@ -79,13 +82,17 @@ def create_event(user_id, player_id, game_id):
             )
             date = request_data.get("date")
             if date:
+                # Validation of event date input 
                 date_object = datetime.strptime(date, "%m/%d/%Y")
-                event.date = date_object
+                dt = date_object.replace(tzinfo=None)
+                event.date = date
             # Return to the view a deserialised event object with success 201 code
             return event_schema.dump(event), 201
         else:
             # Return an error message because player doesnt exist
             return {"error": f"You cannot create an event as player {player_id} does not exist."}, 404
+        
+    # Erro handling of exceptional errors and invalid input errors.
     except ValidationError as e:
         return {"error": {e}}, 400
     except Exception as e:
@@ -128,17 +135,23 @@ def update_event(event_id, user_id, player_id, game_id):
 @jwt_required()
 def delete_event(event_id, user_id, player_id, game_id):
     try:
-        # Check event table for specific event object with event id
-        stmt = db.Select(Events).filter_by(id=event_id)
-        event = db.session.scalar(stmt)
-        # If there is an event object with the specific id:
-        if event:
-            # Delete the specific event object and commit the changes to the database session
-            db.session.delete(event)
-            db.session.commit()
-            return {"Success": f"User with {user_id} was successfully deleted."}
+        player_stmt = db.Select(Players).filter_by(id=get_jwt_identity())
+        player = db.session.scalar(player_stmt)
+        if player:
+            # Check event table for specific event object with event id
+            stmt = db.Select(Events).filter_by(id=event_id)
+            event = db.session.scalar(stmt)
+            # If there is an event object with the specific id:
+            if event:
+                # Delete the specific event object and commit the changes to the database session
+                db.session.delete(event)
+                db.session.commit()
+                return {"Success": f"User with user {user_id} was successfully deleted."}, 200
+            else:
+                # Return an error message that there is no event object with the specific id
+                return {"error": f"There is no event with id {event_id}."}, 404
         else:
-            # Return an error message that there is no event object with the specific id
-            return {"error": f"There is no event with id {event_id}."}, 404
+            return{"error" : "Only player with created token can make operations on this event."}, 401
+    # Error handling for exceptional errors that may occur
     except Exception as e:
-        return {"error": f"{e}"}
+        return {"error": f"{e}"}, 400

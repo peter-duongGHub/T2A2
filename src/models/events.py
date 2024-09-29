@@ -39,9 +39,7 @@ class EventSchema(ma.Schema):
                            "name", "date", "role", "game"])
 
     # Validation of attributes, restricting user input to certain conditions
-    description = fields.String(required=True, validate=OneOf(DESCRIPTION))
-    date = fields.Date(required=True, validate=Regexp(
-        "(\d{1,2}(\/|-)\d{1,2}(\/|-)\d{2,4})"))
+    description = fields.String(required=True, validate=OneOf(DESCRIPTION), error="Please select from ACTION, SOCIAL or QUEST.")
     duration = fields.Float(required=True)
 
     # Validate user import duration using marshmallow validates module
